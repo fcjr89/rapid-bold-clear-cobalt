@@ -41,6 +41,8 @@ export function defaultFlags(): GameFlags {
     ending: false,
     boughtHammer: false,
     boughtMateria: false,
+    leanHintShown: false,
+    dungeonLeanShown: false,
   };
 }
 

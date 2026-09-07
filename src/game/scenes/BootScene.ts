@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { ART } from "../art";
+import { ART, ensureProceduralArt } from "../art";
 import { bindAutosave } from "../save";
 import { VIEW_H, VIEW_W } from "../types";
 
@@ -100,6 +100,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   makeFallbacks() {
+    ensureProceduralArt(this);
     const mk = (key: string, color: number, w = 32, h = 32) => {
       if (this.textures.exists(key)) return;
       const g = this.make.graphics({ x: 0, y: 0 }, false);
@@ -110,10 +111,8 @@ export class BootScene extends Phaser.Scene {
       g.generateTexture(key, w, h);
       g.destroy();
     };
-    mk("title", 0x1a1024, 480, 270);
-    mk("opening", 0x1a1024, 480, 270);
     mk("tiles", 0x3a5a32, 128, 64);
-    mk("baki-portrait", 0x3a2e1a, 96, 96);
+    // Missing battle BGs: BattleScene falls back to fx-bg-* from ensureProceduralArt.
   }
 
   makeAnims() {

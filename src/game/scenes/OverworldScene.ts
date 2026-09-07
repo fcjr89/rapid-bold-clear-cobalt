@@ -1,6 +1,17 @@
 import Phaser from "phaser";
 import { playMusic, sfx, unlockAudio } from "../audio";
-import { BOSSES, DIALOGUE, ENEMIES, pickEncounter } from "../database";
+import {
+  alignmentNpcLines,
+  bossCutscene,
+  bossOutro,
+  BOSSES,
+  DIALOGUE,
+  dungeonLeanLines,
+  dungeonPlaque,
+  ENEMIES,
+  midgameLeanLines,
+  pickEncounter,
+} from "../database";
 import { axis, consumeCancel, consumeConfirm, setKeysExact } from "../input";
 import { DUNGEON_DOORS, MAPS, SOLID, walkable } from "../maps";
 import { writeSave } from "../save";
@@ -287,6 +298,11 @@ export class OverworldScene extends Phaser.Scene {
       this.openTalk(["BLOODLINE LEDGER — walk a gold door.", ...lines]);
       return;
     }
+    const dyn = alignmentNpcLines(id, G.flags.redWins, G.flags.blueWins);
+    if (dyn) {
+      this.openTalk(dyn);
+      return;
+    }
     const lines = DIALOGUE[id];
     if (lines) this.openTalk(lines);
     else this.openTalk(["..."]);
@@ -311,6 +327,12 @@ export class OverworldScene extends Phaser.Scene {
     }
     const enterKey = w.to === "red" ? "red_enter" : w.to === "blue" ? "blue_enter" : w.to === "dungeon" ? "dungeon_enter" : null;
     this.goMap(w.to, w.tx, w.ty);
+    if (w.to === "dungeon" && !G.flags.dungeonLeanShown) {
+      G.flags.dungeonLeanShown = true;
+      const lines = [...(DIALOGUE.dungeon_enter ?? []), ...dungeonLeanLines(G.flags.redWins, G.flags.blueWins)];
+      this.time.delayedCall(80, () => this.openTalk(lines));
+      return;
+    }
     if (enterKey && DIALOGUE[enterKey]) {
       this.time.delayedCall(80, () => this.openTalk(DIALOGUE[enterKey]!));
     }
@@ -341,24 +363,35 @@ export class OverworldScene extends Phaser.Scene {
     }
     this.player.y += 16;
     G.ty = Math.floor(this.player.y / TILE);
+    const plaque = dungeonPlaque(door.order) ?? [];
     this.openTalkThen(
-      [`${boss.title}`, boss.location, "The seal hums. Z to challenge."],
+      [`${boss.title}`, boss.location, ...plaque, "The seal hums. Z to challenge."],
       () => this.startEncounter(boss.id, true),
     );
   }
 
-  startEncounter(enemyId: string, boss = false, mini?: "red" | "blue") {
-    const def = ENEMIES[enemyId];
+  startEncounter(enemyId: string | string[], boss = false, mini?: "red" | "blue") {
+    const ids = (Array.isArray(enemyId) ? enemyId : [enemyId]).slice(0, 3);
+    // Bosses stay solo; final/vanduyn may bring one media add
+    let finalIds = ids;
+    if (boss && ids[0] === "merovingian_king") finalIds = ["merovingian_king"];
+    else if (boss && ids[0] === "freeman_hypnotist" && Math.random() < 0.45) {
+      finalIds = ["freeman_hypnotist", "cable_news_puppet"];
+    } else if (boss) finalIds = [ids[0]!];
+    if (mini) finalIds = ["reeducation_instructor"];
+
+    const leadId = finalIds[0]!;
+    const def = ENEMIES[leadId];
     if (!def) return;
     unlockAudio();
     const bg =
-      enemyId === "merovingian_king"
+      leadId === "merovingian_king"
         ? "bg-thrones"
         : def.kind === "boss" || def.kind === "final"
           ? "bg-vault"
           : this.map.battleBg;
     G.pendingEncounter = {
-      enemyIds: [mini ? "reeducation_instructor" : enemyId],
+      enemyIds: finalIds,
       isBoss: boss,
       bg,
       cannotFlee: boss,
@@ -366,24 +399,25 @@ export class OverworldScene extends Phaser.Scene {
       returnX: G.tx,
       returnY: G.ty,
     };
-    if (mini) {
-      G.pendingEncounter.enemyIds = ["reeducation_instructor"];
-      (G.pendingEncounter as { mini?: string }).mini = mini;
-    }
-    const color = this.map.encounters === "left" ? 0x2a4a9a : this.map.encounters === "right" ? 0xc41e3a : 0x7a8aa0;
-    this.flash?.setFillStyle(color, 0);
-    this.tweens.add({
-      targets: this.flash,
-      fillAlpha: { from: 0, to: 1 },
-      yoyo: true,
-      duration: 90,
-      repeat: 3,
-      onComplete: () => {
-        this.scene.setVisible(false, "overworld");
-        this.scene.sleep("overworld");
-        this.scene.launch("battle", { mini });
-      },
-    });
+    const launch = () => {
+      const color = this.map.encounters === "left" ? 0x2a4a9a : this.map.encounters === "right" ? 0xc41e3a : 0x7a8aa0;
+      this.flash?.setFillStyle(color, 0);
+      this.tweens.add({
+        targets: this.flash,
+        fillAlpha: { from: 0, to: 1 },
+        yoyo: true,
+        duration: 90,
+        repeat: 3,
+        onComplete: () => {
+          this.scene.setVisible(false, "overworld");
+          this.scene.sleep("overworld");
+          this.scene.launch("battle", { mini });
+        },
+      });
+    };
+    const cut = boss ? bossCutscene(leadId) : null;
+    if (cut) this.openTalkThen(cut, launch);
+    else launch();
   }
 
   onBattleOver(result: { won: boolean; fled: boolean; enemyId: string; mini?: "red" | "blue" }) {
@@ -407,24 +441,28 @@ export class OverworldScene extends Phaser.Scene {
       G.flags.redMiniboss = true;
       G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
       writeSave();
-      this.openTalk(["The Red Instructor is silenced.", G.flags.dungeonOpen ? "Both districts are clear. The gate waits." : "Blue District still lectures."]);
+      const lines = [...(DIALOGUE.after_instructor_red ?? ["Red Instructor silenced."])];
+      if (G.flags.dungeonOpen) lines.push("Both farm teams are clear. The gold gate waits.");
+      else lines.push("Blue District still lectures.");
+      if (G.flags.dungeonOpen && !G.flags.leanHintShown) {
+        G.flags.leanHintShown = true;
+        lines.push(...midgameLeanLines(G.flags.redWins, G.flags.blueWins));
+      }
+      this.openTalk(lines);
       return;
     }
     if (result.mini === "blue") {
       G.flags.blueMiniboss = true;
       G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
       writeSave();
-      this.openTalk(["The Blue Instructor is silenced.", G.flags.dungeonOpen ? "Both districts are clear. The gate waits." : "Red District still preaches."]);
-      return;
-    }
-    if (result.enemyId === "rothschild_archon") {
-      writeSave();
-      this.openTalk(DIALOGUE.after_rothschild);
-      return;
-    }
-    if (result.enemyId === "vanduyn_diplomat") {
-      writeSave();
-      this.openTalk(DIALOGUE.after_vanduyn);
+      const lines = [...(DIALOGUE.after_instructor_blue ?? ["Blue Instructor silenced."])];
+      if (G.flags.dungeonOpen) lines.push("Both farm teams are clear. The gold gate waits.");
+      else lines.push("Red District still preaches.");
+      if (G.flags.dungeonOpen && !G.flags.leanHintShown) {
+        G.flags.leanHintShown = true;
+        lines.push(...midgameLeanLines(G.flags.redWins, G.flags.blueWins));
+      }
+      this.openTalk(lines);
       return;
     }
     if (result.enemyId === "merovingian_king") {
@@ -442,7 +480,7 @@ export class OverworldScene extends Phaser.Scene {
       writeSave();
       const meta = BOSSES.find((b) => b.id === result.enemyId);
       const title = meta?.title ?? def.name;
-      this.openTalk([`${title} falls.`, ...(DIALOGUE.after_boss ?? ["The next seal stirs."])]);
+      this.openTalk([`${title} falls.`, ...bossOutro(result.enemyId)]);
       return;
     }
     writeSave();

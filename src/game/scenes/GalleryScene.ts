@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { ART } from "../art";
+import { GALLERY_LORE } from "../database";
 import { playMusic, sfx } from "../audio";
 import { axis, consumeCancel, consumeConfirm } from "../input";
 import { VIEW_H, VIEW_W } from "../types";
@@ -29,7 +30,8 @@ export class GalleryScene extends Phaser.Scene {
     this.img = this.add.image(VIEW_W / 2, VIEW_H / 2 + 6, ART[0]!.key).setDepth(1);
     this.add.rectangle(VIEW_W / 2, 12, VIEW_W, 24, 0x0c0814, 0.78).setDepth(2);
     this.add.rectangle(VIEW_W / 2, VIEW_H - 12, VIEW_W, 24, 0x0c0814, 0.78).setDepth(2);
-    this.caption = px(this, VIEW_W / 2, 6, "", 7, "#e8b84a").setOrigin(0.5, 0).setDepth(3);
+    this.caption = px(this, VIEW_W / 2, 4, "", 6, "#e8b84a").setOrigin(0.5, 0).setDepth(3);
+    this.add.rectangle(VIEW_W / 2, 28, VIEW_W, 36, 0x0c0814, 0.78).setDepth(2);
     px(this, VIEW_W / 2, VIEW_H - 18, "A / D PAGE     Z / X BACK", 6, "#7a8aa0").setOrigin(0.5, 0).setDepth(3);
     this.show();
   }
@@ -43,7 +45,13 @@ export class GalleryScene extends Phaser.Scene {
     const th = tex.height || 240;
     const scale = Math.min((VIEW_W - 16) / tw, (VIEW_H - 40) / th);
     this.img!.setDisplaySize(Math.floor(tw * scale), Math.floor(th * scale));
-    this.caption!.setText(`${this.i + 1}/${ART.length}  ${page.title}`);
+    const lore = GALLERY_LORE[page.key];
+    this.caption!.setText(
+      lore
+        ? `${this.i + 1}/${ART.length}  ${page.title}
+${lore}`
+        : `${this.i + 1}/${ART.length}  ${page.title}`,
+    );
   }
 
   update(time: number) {

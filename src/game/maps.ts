@@ -128,6 +128,7 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 13, y: 8, id: "hub_guide", name: "Hub Guide", sprite: "npc-innkeeper" },
       { x: 8, y: 8, id: "left_recruiter", name: "Left Recruiter", sprite: "enemy-mage" },
       { x: 17, y: 8, id: "right_recruiter", name: "Right Recruiter", sprite: "enemy-crusader" },
+      { x: 15, y: 10, id: "hub_veteran", name: "Hub Veteran", sprite: "enemy-captain" },
       { x: 6, y: 13, id: "sign_blue", name: "Sign" },
       { x: 19, y: 13, id: "sign_red", name: "Sign" },
       { x: 13, y: 13, id: "sign_dungeon", name: "Sign" },
@@ -145,7 +146,10 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 8, y: 11, to: "hub", tx: 15, ty: 10 },
       { x: 9, y: 11, to: "hub", tx: 15, ty: 10 },
     ],
-    npcs: [{ x: 9, y: 6, id: "forum_red", name: "Red Forum", sprite: "enemy-instructor" }],
+    npcs: [
+      { x: 9, y: 6, id: "forum_red", name: "Red Forum", sprite: "enemy-instructor" },
+      { x: 6, y: 8, id: "red_preacher", name: "Preacher", sprite: "enemy-crusader" },
+    ],
   },
   blue: {
     id: "blue",
@@ -159,7 +163,10 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 8, y: 11, to: "hub", tx: 5, ty: 10 },
       { x: 9, y: 11, to: "hub", tx: 5, ty: 10 },
     ],
-    npcs: [{ x: 9, y: 6, id: "forum_blue", name: "Blue Forum", sprite: "enemy-instructor", tint: 0x99bbff }],
+    npcs: [
+      { x: 9, y: 6, id: "forum_blue", name: "Blue Forum", sprite: "enemy-instructor", tint: 0x99bbff },
+      { x: 12, y: 8, id: "blue_tutor", name: "Tutor", sprite: "enemy-mage", tint: 0x99bbff },
+    ],
   },
   tavern: {
     id: "tavern",
@@ -173,7 +180,11 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 6, y: 8, to: "hub", tx: 10, ty: 5 },
       { x: 7, y: 8, to: "hub", tx: 11, ty: 5 },
     ],
-    npcs: [{ x: 7, y: 2, id: "innkeeper", name: "Innkeeper", sprite: "npc-innkeeper" }],
+    npcs: [
+      { x: 7, y: 2, id: "innkeeper", name: "Innkeeper", sprite: "npc-innkeeper" },
+      { x: 3, y: 5, id: "tavern_regular", name: "Patron", sprite: "enemy-sheeple" },
+      { x: 10, y: 5, id: "tavern_scout", name: "Scout", sprite: "enemy-knight" },
+    ],
   },
   dungeon: {
     id: "dungeon",

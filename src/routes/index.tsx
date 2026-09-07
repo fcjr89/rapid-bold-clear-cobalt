@@ -27,7 +27,7 @@ function Home() {
 
   return (
     <main className="game-shell">
-      <h1 className="sr-only">Baki The Hammer: Bloodlines of the Divide</h1>
+      <h1 className="sr-only">The Culture War: Bloodlines of the Divide</h1>
       <div id="game-root" className="game-canvas" ref={rootRef}>
         <canvas width={480} height={270} className="boot-canvas" />
       </div>

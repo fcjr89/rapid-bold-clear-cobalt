@@ -16,7 +16,7 @@ export type SkillId =
 
 export type ItemId = "potion" | "ether" | "neutralizer";
 
-export type EnemyActionId = "attack" | "lecture" | "buff" | "special";
+export type EnemyActionId = "attack" | "lecture" | "buff" | "heal" | "special";
 
 export interface SkillDef {
   id: SkillId;
@@ -106,6 +106,10 @@ export interface GameFlags {
   ending: boolean;
   boughtHammer: boolean;
   boughtMateria: boolean;
+  /** Mid-game lean foreshadow already shown once. */
+  leanHintShown?: boolean;
+  /** First dungeon entry monologue shown. */
+  dungeonLeanShown?: boolean;
 }
 
 export interface Warp {

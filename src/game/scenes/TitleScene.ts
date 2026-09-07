@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { playMusic, sfx, unlockAudio } from "../audio";
+import { addPresentationFx } from "../art";
 import { SUBTITLE, TITLE } from "../database";
 import { axis, consumeCancel, consumeConfirm } from "../input";
 import { hasCleared, hasSave, loadSave } from "../save";
@@ -35,6 +36,7 @@ export class TitleScene extends Phaser.Scene {
     this.add.rectangle(VIEW_W / 2, 22, VIEW_W, 40, 0x0c0814, 0.55);
     px(this, VIEW_W / 2, 8, TITLE, 10, "#e8b84a").setOrigin(0.5, 0);
     px(this, VIEW_W / 2, 24, SUBTITLE, 7, "#f0e6c8").setOrigin(0.5, 0);
+    addPresentationFx(this, 0xe8b84a);
 
     this.items = hasSave()
       ? ["NEW GAME", "CONTINUE", "HOW TO PLAY", "CODEX"]
@@ -113,7 +115,7 @@ export class TitleScene extends Phaser.Scene {
       36,
       60,
       wrap(
-        "WASD / arrows move. Z confirm, X cancel (also MENU). Touch pad mirrors keys. Hub Guide explains Red vs Blue vs dungeon. Win 3 district fights → Forum Instructor. Clear BOTH → gold gate. Thirteen bloodline doors, crown last. Tavern: potions, ethers, hammer, materia. Skills cost MP — Mute counters Lectures. Do not be Re-Educated.",
+        "THE CULTURE WAR — you are Baki The Hammer. WASD move. Z confirm, X menu. Hub Guide: Red/Blue are theater; dungeon is the outline ledger. Win 3 each → Instructors → gold gate. Thirteen bloodlines (Rothschild→Merovingian). Mute counters Lectures. Do not be Re-Educated.",
         34,
       ),
       7,

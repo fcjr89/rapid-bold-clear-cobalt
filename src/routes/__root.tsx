@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Baki The Hammer: Bloodlines of the Divide";
+const APP_NAME = "The Culture War: Bloodlines of the Divide";
 
 export const Route = createRootRoute({
   head: () => ({

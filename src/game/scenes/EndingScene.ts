@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { addPresentationFx } from "../art";
 import { playMusic, sfx, unlockAudio } from "../audio";
 import { DIALOGUE, endingLean } from "../database";
 import { consumeCancel, consumeConfirm } from "../input";
@@ -27,9 +28,10 @@ export class EndingScene extends Phaser.Scene {
     const bg = this.textures.exists("bg-thrones") ? "bg-thrones" : "bg-vault";
     this.add.image(VIEW_W / 2, VIEW_H / 2, bg).setDisplaySize(VIEW_W, VIEW_H);
     this.add.rectangle(VIEW_W / 2, VIEW_H / 2, VIEW_W, VIEW_H, 0x0c0814, 0.45);
+    addPresentationFx(this, 0xc41e3a);
 
     this.add.rectangle(VIEW_W / 2, 18, VIEW_W, 32, 0x0c0814, 0.7);
-    px(this, VIEW_W / 2, 8, "BLOODLINES OF THE DIVIDE", 8, "#e8b84a").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 8, "THE CULTURE WAR", 8, "#e8b84a").setOrigin(0.5, 0);
 
     const lean = endingLean(G.flags.redWins, G.flags.blueWins);
     const leanLines =

@@ -1,7 +1,7 @@
 import type { BossMeta, EnemyDef, ItemDef, SkillDef } from "./types";
 import { ENEMY_PORTRAIT } from "./art";
 
-export const TITLE = "BAKI THE HAMMER";
+export const TITLE = "THE CULTURE WAR";
 export const SUBTITLE = "Bloodlines of the Divide";
 
 export const SKILLS: SkillDef[] = [
@@ -9,7 +9,7 @@ export const SKILLS: SkillDef[] = [
     id: "hammer_clarity",
     name: "Hammer of Clarity",
     mp: 6,
-    desc: "Heavy smash + strip enemy buffs.",
+    desc: "Heavy smash + strip buffs. Light splash to others.",
   },
   {
     id: "mute_counter",
@@ -105,7 +105,7 @@ const REGULAR: EnemyDef[] = [
     hp: 36, mp: 18, atk: 10, def: 7, spd: 12, xp: 18, gold: 16,
     sprite: "enemy-mage", lecture: true,
     intro: "A blue-robe mage raises a hashtag staff. 'Unlearn, comrade.'",
-    actions: ["attack", "lecture"],
+    actions: ["attack", "lecture", "heal"],
   },
   {
     id: "leftward_progressive",
@@ -165,7 +165,7 @@ const REGULAR: EnemyDef[] = [
     hp: 66, mp: 20, atk: 15, def: 11, spd: 11, xp: 32, gold: 30,
     sprite: "enemy-puppet", lecture: true, media: true,
     intro: "A camera-headed puppet rolls a chyron like a whip.",
-    actions: ["attack", "lecture"],
+    actions: ["attack", "lecture", "heal"],
   },
   {
     id: "echo_chamber_slime",
@@ -188,7 +188,7 @@ const MINIBOSS: EnemyDef[] = [
     hp: 140, mp: 28, atk: 16, def: 11, spd: 13, xp: 80, gold: 70,
     sprite: "enemy-instructor", canReeducate: true, lecture: true, media: true,
     intro: "The Instructor grins behind a chalkboard shield. LEARN. OBEY. CONFORM.",
-    actions: ["attack", "lecture", "special"],
+    actions: ["attack", "lecture", "heal", "special"],
     specialName: "Re-Educate",
   },
 ];
@@ -227,48 +227,48 @@ function boss(
 
 const BOSS_ENEMIES: EnemyDef[] = [
   boss("rothschild_archon", "Rothschild Archon of Coin", 200, 19, 13, 12, "boss-rothschild", undefined,
-    "Interest compounds. The Archon opens a ledger of your debts.",
-    { specialName: "Compound Interest", actions: ["attack", "buff", "special"] }),
+    "Vault of Interest. Vienna dust. '1773 was a meeting. 1825 was a bank. Jekyll Island was a road.' The Archon opens the Fed ledger.",
+    { specialName: "Compound Interest", actions: ["attack", "buff", "heal", "special"] }),
   boss("rockefeller_titan", "Rockefeller Oil Titan", 230, 21, 15, 10, "boss-rockefeller", undefined,
-    "The Titan drips black gold. The air tastes like a refinery.",
+    "Refinery Depths, 1863 smoke. 'Standard Oil broke on paper in 1911. The foundations kept the ledger.' Black gold drips from the Titan's fist.",
     { specialName: "Gusher", scale: 0.98 }),
   boss("astor_phantom", "Astor Real Estate Phantom", 240, 20, 17, 14, "boss-astor", undefined,
-    "A translucent landlord floats above a rent ledger. PAST DUE.",
+    "Rent Spire. Old money floats above deeds. 'Land outlives revolutions. Pay rent to history.' PAST DUE glows through the phantom.",
     { specialName: "Eviction Notice", lecture: true }),
   boss("bundy_warlock", "Bundy Ranch Warlock", 260, 23, 14, 11, "boss-bundy", undefined,
-    "Barbed wire sings. The Warlock plants a skull-staff in the dust.",
+    "Barbed Plains. Property plus force. 'Fence lines are the oldest constitution.' The Warlock plants a skull-staff in federal dust.",
     { specialName: "Fence Line" }),
   boss("collins_necromancer", "Collins Cathedral Necromancer", 275, 22, 15, 12, "boss-collins", undefined,
-    "Stained-glass wings unfurl. Hymns run backwards.",
+    "Stained Crypt. Golden Dawn chalk, 1887. Hymns run backwards. 'Cathedral and lodge share the same candle.'",
     { specialName: "Bell Toll", lecture: true, scale: 0.96 }),
   boss("dupont_alchemist", "DuPont Chemical Alchemist", 290, 23, 14, 13, "boss-dupont", undefined,
-    "The lab hums. Colors that should not exist drip from flasks.",
+    "Toxic Laboratory. War materiel alchemy. 'Sell powder to both sides — Zaharoff wrote the recipe.' Colors that should not exist drip from flasks.",
     { specialName: "Miracle Fiber" }),
   boss("freeman_hypnotist", "Radio Propagandist", 305, 21, 14, 16, "boss-freeman", undefined,
-    "A spiral-eyed hypnotist lifts a tower-crown. Your thoughts arrive pre-written.",
-    { specialName: "Prime Time", lecture: true, media: true, canReeducate: true }),
+    "Broadcast Spire. Soft control after the guns cool. 'Press first. Ballot later. Smile for the chyron.' Your thoughts arrive pre-written.",
+    { specialName: "Prime Time", lecture: true, media: true, canReeducate: true, actions: ["attack", "lecture", "buff", "special"] }),
   boss("kennedy_paladin", "Kennedy Dynasty Paladin", 320, 25, 16, 14, "boss-kennedy", undefined,
-    "A shining paladin salutes from a harbor of yachts.",
+    "Dynasty Harbor. Camelot armor, mid-century constellation. 'Dynasties wear smiles like shields.' A yacht-shadow cuts the pier.",
     { specialName: "Camelot Charge" }),
   boss("li_emperor", "Li Dragon Finance Emperor", 340, 24, 18, 15, "boss-li", undefined,
-    "Jade coins orbit a dragon-sleeved emperor.",
+    "Jade Ledger. Eastern capital coils like a dragon around the globe. 'Maps follow money. Money follows quiet rooms.'",
     { specialName: "Ledger Coil", scale: 0.96 }),
   boss("onassis_hydra", "Onassis Shipping Hydra", 360, 26, 16, 12, "boss-onassis", undefined,
-    "Three hulls, one hunger. The docks flood with brine.",
+    "Storm Docks. Three hulls, one hunger. Wartime logistics wear a merchant smile. The tide smells of embargo.",
     { specialName: "Embargo Tide", scale: 0.98 }),
   boss("reynolds_demon", "Lobbyist Smoke Demon", 380, 26, 15, 13, "boss-reynolds", undefined,
-    "Lobby haze thickens into a grinning ash-demon with a branded briefcase.",
+    "Lobby Haze. Addiction as policy. 'A habit is a vote that never ends.' Ash grins from a branded briefcase.",
     { specialName: "Secondhand Hex", lecture: true }),
   boss("russell_sentinel", "Russell Watchtower Sentinel", 400, 24, 21, 11, "boss-russell", undefined,
-    "A clock-faced sentinel ticks. Every second is evidence.",
+    "Clock Citadel. Watchtowers tick the outline of history. 'Every second is evidence. Every face is a file.'",
     { specialName: "Surveillance Bell" }),
   boss("vanduyn_diplomat", "Van Duyn Serpent Diplomat", 430, 27, 19, 15, "boss-vanduyn", undefined,
-    "A handshake becomes a coil. The diplomat smiles with too many teeth.",
-    { specialName: "Treaty Fang", lecture: true, scale: 0.96 }),
+    "Handshake Vault. Treaties stacked like fangs. 'Bilderberg is a hotel; the bill is civilization.' The coil tightens.",
+    { specialName: "Treaty Fang", lecture: true, scale: 0.96, actions: ["attack", "lecture", "buff", "heal", "special"] }),
   boss("merovingian_king", "Merovingian Serpent King", 560, 30, 21, 16, "boss-serpent", undefined,
-    "Thirteen thrones, one occupant. The bloodline ends—or begins—here.",
+    "Thirteen Thrones. Frankish blood myth. Alpha and Omega. 'Immanentize the eschaton — or smash the crown.' Red scale. Blue scale. One serpent.",
     { kind: "final", faction: "final", specialName: "Crown of Divide",
-      actions: ["attack", "lecture", "buff", "special"], lecture: true, canReeducate: true, scale: 1.02 }),
+      actions: ["attack", "lecture", "buff", "heal", "special"], lecture: true, canReeducate: true, scale: 1.02 }),
 ];
 
 export const ENEMIES: Record<string, EnemyDef> = Object.fromEntries(
@@ -286,116 +286,291 @@ export const ENCOUNTERS: Record<"right" | "left" | "system", string[]> = {
 
 export const DIALOGUE: Record<string, string[]> = {
   innkeeper: [
-    "COMMON SENSE TAVERN.",
-    "Stew. Beds. Potions. Ethers. No slogans on the menu.",
-    "Rest here to heal fully and save. Stock up before districts.",
+    "COMMON SENSE TAVERN — no slogans on the menu.",
+    "Stew. Beds. Potions. Ethers. Rest saves your ledger.",
+    "Red and Blue tip well. Bloodlines tip in foundations.",
+  ],
+  tavern_regular: [
+    "PATRON: They say 1776 birthed a republic and a lodge.",
+    "BAKI: Twin birth. One hammer.",
+    "PATRON: Drink to Weishaupt and Washington — then tip neither.",
+  ],
+  tavern_scout: [
+    "SCOUT: Instructors are farm-team coaches for the vault.",
+    "Three wins a color, then the Forum. Both keys open gold.",
+    "If chalk dust follows you — Neutralizer. History is sticky.",
   ],
   hub_guide: [
-    "GUIDE: Welcome to Neutral Hub, hammer.",
-    "BLUE door west — lectures, left-wing skirmishes.",
-    "RED door east — sermons, right-wing skirmishes.",
-    "Win 3 fights in a district, then challenge the Forum Instructor.",
-    "Clear BOTH Instructors to unlock the gold dungeon gate south.",
-    "Thirteen bloodline doors wait below. Crowns last.",
+    "GUIDE: Neutral Hub. Public theater east and west.",
+    "BLUE west — re-education stage. RED east — faith-order stage.",
+    "Win 3 each, silence both Instructors, unlock the gold gate.",
+    "Below: banking, oil, land, media, thrones — the real outline.",
+    "1776 twin birth. Round Table maps. Fed roads. Serpent crown last.",
+    "Talk to me if you forget which door is theater.",
+  ],
+  hub_veteran: [
+    "VETERAN: Solomon's Temple. Grand Lodge 1717. Illuminati 1776.",
+    "Bavaria banned the lodge; the ledger moved to banks and oil.",
+    "Smash vaults in order. Thirteen thrones, one serpent crown.",
   ],
   left_recruiter: [
-    "LEFT RECRUITER: The Hammer must smash hierarchy!",
-    "BAKI: Hierarchies, mobs — both look like nails.",
+    "LEFT RECRUITER: Smash hierarchy! Join the illuminated left!",
+    "BAKI: Both sides audition for the same bloodlines.",
     "LEFT RECRUITER: Neutrality is complicity!",
     "BAKI: So is a script. I write my own swings.",
   ],
   right_recruiter: [
-    "RIGHT RECRUITER: Stand with the faithful, brother!",
-    "BAKI: Faith is a tool. So is a hammer.",
+    "RIGHT RECRUITER: Stand with the faithful order!",
+    "BAKI: Order is a costume the vault rents out.",
     "RIGHT RECRUITER: Then swing for the righteous!",
     "BAKI: Righteousness isn't a team sport.",
   ],
+  red_preacher: [
+    "PREACHER: Faith-first banners hide Round Table ink.",
+    "Three wins. Instructor. Half the dungeon key.",
+    "Don't let Blue chalk — or Red hymns — own your knuckles.",
+  ],
+  blue_tutor: [
+    "TUTOR: Re-education is just soft Illuminati branding.",
+    "Three wins. Lecture pit. Other half of the key.",
+    "Assassins of Alamut kept secrets. We keep quizzes.",
+  ],
   sign_red: [
-    "RED DISTRICT — east gate.",
-    "Right-faction encounters. Win 3, then the Forum Instructor.",
-    "Clearing Red is half the dungeon key.",
+    "RED DISTRICT — public order theater.",
+    "Right-faction skirmishes. Win 3, then Forum Instructor.",
+    "Farm team for the vault. Not the vault itself.",
   ],
   sign_blue: [
-    "BLUE DISTRICT — west gate.",
-    "Left-faction encounters. Win 3, then the Forum Instructor.",
-    "Clearing Blue is half the dungeon key.",
+    "BLUE DISTRICT — public justice theater.",
+    "Left-faction skirmishes. Win 3, then Forum Instructor.",
+    "Farm team for the vault. Not the vault itself.",
   ],
   sign_dungeon: [
-    "DUNGEON GATE — south, gold doors.",
-    "Sealed until BOTH district Instructors fall.",
-    "Thirteen bloodline bosses inside. Final crown last.",
+    "DUNGEON GATE — Thirteen Thrones Approach.",
+    "Sealed until BOTH Instructors fall.",
+    "Rothschild to Merovingian. Outline of History, condensed.",
   ],
   gate_locked: [
     "The dungeon gate is sealed.",
-    "Defeat the Red AND Blue Forum Instructors first.",
-    "Check the district Forums after 3 wins each.",
+    "Silence Red AND Blue Forum Instructors first.",
+    "Theater first. Ledger second.",
   ],
-  gate_open: ["The gold lock clicks. Bloodlines wait below."],
+  gate_open: [
+    "The gold lock clicks.",
+    "Banking. Oil. Land. Media. Thrones.",
+    "The Round Table funded maps; the Fed printed the roads.",
+  ],
   intro: [
-    "The Divide split the land into Red and Blue.",
-    "Both sides hunt the unaligned.",
+    "An outline of history ends in thrones — and starts in myths.",
+    "Atlantis whispers. Solomon's Temple. Illuminati, 1776.",
+    "Red and Blue are public theater. The dungeon is the ledger.",
     "You are BAKI THE HAMMER — true neutral.",
-    "Clear both districts. Break thirteen bloodlines.",
-    "Talk to the Guide in the Hub if you get lost.",
-    "Do not be Re-Educated.",
+    "Break thirteen bloodlines. Do not be Re-Educated.",
+    "Hub Guide knows the doors. Tavern saves the swing.",
   ],
-  red_enter: ["Crimson banners snap. Every smile is a recruitment.", "Objective: win 3 fights, then the Forum."],
-  blue_enter: ["Blue lanterns hum. Every question is a quiz.", "Objective: win 3 fights, then the Forum."],
-  dungeon_enter: ["Vault air. Coin-scent. The first bloodline stirs.", "Walk gold doors in order. Ledger lists seals."],
+  red_enter: [
+    "Crimson banners. Faith-order stage lights.",
+    "Objective: 3 wins, then the Forum Instructor.",
+  ],
+  blue_enter: [
+    "Blue lanterns. Re-education stage lights.",
+    "Objective: 3 wins, then the Forum Instructor.",
+  ],
+  dungeon_enter: [
+    "Vault air. Coin-scent. Crystal-skull rumor in the dust.",
+    "Walk gold doors in order. Ledger lists seals.",
+  ],
+  plaque_1: ["PLAQUE: Rothschild banks, Vienna/Naples 1825. Round Table ink. Jekyll Island road."],
+  plaque_2: ["PLAQUE: 1863 refinery. Standard Oil 1870. Breakup 1911 — foundations kept the books."],
+  plaque_3: ["PLAQUE: Rent outlives revolutions. Old-money land is a quiet throne."],
+  plaque_4: ["PLAQUE: Fence line constitution. Property plus force on the plains."],
+  plaque_5: ["PLAQUE: Golden Dawn 1887. Cathedral candles. Lodge shadows."],
+  plaque_6: ["PLAQUE: Sell powder to both flags. Alchemy wears a lab coat."],
+  plaque_7: ["PLAQUE: After guns, the broadcast. Soft control smiles on schedule."],
+  plaque_8: ["PLAQUE: Dynasty harbor. Camelot armor. Mid-century constellation."],
+  plaque_9: ["PLAQUE: Jade ledgers coil east to west. Quiet rooms move maps."],
+  plaque_10: ["PLAQUE: Shipping hydra. Ports eat wars and spit fortunes."],
+  plaque_11: ["PLAQUE: Lobby haze. A habit is a vote that never adjourned."],
+  plaque_12: ["PLAQUE: Watchtower clock. History filed by the second."],
+  plaque_13: ["PLAQUE: Handshake vault. Bilderberg hotel — civilization on the bill."],
+  plaque_14: ["PLAQUE: Thirteen thrones. Merovingian serpent. Alpha and Omega."],
   after_rothschild: [
     "The Archon of Coin falls. Interest stops compounding.",
-    "Twelve doors remain. The Divide notices you.",
+    "The Round Table's map tears. Twelve seals remain.",
+  ],
+  after_rockefeller: [
+    "The Titan cracks. Standard Oil smoke clears.",
+    "Foundations still whisper — but this vault goes dark.",
   ],
   after_vanduyn: [
     "The Serpent Diplomat sheds its handshake.",
-    "Thirteen doors are ash. One crown remains.",
+    "Bilderberg's bill comes due unpaid. One crown remains.",
     "Walk the gold doors in the throne approach.",
   ],
   after_boss: [
-    "A bloodline seal cracks. The ledger updates.",
+    "A bloodline seal cracks. The outline updates.",
     "Progress is saved. The next door hums.",
   ],
+  after_instructor_red: [
+    "Red Forum dark. Faith-order theater loses its coach.",
+    "Half the key turns. Blue still grades the unaligned.",
+  ],
+  after_instructor_blue: [
+    "Blue Forum empty. Re-education theater loses its coach.",
+    "Half the key turns. Red still preaches at anyone standing.",
+  ],
+  lean_mid_neutral: [
+    "ALIGNMENT CHECK: Ledger balanced — soot and chalk equal.",
+    "1776 twin birth left you claiming neither child.",
+    "If the crown falls, neither color stamps the ending.",
+  ],
+  lean_mid_right: [
+    "ALIGNMENT CHECK: Red torch-soot outweighs blue chalk.",
+    "Farm-team east left a lean. Endings remember.",
+    "Stay Independent. The vault hates fence-sitters — and prefers recruits.",
+  ],
+  lean_mid_left: [
+    "ALIGNMENT CHECK: Blue chalk outweighs red soot.",
+    "Farm-team west left a lean. Endings remember.",
+    "Stay Independent. Re-education loves almosts.",
+  ],
+  dungeon_lean_neutral: [
+    "Vault doors open on a blank page of the outline.",
+    "No jersey. Bloodlines hate that more than either color.",
+  ],
+  dungeon_lean_right: [
+    "Vault doors open. Red echoes cling to your coat.",
+    "Prove the hammer still refuses the Round Table's costume.",
+  ],
+  dungeon_lean_left: [
+    "Vault doors open. Blue dust marks your boots.",
+    "Prove the hammer still refuses the lodge's quiz.",
+  ],
+  boss_cut_rothschild: [
+    "VAULT OF INTEREST",
+    "Candles bend toward gold. A Fed ledger turns itself.",
+    "ROTHSCHILD: Debt is the oldest leash — older than 1776.",
+    "BAKI: Then I cut interest at the root.",
+  ],
+  boss_cut_rockefeller: [
+    "REFINERY DEPTHS",
+    "1863 flame. 1911 paper breakup.",
+    "ROCKEFELLER: Foundations outlive trusts.",
+    "BAKI: Not this swing.",
+  ],
+  boss_cut_freeman: [
+    "BROADCAST SPIRE",
+    "Applause tracks loop with no audience.",
+    "FREEMAN: Soft power needs soft skulls.",
+    "BAKI: Mute exists for a reason.",
+  ],
+  boss_cut_vanduyn: [
+    "HANDSHAKE VAULT",
+    "Treaties stacked like fangs. Hotel invoices in cipher.",
+    "VAN DUYN: Be reasonable. Civilization is the bill.",
+    "BAKI: Reasonable is how coils start.",
+  ],
+  boss_cut_merovingian: [
+    "THIRTEEN THRONES",
+    "Alpha and Omega. Serpent crown splits red / blue.",
+    "MEROVINGIAN: Immanentize the eschaton. Kneel to a color.",
+    "BAKI: I kneel to a hammer.",
+  ],
   ending: [
-    "The Serpent King splits down the middle —",
-    "red scale, blue scale, neither catching the crown.",
-    "Baki plants the hammer in the cracked floor.",
-    "'I am not your symbol.'",
-    "The Divide goes quiet. For now.",
+    "Illuminati, 1776 — twin birth with a republic.",
+    "Banks. Oil. Foundations. Bilderberg soft power.",
+    "The Serpent King splits — red scale, blue scale, neither catching the crown.",
+    "Baki plants the hammer in the cracked Thirteen Thrones.",
+    "'I am not your symbol. I am not your eschaton.'",
+    "The outline goes quiet. For now.",
   ],
   ending_neutral: [
-    "You never chose a team. The ledger shows neither color winning.",
-    "True neutral: the rarest stamp of all.",
+    "You never chose a farm team. The ledger shows neither color winning.",
+    "True neutral: the rarest stamp in the outline.",
   ],
   ending_left: [
     "Blue chalk still dusts your boots.",
-    "You walked their halls more — and still refused their script.",
+    "You walked their re-education halls more — and still refused the lodge script.",
   ],
   ending_right: [
     "Red torch-soot still marks your coat.",
-    "You heard their hymns more — and still kept your own tempo.",
+    "You heard their order hymns more — and still kept your own tempo.",
   ],
   ending_armed: [
     "Iron hammer. True-Neutral materia.",
-    "You walked in prepared — and left unclaimed.",
+    "You walked the vault prepared — and left unclaimed by either birth of 1776.",
   ],
   ending_bare: [
     "No fancy gear. Just a hammer and a refusal.",
-    "Sometimes that is enough.",
+    "Weishaupt fled. You stayed standing.",
   ],
   ending_credits: [
-    "BAKI THE HAMMER",
+    "THE CULTURE WAR",
     "Bloodlines of the Divide",
-    "Districts cleared. Bloodlines broken.",
+    "Outline closed. Thrones cracked.",
     "Z FREE ROAM HUB     X TITLE",
     "Thanks for swinging true.",
   ],
-  forum_red: ["A forum of torches. The Instructor waits if you've proven yourself."],
-  forum_blue: ["A lecture pit. The Instructor grades anyone still standing."],
+  forum_red: ["A forum of torches. The Instructor coaches the Red farm team."],
+  forum_blue: ["A lecture pit. The Instructor grades anyone still unaligned."],
 };
 
-export function pickEncounter(table: "right" | "left" | "system"): string {
+/** Short Status / Gallery lore from the outline bible. */
+export const BOSS_LORE: Record<string, string> = {
+  rothschild_archon: "Banks 1825. Round Table. Jekyll Island → Fed. Coin leash.",
+  rockefeller_titan: "Refinery 1863. Standard Oil. 1911 breakup; foundations kept books.",
+  astor_phantom: "Gilded land/rent dynasty. Property as quiet throne.",
+  bundy_warlock: "Ranch sovereignty. Fence-line force vs federal map.",
+  collins_necromancer: "Golden Dawn 1887. Cathedral/lodge ritual power.",
+  dupont_alchemist: "Industrial chemistry. Arms to both sides — alchemy of war.",
+  freeman_hypnotist: "Press & broadcast soft control after the guns cool.",
+  kennedy_paladin: "Mid-century dynasty. Camelot armor over harbor politics.",
+  li_emperor: "Eastern finance dragon. Quiet rooms move the maps.",
+  onassis_hydra: "Shipping empire. Ports, embargoes, wartime logistics.",
+  reynolds_demon: "Lobby haze. Addiction as never-adjourning vote.",
+  russell_sentinel: "Watchtower clock. Surveillance as history's filing system.",
+  vanduyn_diplomat: "Handshake treaties. Bilderberg hotel; civilization on the bill.",
+  merovingian_king: "Merovingian serpent myth. Thirteen Thrones. Alpha–Omega.",
+};
+
+export const GALLERY_LORE: Record<string, string> = {
+  "art-illuminati": "1776: Weishaupt's Illuminati & a republic — twin birth.",
+  "art-rothschild": BOSS_LORE.rothschild_archon!,
+  "art-rockefeller": BOSS_LORE.rockefeller_titan!,
+  "art-astor": BOSS_LORE.astor_phantom!,
+  "art-bundy": BOSS_LORE.bundy_warlock!,
+  "art-collins": BOSS_LORE.collins_necromancer!,
+  "art-dupont": BOSS_LORE.dupont_alchemist!,
+  "art-freeman": BOSS_LORE.freeman_hypnotist!,
+  "art-kennedy": BOSS_LORE.kennedy_paladin!,
+  "art-li": BOSS_LORE.li_emperor!,
+  "art-onassis": BOSS_LORE.onassis_hydra!,
+  "art-lobbyist": BOSS_LORE.reynolds_demon!,
+  "art-russell": BOSS_LORE.russell_sentinel!,
+  "art-vanduyn": BOSS_LORE.vanduyn_diplomat!,
+  "art-merovingian": BOSS_LORE.merovingian_king!,
+  "art-opening": "Myths to lodges: Atlantis rumor → Temple → 1776.",
+  "art-map": "Public Red/Blue theater. Dungeon = outline ledger.",
+  "art-instructor": "Farm-team coaches. Both keys open the vault.",
+};
+
+/** Build 1–3 regulars; bosses/instructors stay caller-controlled. */
+export function pickEncounter(table: "right" | "left" | "system"): string[] {
   const list = ENCOUNTERS[table];
-  return list[Math.floor(Math.random() * list.length)]!;
+  const roll = Math.random();
+  let count = 1;
+  if (table === "system") {
+    if (roll < 0.4) count = 2;
+    else if (roll < 0.58) count = 3;
+  } else {
+    if (roll < 0.42) count = 2;
+    else if (roll < 0.55) count = 3;
+  }
+  const picks: string[] = [];
+  for (let i = 0; i < count; i++) {
+    picks.push(list[Math.floor(Math.random() * list.length)]!);
+  }
+  return picks;
 }
 
 export function nextBossId(defeated: string[]): string | null {
@@ -410,4 +585,112 @@ export function endingLean(redWins: number, blueWins: number): "neutral" | "left
   if (redWins > blueWins + 2) return "right";
   if (blueWins > redWins + 2) return "left";
   return "neutral";
+}
+
+/** Dynamic recruiter / NPC lines keyed off win tallies. */
+export function alignmentNpcLines(
+  id: string,
+  redWins: number,
+  blueWins: number,
+): string[] | null {
+  const lean = endingLean(redWins, blueWins);
+  if (id === "left_recruiter") {
+    if (blueWins >= 3) {
+      return [
+        "LEFT RECRUITER: You've walked our re-education halls!",
+        lean === "left"
+          ? "BAKI: Walking a stage isn't joining the lodge."
+          : "BAKI: I walked the theater. I didn't enlist.",
+        "LEFT RECRUITER: Neutrality after Blue wins? Stubborn hammer.",
+      ];
+    }
+    if (redWins > blueWins) {
+      return [
+        "LEFT RECRUITER: Red soot on you. Farm-team east perfume.",
+        "BAKI: Soot washes. Scripts don't.",
+        ...DIALOGUE.left_recruiter.slice(0, 2),
+      ];
+    }
+  }
+  if (id === "right_recruiter") {
+    if (redWins >= 3) {
+      return [
+        "RIGHT RECRUITER: Three wins east — almost family!",
+        lean === "right"
+          ? "BAKI: Family doesn't issue Round Table uniforms."
+          : "BAKI: Almost is where I stop.",
+        "RIGHT RECRUITER: The faithful notice fence-sitters.",
+      ];
+    }
+    if (blueWins > redWins) {
+      return [
+        "RIGHT RECRUITER: Blue chalk on the hammer. Quiz dust.",
+        "BAKI: Chalk isn't a creed.",
+        ...DIALOGUE.right_recruiter.slice(0, 2),
+      ];
+    }
+  }
+  if (id === "hub_guide" && (redWins + blueWins) >= 4) {
+    const tip =
+      lean === "neutral"
+        ? "GUIDE: Ledger balanced. Keep the outline blank below."
+        : lean === "right"
+          ? "GUIDE: Red lean showing. Endings remember soot."
+          : "GUIDE: Blue lean showing. Endings remember chalk.";
+    return [...DIALOGUE.hub_guide.slice(0, 3), tip, DIALOGUE.hub_guide[4]!];
+  }
+  if (id === "hub_veteran") {
+    return [
+      ...DIALOGUE.hub_veteran,
+      lean === "neutral"
+        ? "VETERAN: Your page is blank. Good. Thrones hate blanks."
+        : "VETERAN: Lean showing. Smash vaults anyway — refuse the stamp.",
+    ];
+  }
+  if (id === "innkeeper" && (redWins >= 2 || blueWins >= 2)) {
+    return [
+      ...DIALOGUE.innkeeper,
+      lean === "neutral"
+        ? "INNKEEPER: Balanced boots. Stew tastes like 1776 without the lodge."
+        : "INNKEEPER: Pick a farm team and dessert costs double. Joke. Mostly.",
+    ];
+  }
+  return null;
+}
+
+export function midgameLeanLines(redWins: number, blueWins: number): string[] {
+  const lean = endingLean(redWins, blueWins);
+  if (lean === "left") return DIALOGUE.lean_mid_left;
+  if (lean === "right") return DIALOGUE.lean_mid_right;
+  return DIALOGUE.lean_mid_neutral;
+}
+
+export function dungeonLeanLines(redWins: number, blueWins: number): string[] {
+  const lean = endingLean(redWins, blueWins);
+  if (lean === "left") return DIALOGUE.dungeon_lean_left;
+  if (lean === "right") return DIALOGUE.dungeon_lean_right;
+  return DIALOGUE.dungeon_lean_neutral;
+}
+
+export function bossCutscene(id: string): string[] | null {
+  const map: Record<string, string> = {
+    rothschild_archon: "boss_cut_rothschild",
+    rockefeller_titan: "boss_cut_rockefeller",
+    freeman_hypnotist: "boss_cut_freeman",
+    vanduyn_diplomat: "boss_cut_vanduyn",
+    merovingian_king: "boss_cut_merovingian",
+  };
+  const key = map[id];
+  return key ? DIALOGUE[key] ?? null : null;
+}
+
+export function bossOutro(id: string): string[] {
+  if (id === "rothschild_archon") return DIALOGUE.after_rothschild;
+  if (id === "rockefeller_titan") return DIALOGUE.after_rockefeller;
+  if (id === "vanduyn_diplomat") return DIALOGUE.after_vanduyn;
+  return [`${BOSS_LORE[id] ?? "A seal cracks."}`, ...(DIALOGUE.after_boss ?? [])];
+}
+
+export function dungeonPlaque(order: number): string[] | null {
+  return DIALOGUE[`plaque_${order}`] ?? null;
 }

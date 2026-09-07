@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { sfx } from "../audio";
-import { BOSSES } from "../database";
+import { BOSS_LORE, BOSSES, endingLean, TITLE } from "../database";
 import { consumeCancel, consumeConfirm } from "../input";
 import { writeSave } from "../save";
 import { G } from "../state";
@@ -29,12 +29,13 @@ export class StatusScene extends Phaser.Scene {
     }
 
     const h = G.hero;
-    px(this, 22, 28, "BAKI THE HAMMER", 7, "#e8b84a");
-    px(this, 22, 44, `LV ${h.level}   XP ${h.xp}/${h.xpToNext}`, 6, "#f0e6c8");
-    px(this, 22, 60, `HP  ${h.hp}/${h.maxHp}`, 7, "#c41e3a");
-    px(this, 22, 76, `MP  ${h.mp}/${h.maxMp}`, 7, "#8eb4ff");
-    px(this, 22, 100, `ATK ${h.atk}  DEF ${h.def}  SPD ${h.spd}`, 6, "#f0e6c8");
-    px(this, 22, 116, `GOLD ${h.gold}`, 6, "#e8b84a");
+    px(this, 22, 28, TITLE, 7, "#e8b84a");
+    px(this, 22, 40, "Hero: Baki The Hammer", 5, "#7a8aa0");
+    px(this, 22, 52, `LV ${h.level}   XP ${h.xp}/${h.xpToNext}`, 6, "#f0e6c8");
+    px(this, 22, 68, `HP  ${h.hp}/${h.maxHp}`, 7, "#c41e3a");
+    px(this, 22, 84, `MP  ${h.mp}/${h.maxMp}`, 7, "#8eb4ff");
+    px(this, 22, 104, `ATK ${h.atk}  DEF ${h.def}  SPD ${h.spd}`, 6, "#f0e6c8");
+    px(this, 22, 118, `GOLD ${h.gold}`, 6, "#e8b84a");
     px(this, 22, 132, `POTION ${h.items.potion}  ETHER ${h.items.ether}`, 6, "#f0e6c8");
     px(this, 22, 146, `NEUTRALIZER ${h.items.neutralizer}`, 6, "#f0e6c8");
     px(
@@ -60,8 +61,12 @@ export class StatusScene extends Phaser.Scene {
     const red = G.flags.redMiniboss ? "RED DONE" : `RED ${G.flags.redWins}/3`;
     const blue = G.flags.blueMiniboss ? "BLUE DONE" : `BLUE ${G.flags.blueWins}/3`;
     px(this, VIEW_W / 2, 196, `${red}   ${blue}`, 6, "#e8b84a").setOrigin(0.5, 0);
+    const next = BOSSES.find((b) => !G.flags.bossesDefeated.includes(b.id));
+    const lean = endingLean(G.flags.redWins, G.flags.blueWins);
+    const nextLore = next ? (BOSS_LORE[next.id] ?? next.title) : "Outline complete.";
     px(this, VIEW_W / 2, 210, `${loc}   BOSSES ${bossN}/14   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}${cleared}`, 6, "#f0e6c8").setOrigin(0.5, 0);
-    px(this, VIEW_W / 2, 226, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 222, `LEAN ${lean.toUpperCase()}  ·  ${nextLore}`.slice(0, 58), 5, "#7a8aa0").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 236, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
   }
 
   update() {

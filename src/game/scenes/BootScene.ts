@@ -43,6 +43,10 @@ const SHEETS: { key: string; url: string; frame: number }[] = [
   ...IDLE_SHEETS.map((key) => ({ key, url: `/game/${key}.png`, frame: 128 })),
 ];
 
+/** Boot loads canonical `/game/*` paths only.
+ * Higher-res / platform packs live under `studio/optimized/` — overlay via build
+ * or copy into public/game on a platform branch. See docs/ART_PIPELINE.md.
+ */
 export class BootScene extends Phaser.Scene {
   constructor() {
     super("boot");

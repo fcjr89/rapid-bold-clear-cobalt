@@ -1,0 +1,594 @@
+[
+  {
+    "gdevelop": "OPENING SCENE WHEN WE START A NEW GAME.jpg",
+    "master": "gdevelop/masters/OPENING SCENE WHEN WE START A NEW GAME.jpg",
+    "web_export": "studio/gdevelop/web-exports/opening.jpg",
+    "repo_target": "public/game/art/opening.jpg",
+    "master_px": [
+      1792,
+      1008
+    ],
+    "web_px": [
+      1280,
+      720
+    ],
+    "master_bytes": 561835,
+    "web_bytes": 203596
+  },
+  {
+    "gdevelop": "BAKI HEAD SHOT IMAGE.jpg",
+    "master": "gdevelop/masters/BAKI HEAD SHOT IMAGE.jpg",
+    "web_export": "studio/gdevelop/web-exports/baki-head.jpg",
+    "repo_target": "public/game/art/baki-head.jpg",
+    "master_px": [
+      1408,
+      1408
+    ],
+    "web_px": [
+      1280,
+      1280
+    ],
+    "master_bytes": 397020,
+    "web_bytes": 218195
+  },
+  {
+    "gdevelop": "BAKI MAIN CHARACTER.jpg",
+    "master": "gdevelop/masters/BAKI MAIN CHARACTER.jpg",
+    "web_export": "studio/gdevelop/web-exports/baki-overworld.jpg",
+    "repo_target": "public/game/art/baki-overworld.jpg",
+    "master_px": [
+      1408,
+      1408
+    ],
+    "web_px": [
+      1280,
+      1280
+    ],
+    "master_bytes": 296382,
+    "web_bytes": 149052
+  },
+  {
+    "gdevelop": "BAKI IN BATTLE.jpg",
+    "master": "gdevelop/masters/BAKI IN BATTLE.jpg",
+    "web_export": "studio/gdevelop/web-exports/baki-battle.jpg",
+    "repo_target": "public/game/art/baki-battle.jpg",
+    "master_px": [
+      1200,
+      1600
+    ],
+    "web_px": [
+      960,
+      1280
+    ],
+    "master_bytes": 302393,
+    "web_bytes": 125677
+  },
+  {
+    "gdevelop": "BAKI MOVING AND ATTACKING.jpg",
+    "master": "gdevelop/masters/BAKI MOVING AND ATTACKING.jpg",
+    "web_export": "studio/gdevelop/web-exports/baki-attack.jpg",
+    "repo_target": "public/game/art/baki-attack.jpg",
+    "master_px": [
+      1792,
+      1008
+    ],
+    "web_px": [
+      1280,
+      720
+    ],
+    "master_bytes": 436187,
+    "web_bytes": 163848
+  },
+  {
+    "gdevelop": "MENU.jpg",
+    "master": "gdevelop/masters/MENU.jpg",
+    "web_export": "studio/gdevelop/web-exports/menu.jpg",
+    "repo_target": "public/game/art/menu.jpg",
+    "master_px": [
+      1792,
+      1008
+    ],
+    "web_px": [
+      1280,
+      720
+    ],
+    "master_bytes": 453466,
+    "web_bytes": 167561
+  },
+  {
+    "gdevelop": "MAP AND LOCATIONS.jpg",
+    "master": "gdevelop/masters/MAP AND LOCATIONS.jpg",
+    "web_export": "studio/gdevelop/web-exports/map.jpg",
+    "repo_target": "public/game/art/map.jpg",
+    "master_px": [
+      1792,
+      1008
+    ],
+    "web_px": [
+      1280,
+      720
+    ],
+    "master_bytes": 645142,
+    "web_bytes": 239173
+  },
+  {
+    "gdevelop": "ILLUMINATI.jpg",
+    "master": "gdevelop/masters/ILLUMINATI.jpg",
+    "web_export": "studio/gdevelop/web-exports/illuminati.jpg",
+    "repo_target": "public/game/art/illuminati.jpg",
+    "master_px": [
+      1792,
+      1008
+    ],
+    "web_px": [
+      1280,
+      720
+    ],
+    "master_bytes": 463791,
+    "web_bytes": 164389
+  },
+  {
+    "gdevelop": "SHOP OWNER TO BUY WEAPONS, ITEMS, AND MATERIA.jpg",
+    "master": "gdevelop/masters/SHOP OWNER TO BUY WEAPONS, ITEMS, AND MATERIA.jpg",
+    "web_export": "studio/gdevelop/web-exports/innkeeper.jpg",
+    "repo_target": "public/game/art/innkeeper.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 447707,
+    "web_bytes": 173052
+  },
+  {
+    "gdevelop": "CHRISTIAN ZIONIST.jpg",
+    "master": "gdevelop/masters/CHRISTIAN ZIONIST.jpg",
+    "web_export": "studio/gdevelop/web-exports/crusader.jpg",
+    "repo_target": "public/game/art/crusader.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 448023,
+    "web_bytes": 176628
+  },
+  {
+    "gdevelop": "PROPAGANDIST.jpg",
+    "master": "gdevelop/masters/PROPAGANDIST.jpg",
+    "web_export": "studio/gdevelop/web-exports/propagandist.jpg",
+    "repo_target": "public/game/art/propagandist.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 393100,
+    "web_bytes": 154988
+  },
+  {
+    "gdevelop": "MAGA KNIGHT.jpg",
+    "master": "gdevelop/masters/MAGA KNIGHT.jpg",
+    "web_export": "studio/gdevelop/web-exports/knight.jpg",
+    "repo_target": "public/game/art/knight.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 254241,
+    "web_bytes": 106025
+  },
+  {
+    "gdevelop": "INTERNET SHEEP.jpg",
+    "master": "gdevelop/masters/INTERNET SHEEP.jpg",
+    "web_export": "studio/gdevelop/web-exports/sheep.jpg",
+    "repo_target": "public/game/art/sheep.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 407596,
+    "web_bytes": 161161
+  },
+  {
+    "gdevelop": "CORPORATE SLAVE.jpg",
+    "master": "gdevelop/masters/CORPORATE SLAVE.jpg",
+    "web_export": "studio/gdevelop/web-exports/corporate.jpg",
+    "repo_target": "public/game/art/corporate.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 253841,
+    "web_bytes": 97959
+  },
+  {
+    "gdevelop": "WIZARD.jpg",
+    "master": "gdevelop/masters/WIZARD.jpg",
+    "web_export": "studio/gdevelop/web-exports/mage.jpg",
+    "repo_target": "public/game/art/mage.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 317768,
+    "web_bytes": 126028
+  },
+  {
+    "gdevelop": "ACTIVIST.jpg",
+    "master": "gdevelop/masters/ACTIVIST.jpg",
+    "web_export": "studio/gdevelop/web-exports/activist.jpg",
+    "repo_target": "public/game/art/activist.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 305638,
+    "web_bytes": 123885
+  },
+  {
+    "gdevelop": "SJW.jpg",
+    "master": "gdevelop/masters/SJW.jpg",
+    "web_export": "studio/gdevelop/web-exports/berserker.jpg",
+    "repo_target": "public/game/art/berserker.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 438410,
+    "web_bytes": 172789
+  },
+  {
+    "gdevelop": "SHEEPLE HOMELESS.jpg",
+    "master": "gdevelop/masters/SHEEPLE HOMELESS.jpg",
+    "web_export": "studio/gdevelop/web-exports/sheeple.jpg",
+    "repo_target": "public/game/art/sheeple.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 287965,
+    "web_bytes": 114021
+  },
+  {
+    "gdevelop": "R&D.jpg",
+    "master": "gdevelop/masters/RandD.jpg",
+    "web_export": "studio/gdevelop/web-exports/captain.jpg",
+    "repo_target": "public/game/art/captain.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 413015,
+    "web_bytes": 160241
+  },
+  {
+    "gdevelop": "CABLE NEWS.jpg",
+    "master": "gdevelop/masters/CABLE NEWS.jpg",
+    "web_export": "studio/gdevelop/web-exports/puppet.jpg",
+    "repo_target": "public/game/art/puppet.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 384186,
+    "web_bytes": 151410
+  },
+  {
+    "gdevelop": "SOCIAL MEDIA ECHO CHAMBER.jpg",
+    "master": "gdevelop/masters/SOCIAL MEDIA ECHO CHAMBER.jpg",
+    "web_export": "studio/gdevelop/web-exports/slime.jpg",
+    "repo_target": "public/game/art/slime.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 400866,
+    "web_bytes": 155389
+  },
+  {
+    "gdevelop": "RE-EDUCATION INSTRUCTOR.jpg",
+    "master": "gdevelop/masters/RE-EDUCATION INSTRUCTOR.jpg",
+    "web_export": "studio/gdevelop/web-exports/instructor.jpg",
+    "repo_target": "public/game/art/instructor.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 425408,
+    "web_bytes": 168389
+  },
+  {
+    "gdevelop": "LORD ROTHSCHILD.jpg",
+    "master": "gdevelop/masters/LORD ROTHSCHILD.jpg",
+    "web_export": "studio/gdevelop/web-exports/rothschild.jpg",
+    "repo_target": "public/game/art/rothschild.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 685096,
+    "web_bytes": 261327
+  },
+  {
+    "gdevelop": "ROCKEFELLER.jpg",
+    "master": "gdevelop/masters/ROCKEFELLER.jpg",
+    "web_export": "studio/gdevelop/web-exports/rockefeller.jpg",
+    "repo_target": "public/game/art/rockefeller.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 434335,
+    "web_bytes": 176479
+  },
+  {
+    "gdevelop": "ASTOR.jpg",
+    "master": "gdevelop/masters/ASTOR.jpg",
+    "web_export": "studio/gdevelop/web-exports/astor.jpg",
+    "repo_target": "public/game/art/astor.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 488690,
+    "web_bytes": 193977
+  },
+  {
+    "gdevelop": "BUNDY RANCH WARLORD.jpg",
+    "master": "gdevelop/masters/BUNDY RANCH WARLORD.jpg",
+    "web_export": "studio/gdevelop/web-exports/bundy.jpg",
+    "repo_target": "public/game/art/bundy.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 533141,
+    "web_bytes": 208689
+  },
+  {
+    "gdevelop": "COLLINS.jpg",
+    "master": "gdevelop/masters/COLLINS.jpg",
+    "web_export": "studio/gdevelop/web-exports/collins.jpg",
+    "repo_target": "public/game/art/collins.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 578211,
+    "web_bytes": 222228
+  },
+  {
+    "gdevelop": "DUPONT CHEMICAL ALCHEMIST.jpg",
+    "master": "gdevelop/masters/DUPONT CHEMICAL ALCHEMIST.jpg",
+    "web_export": "studio/gdevelop/web-exports/dupont.jpg",
+    "repo_target": "public/game/art/dupont.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 566358,
+    "web_bytes": 230297
+  },
+  {
+    "gdevelop": "RADIO PROPAGANDIST.jpg",
+    "master": "gdevelop/masters/RADIO PROPAGANDIST.jpg",
+    "web_export": "studio/gdevelop/web-exports/freeman.jpg",
+    "repo_target": "public/game/art/freeman.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 412993,
+    "web_bytes": 165571
+  },
+  {
+    "gdevelop": "KENNEDY DYNASTY PALADIN.jpg",
+    "master": "gdevelop/masters/KENNEDY DYNASTY PALADIN.jpg",
+    "web_export": "studio/gdevelop/web-exports/kennedy.jpg",
+    "repo_target": "public/game/art/kennedy.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 575406,
+    "web_bytes": 225937
+  },
+  {
+    "gdevelop": "LI DRAGON FINANCE EMPEROR.jpg",
+    "master": "gdevelop/masters/LI DRAGON FINANCE EMPEROR.jpg",
+    "web_export": "studio/gdevelop/web-exports/li.jpg",
+    "repo_target": "public/game/art/li.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 656997,
+    "web_bytes": 260453
+  },
+  {
+    "gdevelop": "ONASIS SHIPPING.jpg",
+    "master": "gdevelop/masters/ONASIS SHIPPING.jpg",
+    "web_export": "studio/gdevelop/web-exports/onassis.jpg",
+    "repo_target": "public/game/art/onassis.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 693603,
+    "web_bytes": 270469
+  },
+  {
+    "gdevelop": "LOBBYIST.jpg",
+    "master": "gdevelop/masters/LOBBYIST.jpg",
+    "web_export": "studio/gdevelop/web-exports/lobbyist.jpg",
+    "repo_target": "public/game/art/lobbyist.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 367054,
+    "web_bytes": 145405
+  },
+  {
+    "gdevelop": "RUSSELL WATCHTOWER SENTINEL.jpg",
+    "master": "gdevelop/masters/RUSSELL WATCHTOWER SENTINEL.jpg",
+    "web_export": "studio/gdevelop/web-exports/russell.jpg",
+    "repo_target": "public/game/art/russell.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 552945,
+    "web_bytes": 222793
+  },
+  {
+    "gdevelop": "VAN DUYN SERPENT DIPLOMAT.jpg",
+    "master": "gdevelop/masters/VAN DUYN SERPENT DIPLOMAT.jpg",
+    "web_export": "studio/gdevelop/web-exports/vanduyn.jpg",
+    "repo_target": "public/game/art/vanduyn.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 447956,
+    "web_bytes": 177813
+  },
+  {
+    "gdevelop": "WARLOCK.jpg",
+    "master": "gdevelop/masters/WARLOCK.jpg",
+    "web_export": "studio/gdevelop/web-exports/merovingian.jpg",
+    "repo_target": "public/game/art/merovingian.jpg",
+    "master_px": [
+      1152,
+      1728
+    ],
+    "web_px": [
+      853,
+      1280
+    ],
+    "master_bytes": 595101,
+    "web_bytes": 237965
+  },
+  {
+    "gdevelop": "BACKGROUNDS, CHARACTERS, ENEIMES, ASSETS.jpg",
+    "master": "gdevelop/masters/BACKGROUNDS, CHARACTERS, ENEIMES, ASSETS.jpg",
+    "web_export": "studio/gdevelop/web-exports/chibi.jpg",
+    "repo_target": "public/game/art/chibi.jpg",
+    "master_px": [
+      1792,
+      1008
+    ],
+    "web_px": [
+      1280,
+      720
+    ],
+    "master_bytes": 474718,
+    "web_bytes": 173123
+  }
+]

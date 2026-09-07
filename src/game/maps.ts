@@ -125,6 +125,7 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 11, y: 4, to: "tavern", tx: 7, ty: 6 },
     ],
     npcs: [
+      { x: 13, y: 8, id: "hub_guide", name: "Hub Guide", sprite: "npc-innkeeper" },
       { x: 8, y: 8, id: "left_recruiter", name: "Left Recruiter", sprite: "enemy-mage" },
       { x: 17, y: 8, id: "right_recruiter", name: "Right Recruiter", sprite: "enemy-crusader" },
       { x: 6, y: 13, id: "sign_blue", name: "Sign" },

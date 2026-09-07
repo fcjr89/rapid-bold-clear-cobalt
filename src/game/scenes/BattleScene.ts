@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { playMusic, sfx } from "../audio";
-import { ENEMIES, ITEMS, SKILLS } from "../database";
+import { ENEMIES, ITEM_HEAL, ITEMS, SKILLS } from "../database";
 import { axis, consumeCancel, consumeConfirm } from "../input";
 import { addStatus, defeatBoss, G, grantXp, hasStatus, tickStatuses } from "../state";
 import type { EnemyDef, ItemId, SkillId } from "../types";
@@ -29,6 +29,10 @@ export class BattleScene extends Phaser.Scene {
   private menuLabels: Phaser.GameObjects.Text[] = [];
   private menuTitle!: Phaser.GameObjects.Text;
   private statusTxt!: Phaser.GameObjects.Text;
+  private hpNum!: Phaser.GameObjects.Text;
+  private mpNum!: Phaser.GameObjects.Text;
+  private eNum!: Phaser.GameObjects.Text;
+  private skillHint!: Phaser.GameObjects.Text;
   private ended = false;
   private mini?: "red" | "blue";
   private mainItems = ["ATTACK", "SKILLS", "ITEM", "FLEE"];
@@ -88,13 +92,17 @@ export class BattleScene extends Phaser.Scene {
       this.add.image(302, 34, "baki-portrait").setDisplaySize(28, 28);
     }
     px(this, 334, 14, "BAKI", 7, "#e8b84a");
-    this.hpBar = bar(this, 334, 26, 128, 6, 1, 0xc41e3a);
-    this.mpBar = bar(this, 334, 36, 128, 6, 1, 0x2a4a9a);
+    this.hpBar = bar(this, 334, 26, 100, 6, 1, 0xc41e3a);
+    this.mpBar = bar(this, 334, 36, 100, 6, 1, 0x2a4a9a);
+    this.hpNum = px(this, 438, 24, "", 5, "#f0e6c8");
+    this.mpNum = px(this, 438, 34, "", 5, "#8eb4ff");
     this.statusTxt = px(this, 334, 46, "", 6, "#7a8aa0");
+    this.eNum = px(this, 220, 14, "", 5, "#f0e6c8");
 
     windowBox(this, 8, 168, 160, 94);
     this.menuTitle = px(this, 16, 176, "COMMAND", 7, "#e8b84a");
     this.menuLabels = [0, 1, 2, 3].map((i) => px(this, 16, 190 + i * 14, "", 7));
+    this.skillHint = px(this, 16, 248, "", 5, "#7a8aa0");
 
     windowBox(this, 176, 168, 296, 94);
     this.log = [0, 1, 2, 3, 4].map((i) => px(this, 184, 176 + i * 14, "", 6, "#f0e6c8"));
@@ -118,9 +126,12 @@ export class BattleScene extends Phaser.Scene {
     this.hpBar.destroy();
     this.mpBar.destroy();
     this.eBar.destroy();
-    this.hpBar = bar(this, 334, 26, 128, 6, G.hero.hp / G.hero.maxHp, 0xc41e3a);
-    this.mpBar = bar(this, 334, 36, 128, 6, G.hero.mp / G.hero.maxMp, 0x2a4a9a);
-    this.eBar = bar(this, 16, 30, 240, 6, this.eHp / this.enemy.hp, 0xc41e3a);
+    this.hpBar = bar(this, 334, 26, 100, 6, G.hero.hp / G.hero.maxHp, 0xc41e3a);
+    this.mpBar = bar(this, 334, 36, 100, 6, G.hero.mp / G.hero.maxMp, 0x2a4a9a);
+    this.eBar = bar(this, 16, 30, 200, 6, this.eHp / this.enemy.hp, 0xc41e3a);
+    this.hpNum?.setText(`${G.hero.hp}/${G.hero.maxHp}`);
+    this.mpNum?.setText(`${G.hero.mp}/${G.hero.maxMp}`);
+    this.eNum?.setText(`${this.eHp}/${this.enemy.hp}`);
     const st = G.statuses.map((s) => s.name).join(" · ") || "TRUE NEUTRAL";
     this.statusTxt.setText(st);
   }
@@ -147,6 +158,13 @@ export class BattleScene extends Phaser.Scene {
       lab.setText(`${on ? ">" : " "} ${opt}`);
       lab.setColor(on ? "#e8b84a" : "#f0e6c8");
     });
+    if (this.menu === "skills" && SKILLS[this.cursor]) {
+      this.skillHint?.setText(SKILLS[this.cursor]!.desc);
+    } else if (this.menu === "items" && ITEMS[this.cursor]) {
+      this.skillHint?.setText(ITEMS[this.cursor]!.desc);
+    } else {
+      this.skillHint?.setText("Z OK  X BACK");
+    }
   }
 
   update(time: number) {
@@ -255,23 +273,24 @@ export class BattleScene extends Phaser.Scene {
     G.hero.mp -= sk.mp;
     this.heroSpr.play("baki-atk");
     if (id === "hammer_clarity") {
-      const { n, crit } = this.dmg(G.hero.atk, this.eDef, 1.25);
+      const { n, crit } = this.dmg(G.hero.atk, this.eDef, 1.45);
       this.eHp = Math.max(0, this.eHp - n);
       this.eBuff = 0;
+      this.eAtk = this.enemy.atk;
       this.say(crit ? `Clarity CRIT ${n}. Buffs stripped.` : `Clarity smash ${n}. Buffs stripped.`);
       sfx("crit");
     } else if (id === "mute_counter") {
-      addStatus({ id: "mute_armed", name: "MUTE ARMED", turns: 3 });
+      addStatus({ id: "mute_armed", name: "MUTE ARMED", turns: 4 });
       this.say("Mute Button armed. Lectures will rebound.");
       sfx("ok");
     } else if (id === "independent") {
-      addStatus({ id: "independent", name: "INDEPENDENT", turns: 3 });
+      addStatus({ id: "independent", name: "INDEPENDENT", turns: 4 });
       G.statuses = G.statuses.filter((s) => s.id !== "reeducate");
       G.alignment = "neutral";
       this.say("Independent Stance. Re-Educate slides off.");
       sfx("heal");
     } else if (id === "fact_check") {
-      const bonus = this.enemy.media ? 1.65 : 1.12;
+      const bonus = this.enemy.media ? 1.9 : 1.2;
       const { n, crit } = this.dmg(G.hero.atk, this.eDef, bonus);
       this.eHp = Math.max(0, this.eHp - n);
       this.say(
@@ -299,12 +318,12 @@ export class BattleScene extends Phaser.Scene {
     this.lock();
     G.hero.items[id] -= 1;
     if (id === "potion") {
-      const heal = Math.min(50, G.hero.maxHp - G.hero.hp);
+      const heal = Math.min(ITEM_HEAL.potion, G.hero.maxHp - G.hero.hp);
       G.hero.hp += heal;
       this.say(`Potion restores ${heal} HP.`);
       sfx("heal");
     } else if (id === "ether") {
-      const m = Math.min(20, G.hero.maxMp - G.hero.mp);
+      const m = Math.min(ITEM_HEAL.ether, G.hero.maxMp - G.hero.mp);
       G.hero.mp += m;
       this.say(`Ether restores ${m} MP.`);
       sfx("heal");
@@ -371,7 +390,7 @@ export class BattleScene extends Phaser.Scene {
       }
       const { n } = this.dmg(this.eAtk, G.hero.def, 0.75);
       this.applyHeroDmg(n, `${this.enemy.name} lectures for ${n}.`);
-      if ((this.enemy.canReeducate || this.enemy.lecture) && Math.random() < 0.45) this.tryReeducate();
+      if ((this.enemy.canReeducate || this.enemy.lecture) && Math.random() < 0.32) this.tryReeducate();
       this.endRound();
       return;
     }
@@ -442,7 +461,8 @@ export class BattleScene extends Phaser.Scene {
     this.tweens.add({ targets: this.foeSpr, alpha: 0, y: this.foeSpr.y + 10, duration: 500 });
     const notes = grantXp(this.enemy.xp);
     G.hero.gold += this.enemy.gold;
-    if (Math.random() < 0.4) G.hero.items.potion += 1;
+    if (Math.random() < 0.55) G.hero.items.potion += 1;
+    else if (Math.random() < 0.35) G.hero.items.ether += 1;
     // Only bloodline / final bosses enter the ledger (not district instructors).
     if (this.enemy.kind === "boss" || this.enemy.kind === "final") defeatBoss(this.enemy.id);
     if (this.mini === "red") {

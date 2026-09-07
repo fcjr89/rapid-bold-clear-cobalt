@@ -113,7 +113,7 @@ export class TitleScene extends Phaser.Scene {
       36,
       60,
       wrap(
-        "WASD move. Z confirm, X cancel. X also opens your MENU. Codex pages every painting (A/D). The tavern sells weapons, items, and materia. Win 3 fights in a district to challenge the Instructor. Clear both, enter the dungeon, smash 13 bloodlines. Do not be Re-Educated.",
+        "WASD / arrows move. Z confirm, X cancel (also MENU). Touch pad mirrors keys. Hub Guide explains Red vs Blue vs dungeon. Win 3 district fights → Forum Instructor. Clear BOTH → gold gate. Thirteen bloodline doors, crown last. Tavern: potions, ethers, hammer, materia. Skills cost MP — Mute counters Lectures. Do not be Re-Educated.",
         34,
       ),
       7,

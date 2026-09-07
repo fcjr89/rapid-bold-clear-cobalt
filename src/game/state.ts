@@ -24,8 +24,8 @@ export function defaultHero(): HeroRuntime {
     atk: 18,
     def: 12,
     spd: 14,
-    gold: 40,
-    items: { potion: 3, ether: 1, neutralizer: 1 },
+    gold: 80,
+    items: { potion: 5, ether: 3, neutralizer: 2 },
   };
 }
 
@@ -75,7 +75,7 @@ function fresh(): Runtime {
     alignment: "neutral",
     pendingEncounter: null,
     steps: 0,
-    nextEncounterAt: 12 + Math.floor(Math.random() * 10),
+    nextEncounterAt: 16 + Math.floor(Math.random() * 12),
     blocking: false,
   };
 }
@@ -99,7 +99,7 @@ export function applySave(save: SaveBlob): void {
   G.alignment = "neutral";
   G.pendingEncounter = null;
   G.steps = 0;
-  G.nextEncounterAt = 12;
+  G.nextEncounterAt = 16;
   G.blocking = false;
   G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
 }
@@ -129,8 +129,8 @@ export function grantXp(amount: number): string[] {
   while (G.hero.xp >= G.hero.xpToNext) {
     G.hero.xp -= G.hero.xpToNext;
     G.hero.level += 1;
-    G.hero.maxHp += 18;
-    G.hero.maxMp += 6;
+    G.hero.maxHp += 20;
+    G.hero.maxMp += 7;
     G.hero.atk += 4;
     G.hero.def += 3;
     G.hero.spd += 2;

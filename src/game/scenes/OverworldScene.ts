@@ -25,6 +25,7 @@ export class OverworldScene extends Phaser.Scene {
   private moveX = 0;
   private moveY = 0;
   private locLabel?: Phaser.GameObjects.Text;
+  private objLabel?: Phaser.GameObjects.Text;
 
   constructor() {
     super("overworld");
@@ -44,8 +45,9 @@ export class OverworldScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 2000, 2000);
     this.buildMap(G.map);
     this.flash = this.add.rectangle(0, 0, VIEW_W, VIEW_H, 0xc41e3a, 0).setScrollFactor(0).setOrigin(0).setDepth(90);
-    windowBox(this, 4, 4, 220, 22, 69).setScrollFactor(0);
-    this.hud = px(this, 8, 10, "", 6, "#f0e6c8").setScrollFactor(0).setDepth(70);
+    windowBox(this, 4, 4, 250, 34, 69).setScrollFactor(0);
+    this.hud = px(this, 8, 8, "", 6, "#f0e6c8").setScrollFactor(0).setDepth(70);
+    this.objLabel = px(this, 8, 22, "", 5, "#e8b84a").setScrollFactor(0).setDepth(70);
     this.locLabel = px(this, VIEW_W - 8, 8, "", 6, "#e8b84a").setOrigin(1, 0).setScrollFactor(0).setDepth(70);
 
     if (!G.flags.introSeen) {
@@ -121,7 +123,8 @@ export class OverworldScene extends Phaser.Scene {
 
   update(_t: number, delta: number) {
     const dt = Math.min(delta, 100) / 1000;
-    this.hud?.setText(`HP ${G.hero.hp}/${G.hero.maxHp}  MP ${G.hero.mp}/${G.hero.maxMp}  LV ${G.hero.level}`);
+    this.hud?.setText(`HP ${G.hero.hp}/${G.hero.maxHp}  MP ${G.hero.mp}/${G.hero.maxMp}  LV ${G.hero.level}  G ${G.hero.gold}`);
+    this.objLabel?.setText(this.objectiveHint());
     window.__baki = { map: G.map, hp: G.hero.hp };
 
     if (this.talking) {
@@ -179,12 +182,30 @@ export class OverworldScene extends Phaser.Scene {
     this.checkDoors();
   }
 
+  objectiveHint(): string {
+    if (G.flags.ending) return "CLEARED — free roam. Tavern to rest.";
+    if (!G.flags.dungeonOpen) {
+      const r = G.flags.redMiniboss ? "RED OK" : `RED ${G.flags.redWins}/3`;
+      const b = G.flags.blueMiniboss ? "BLUE OK" : `BLUE ${G.flags.blueWins}/3`;
+      return `Obj: clear districts  ${r}  ${b}`;
+    }
+    const n = G.flags.bossesDefeated.length;
+    if (n >= 13) return "Obj: final crown — gold throne doors";
+    if (n >= 1) return `Obj: bloodlines ${n}/14 — next gold door`;
+    return "Obj: enter dungeon — first gold door";
+  }
+
   accumulateSteps(dt: number) {
     if (this.map.encounters === "none" || this.talking) return;
-    G.steps += dt * 14;
+    // Districts: gentler cadence. Dungeon: a bit denser but still fair.
+    const rate = this.map.encounters === "system" ? 12 : 11;
+    G.steps += dt * rate;
     if (G.steps >= G.nextEncounterAt) {
       G.steps = 0;
-      G.nextEncounterAt = 10 + Math.floor(Math.random() * 10);
+      G.nextEncounterAt =
+        this.map.encounters === "system"
+          ? 12 + Math.floor(Math.random() * 10)
+          : 16 + Math.floor(Math.random() * 14);
       this.startEncounter(pickEncounter(this.map.encounters), false);
     }
   }

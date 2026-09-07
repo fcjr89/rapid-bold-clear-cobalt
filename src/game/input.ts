@@ -43,8 +43,11 @@ export function bindInput(): () => void {
 
 export function setInjected(codes: string[], down: boolean) {
   for (const c of codes) {
-    if (down) injected.add(c);
-    else injected.delete(c);
+    if (down) {
+      injected.add(c);
+      if (CONFIRM.has(c)) confirmPulse = true;
+      if (CANCEL.has(c)) cancelPulse = true;
+    } else injected.delete(c);
   }
 }
 
@@ -68,12 +71,11 @@ export function axis(): { x: number; y: number } {
 }
 
 export function consumeConfirm(): boolean {
-  const v = confirmPulse || isDown("KeyZ") && false;
   if (confirmPulse) {
     confirmPulse = false;
     return true;
   }
-  return v;
+  return false;
 }
 
 export function consumeCancel(): boolean {

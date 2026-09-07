@@ -57,8 +57,11 @@ export class StatusScene extends Phaser.Scene {
     const loc = G.map.toUpperCase();
     const bossN = BOSSES.filter((b) => G.flags.bossesDefeated.includes(b.id)).length;
     const cleared = G.flags.ending ? "  CLEARED" : "";
-    px(this, VIEW_W / 2, 204, `${loc}   BOSSES ${bossN}/14   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}${cleared}`, 6, "#f0e6c8").setOrigin(0.5, 0);
-    px(this, VIEW_W / 2, 222, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
+    const red = G.flags.redMiniboss ? "RED DONE" : `RED ${G.flags.redWins}/3`;
+    const blue = G.flags.blueMiniboss ? "BLUE DONE" : `BLUE ${G.flags.blueWins}/3`;
+    px(this, VIEW_W / 2, 196, `${red}   ${blue}`, 6, "#e8b84a").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 210, `${loc}   BOSSES ${bossN}/14   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}${cleared}`, 6, "#f0e6c8").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 226, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
   }
 
   update() {

@@ -10,11 +10,11 @@ type Ware = { name: string; cost: number; kind: "rest" | "potion" | "ether" | "n
 
 const WARES: Ware[] = [
   { name: "REST — heal & save", cost: 0, kind: "rest" },
-  { name: "POTION", cost: 20, kind: "potion" },
-  { name: "ETHER", cost: 30, kind: "ether" },
-  { name: "NEUTRALIZER", cost: 25, kind: "neutralizer" },
-  { name: "IRON HAMMER  ATK+4", cost: 60, kind: "hammer" },
-  { name: "TRUE-NEUTRAL MATERIA  MP+8", cost: 45, kind: "materia" },
+  { name: "POTION", cost: 12, kind: "potion" },
+  { name: "ETHER", cost: 18, kind: "ether" },
+  { name: "NEUTRALIZER", cost: 16, kind: "neutralizer" },
+  { name: "IRON HAMMER  ATK+4", cost: 55, kind: "hammer" },
+  { name: "TRUE-NEUTRAL MATERIA  MP+10", cost: 40, kind: "materia" },
   { name: "LEAVE", cost: 0, kind: "leave" },
 ];
 
@@ -124,11 +124,11 @@ export class ShopScene extends Phaser.Scene {
       }
       G.hero.gold -= w.cost;
       G.flags.boughtMateria = true;
-      G.hero.maxMp += 8;
-      G.hero.mp += 8;
+      G.hero.maxMp += 10;
+      G.hero.mp += 10;
       writeSave();
       sfx("ok");
-      this.say("True-Neutral materia. Max MP +8.");
+      this.say("True-Neutral materia. Max MP +10.");
       this.refresh();
       return;
     }

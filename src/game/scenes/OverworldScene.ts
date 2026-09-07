@@ -4,7 +4,7 @@ import { BOSSES, DIALOGUE, ENEMIES, pickEncounter } from "../database";
 import { axis, consumeCancel, consumeConfirm, setKeysExact } from "../input";
 import { DUNGEON_DOORS, MAPS, SOLID, walkable } from "../maps";
 import { writeSave } from "../save";
-import { G, healFull, noteWin, resetGame } from "../state";
+import { G, healFull, noteWin } from "../state";
 import { TILE, VIEW_H, VIEW_W, WALK_SPEED } from "../types";
 import type { GameMap, MapId } from "../types";
 import { px, windowBox, wrap } from "../ui";
@@ -254,7 +254,11 @@ export class OverworldScene extends Phaser.Scene {
     if (id === "blood_ledger") {
       const remaining = BOSSES.filter((b) => !G.flags.bossesDefeated.includes(b.id));
       if (!remaining.length) {
-        this.openTalk(["The ledger is blank. The Divide is quiet."]);
+        this.openTalk(
+          G.flags.ending
+            ? ["The ledger is blank. The Divide is quiet.", "You already broke the crown."]
+            : ["The ledger is blank. The Divide is quiet."],
+        );
         return;
       }
       const lines = remaining.slice(0, 4).map((b) => `${b.order}. ${b.title}`);
@@ -395,15 +399,32 @@ export class OverworldScene extends Phaser.Scene {
     if (result.enemyId === "rothschild_archon") {
       writeSave();
       this.openTalk(DIALOGUE.after_rothschild);
+      return;
+    }
+    if (result.enemyId === "vanduyn_diplomat") {
+      writeSave();
+      this.openTalk(DIALOGUE.after_vanduyn);
+      return;
     }
     if (result.enemyId === "merovingian_king") {
       G.flags.ending = true;
+      G.map = "hub";
+      G.tx = 13;
+      G.ty = 10;
       writeSave();
-      this.openTalkThen(DIALOGUE.ending, () => {
-        resetGame();
-        this.scene.start("title");
-      });
+      this.scene.sleep("overworld");
+      this.scene.launch("ending");
+      return;
     }
+    const def = ENEMIES[result.enemyId];
+    if (def && (def.kind === "boss" || def.kind === "final")) {
+      writeSave();
+      const meta = BOSSES.find((b) => b.id === result.enemyId);
+      const title = meta?.title ?? def.name;
+      this.openTalk([`${title} falls.`, ...(DIALOGUE.after_boss ?? ["The next seal stirs."])]);
+      return;
+    }
+    writeSave();
   }
 
   openTalk(lines: string[]) {

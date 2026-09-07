@@ -443,9 +443,16 @@ export class BattleScene extends Phaser.Scene {
     const notes = grantXp(this.enemy.xp);
     G.hero.gold += this.enemy.gold;
     if (Math.random() < 0.4) G.hero.items.potion += 1;
-    if (this.enemy.kind !== "regular") defeatBoss(this.enemy.id);
-    if (this.mini === "red") defeatBoss("reeducation_instructor_red");
-    if (this.mini === "blue") defeatBoss("reeducation_instructor_blue");
+    // Only bloodline / final bosses enter the ledger (not district instructors).
+    if (this.enemy.kind === "boss" || this.enemy.kind === "final") defeatBoss(this.enemy.id);
+    if (this.mini === "red") {
+      G.flags.redMiniboss = true;
+      G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
+    }
+    if (this.mini === "blue") {
+      G.flags.blueMiniboss = true;
+      G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
+    }
     this.say(`Victory! +${this.enemy.xp} XP  +${this.enemy.gold}G`);
     for (const n of notes) this.say(n);
     this.say("Z to continue.");

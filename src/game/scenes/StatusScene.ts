@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { sfx } from "../audio";
+import { BOSSES } from "../database";
 import { consumeCancel, consumeConfirm } from "../input";
+import { writeSave } from "../save";
 import { G } from "../state";
 import { VIEW_H, VIEW_W } from "../types";
 import { px } from "../ui";
@@ -13,6 +15,7 @@ export class StatusScene extends Phaser.Scene {
 
   create() {
     this.scene.bringToTop("status");
+    writeSave();
     this.cameras.main.setBackgroundColor(0x0c0814);
     if (this.textures.exists("art-menu")) {
       this.add.image(VIEW_W / 2, VIEW_H / 2, "art-menu").setDisplaySize(VIEW_W, VIEW_H);
@@ -52,8 +55,10 @@ export class StatusScene extends Phaser.Scene {
     );
 
     const loc = G.map.toUpperCase();
-    px(this, VIEW_W / 2, 204, `${loc}   BOSSES ${G.flags.bossesDefeated.length}/14   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}`, 6, "#f0e6c8").setOrigin(0.5, 0);
-    px(this, VIEW_W / 2, 222, "TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
+    const bossN = BOSSES.filter((b) => G.flags.bossesDefeated.includes(b.id)).length;
+    const cleared = G.flags.ending ? "  CLEARED" : "";
+    px(this, VIEW_W / 2, 204, `${loc}   BOSSES ${bossN}/14   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}${cleared}`, 6, "#f0e6c8").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 222, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
   }
 
   update() {

@@ -12,6 +12,17 @@ export function hasSave(): boolean {
   }
 }
 
+export function hasCleared(): boolean {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw) as SaveBlob;
+    return Boolean(parsed?.flags?.ending);
+  } catch {
+    return false;
+  }
+}
+
 export function loadSave(): boolean {
   try {
     const raw = localStorage.getItem(KEY);

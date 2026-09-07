@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { playMusic, sfx, unlockAudio } from "../audio";
 import { SUBTITLE, TITLE } from "../database";
 import { axis, consumeCancel, consumeConfirm } from "../input";
-import { hasSave, loadSave } from "../save";
+import { hasCleared, hasSave, loadSave } from "../save";
 import { resetGame } from "../state";
 import { VIEW_H, VIEW_W } from "../types";
 import { px, windowBox, wrap } from "../ui";
@@ -45,6 +45,9 @@ export class TitleScene extends Phaser.Scene {
       px(this, startX, startY + i * 12, item, 7, "#f0e6c8"),
     );
     this.refresh();
+    if (hasCleared()) {
+      px(this, VIEW_W / 2, 186, "DIVIDE CLEARED — CONTINUE FOR FREE ROAM", 6, "#e8b84a").setOrigin(0.5, 0);
+    }
 
     this.input.keyboard?.on("keydown", () => unlockAudio());
     this.input.on("pointerdown", () => unlockAudio());

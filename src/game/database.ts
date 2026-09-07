@@ -319,12 +319,36 @@ export const DIALOGUE: Record<string, string[]> = {
     "The Archon of Coin falls. Interest stops compounding.",
     "Twelve doors remain. The Divide notices you.",
   ],
+  after_vanduyn: [
+    "The Serpent Diplomat sheds its handshake.",
+    "Thirteen doors are ash. One crown remains.",
+    "Walk the gold doors in the throne approach.",
+  ],
+  after_boss: [
+    "A bloodline seal cracks. The ledger updates.",
+    "Progress is saved. The next door hums.",
+  ],
   ending: [
     "The Serpent King splits down the middle —",
     "red scale, blue scale, neither catching the crown.",
     "Baki plants the hammer in the cracked floor.",
     "'I am not your symbol.'",
     "The Divide goes quiet. For now.",
+  ],
+  ending_armed: [
+    "Iron hammer. True-Neutral materia.",
+    "You walked in prepared — and left unclaimed.",
+  ],
+  ending_bare: [
+    "No fancy gear. Just a hammer and a refusal.",
+    "Sometimes that is enough.",
+  ],
+  ending_credits: [
+    "BAKI THE HAMMER",
+    "Bloodlines of the Divide",
+    "Districts cleared. Bloodlines broken.",
+    "CONTINUE returns you to the Hub.",
+    "Thanks for swinging true.",
   ],
   forum_red: ["A forum of torches. The Instructor waits if you've proven yourself."],
   forum_blue: ["A lecture pit. The Instructor grades anyone still standing."],

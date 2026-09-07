@@ -190,6 +190,7 @@ export const MAPS: Record<MapId, GameMap> = {
   },
 };
 
+/** Door tile coords must match literal 'D' positions in DUNGEON (space-separated doors pad to floor). */
 export const DUNGEON_DOORS: { x: number; y: number; order: number }[] = [
   { x: 3, y: 3, order: 1 },
   { x: 5, y: 3, order: 2 },
@@ -204,8 +205,9 @@ export const DUNGEON_DOORS: { x: number; y: number; order: number }[] = [
   { x: 3, y: 11, order: 11 },
   { x: 5, y: 11, order: 12 },
   { x: 7, y: 11, order: 13 },
-  { x: 17, y: 8, order: 14 },
-  { x: 18, y: 8, order: 14 },
+  // Final throne: row "…vvDDvvv" → D at x=19,20 (was wrongly 17,18 = softlock)
+  { x: 19, y: 8, order: 14 },
+  { x: 20, y: 8, order: 14 },
 ];
 
 export function inBounds(map: GameMap, tx: number, ty: number): boolean {

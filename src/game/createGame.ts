@@ -8,6 +8,7 @@ import { BattleScene } from "./scenes/BattleScene";
 import { GalleryScene } from "./scenes/GalleryScene";
 import { StatusScene } from "./scenes/StatusScene";
 import { ShopScene } from "./scenes/ShopScene";
+import { EndingScene } from "./scenes/EndingScene";
 import { VIEW_H, VIEW_W } from "./types";
 
 let current: Phaser.Game | null = null;
@@ -39,7 +40,7 @@ export function createGame(parent: HTMLElement): Phaser.Game {
       default: "arcade",
       arcade: { debug: false },
     },
-    scene: [BootScene, TitleScene, IntroScene, OverworldScene, BattleScene, GalleryScene, StatusScene, ShopScene],
+    scene: [BootScene, TitleScene, IntroScene, OverworldScene, BattleScene, GalleryScene, StatusScene, ShopScene, EndingScene],
     callbacks: {
       postBoot: (game) => {
         game.canvas.setAttribute("tabindex", "0");

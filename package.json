@@ -19,9 +19,13 @@
     "test": "node --test 'scripts/**/*.test.mjs' && node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "steam:dev": "node steam/dev.mjs",
-    "steam:build": "node scripts/with-app-env.mjs vite build",
-    "steam:package": "node steam/package.mjs"
+    "steam:dev": "node steam/run-dev.mjs",
+    "steam:dist:win": "node steam/run-dist.mjs --win",
+    "steam:dist:linux": "node steam/run-dist.mjs --linux",
+    "steam:dist:mac": "node steam/run-dist.mjs --mac",
+    "mobile:sync": "npx cap sync",
+    "mobile:ios": "npx cap open ios",
+    "mobile:android": "npx cap open android"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

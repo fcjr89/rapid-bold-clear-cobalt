@@ -67,7 +67,24 @@ export function axis(): { x: number; y: number } {
   if (isDown("KeyD") || isDown("ArrowRight")) x += 1;
   if (isDown("KeyW") || isDown("ArrowUp")) y -= 1;
   if (isDown("KeyS") || isDown("ArrowDown")) y += 1;
-  return { x, y };
+  // Desktop / Steam controllers (standard layout)
+  try {
+    const pads = navigator.getGamepads?.() ?? [];
+    for (const pad of pads) {
+      if (!pad) continue;
+      const lx = pad.axes[0] ?? 0;
+      const ly = pad.axes[1] ?? 0;
+      if (lx < -0.35 || pad.buttons[14]?.pressed) x -= 1;
+      if (lx > 0.35 || pad.buttons[15]?.pressed) x += 1;
+      if (ly < -0.35 || pad.buttons[12]?.pressed) y -= 1;
+      if (ly > 0.35 || pad.buttons[13]?.pressed) y += 1;
+      if (pad.buttons[0]?.pressed) confirmPulse = true;
+      if (pad.buttons[1]?.pressed) cancelPulse = true;
+    }
+  } catch {
+    /* ignore */
+  }
+  return { x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) };
 }
 
 export function consumeConfirm(): boolean {

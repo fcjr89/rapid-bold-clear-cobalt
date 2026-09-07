@@ -79,7 +79,9 @@
   align-items: stretch;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1rem 1.25rem;
+  padding: 0.75rem 1rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  padding-left: calc(1rem + env(safe-area-inset-left, 0px));
+  padding-right: calc(1rem + env(safe-area-inset-right, 0px));
   background: var(--color-surface);
   border-top: 2px solid var(--color-gold);
 }

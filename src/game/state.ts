@@ -1,4 +1,5 @@
 import { ENEMIES } from "./database";
+import { MAX_INFLUENCE, START_INFLUENCE, STARTER_GROUP_IDS } from "./conspiracyDeck";
 import type {
   Alignment,
   EncounterSpec,
@@ -9,7 +10,7 @@ import type {
   StatusEffect,
 } from "./types";
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export function defaultHero(): HeroRuntime {
   return {
@@ -25,6 +26,8 @@ export function defaultHero(): HeroRuntime {
     def: 12,
     spd: 14,
     gold: 80,
+    influence: START_INFLUENCE,
+    maxInfluence: MAX_INFLUENCE,
     items: { potion: 5, ether: 3, neutralizer: 2 },
   };
 }
@@ -43,6 +46,8 @@ export function defaultFlags(): GameFlags {
     boughtMateria: false,
     leanHintShown: false,
     dungeonLeanShown: false,
+    unlockedGroupCards: [...STARTER_GROUP_IDS],
+    conspireHowtoShown: false,
   };
 }
 
@@ -89,8 +94,23 @@ export function resetGame(): void {
 }
 
 export function applySave(save: SaveBlob): void {
-  G.hero = { ...defaultHero(), ...save.hero, items: { ...defaultHero().items, ...save.hero.items } };
-  G.flags = { ...defaultFlags(), ...save.flags, bossesDefeated: [...save.flags.bossesDefeated] };
+  const base = defaultHero();
+  G.hero = {
+    ...base,
+    ...save.hero,
+    items: { ...base.items, ...save.hero.items },
+    influence: save.hero.influence ?? START_INFLUENCE,
+    maxInfluence: save.hero.maxInfluence ?? MAX_INFLUENCE,
+  };
+  const df = defaultFlags();
+  G.flags = {
+    ...df,
+    ...save.flags,
+    bossesDefeated: [...(save.flags.bossesDefeated ?? [])],
+    unlockedGroupCards: [
+      ...new Set([...(df.unlockedGroupCards ?? []), ...(save.flags.unlockedGroupCards ?? [])]),
+    ],
+  };
   G.map = save.map;
   G.tx = save.tx;
   G.ty = save.ty;
@@ -121,6 +141,7 @@ export function snapshot(): SaveBlob {
 export function healFull(): void {
   G.hero.hp = G.hero.maxHp;
   G.hero.mp = G.hero.maxMp;
+  G.hero.influence = Math.min(G.hero.maxInfluence, Math.max(G.hero.influence, START_INFLUENCE));
   G.statuses = [];
   G.alignment = "neutral";
 }
@@ -136,8 +157,10 @@ export function grantXp(amount: number): string[] {
     G.hero.atk += 4;
     G.hero.def += 3;
     G.hero.spd += 2;
+    G.hero.maxInfluence = Math.min(9, MAX_INFLUENCE + Math.floor(G.hero.level / 5));
     G.hero.hp = G.hero.maxHp;
     G.hero.mp = G.hero.maxMp;
+    G.hero.influence = G.hero.maxInfluence;
     G.hero.xpToNext = 36 + G.hero.level * 18;
     notes.push(`Level up! Lv ${G.hero.level}`);
   }
@@ -178,4 +201,20 @@ export function defeatBoss(id: string): void {
   if (id === "reeducation_instructor_blue") G.flags.blueMiniboss = true;
   if (ENEMIES[id]?.kind === "final") G.flags.ending = true;
   G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
+  unlockGroupCard(id);
+}
+
+/** Persist a defeated group's Conspiracy card into the player's deck. */
+export function unlockGroupCard(enemyId: string): string | null {
+  const cardId = `group_${enemyId}`;
+  if (!G.flags.unlockedGroupCards) G.flags.unlockedGroupCards = [...STARTER_GROUP_IDS];
+  if (G.flags.unlockedGroupCards.includes(cardId)) return null;
+  // Only unlock if enemy exists in database
+  if (!ENEMIES[enemyId]) return null;
+  G.flags.unlockedGroupCards.push(cardId);
+  return cardId;
+}
+
+export function regenInfluence(amount = 1): void {
+  G.hero.influence = Math.min(G.hero.maxInfluence, G.hero.influence + amount);
 }

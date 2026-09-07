@@ -29,6 +29,7 @@ export function loadSave(): boolean {
     if (!raw) return false;
     const parsed = JSON.parse(raw) as SaveBlob;
     if (!parsed || typeof parsed !== "object") return false;
+    // Soft-migrate v1 → v2 (influence + unlocked group cards).
     if (parsed.version !== SAVE_VERSION) {
       parsed.version = SAVE_VERSION;
     }

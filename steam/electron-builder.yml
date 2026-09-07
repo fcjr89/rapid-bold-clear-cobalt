@@ -1,16 +1,18 @@
 # THE CULTURE WAR — desktop / Steam-oriented package config
-appId: com.culturewar.game
+appId: com.fcjr89.theculturewar
 productName: THE CULTURE WAR
 copyright: Copyright © CULTURE WAR
 
 directories:
-  output: release/steam
-  buildResources: steam
+  output: steam/dist
+  buildResources: steam/assets
 
 files:
   - steam/**/*
   - dist/**/*
   - .output/public/**/*
+  - .vercel/output/static/**/*
+  - dist/client/**/*
   - package.json
 
 extraMetadata:

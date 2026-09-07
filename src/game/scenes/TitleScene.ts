@@ -115,7 +115,7 @@ export class TitleScene extends Phaser.Scene {
       36,
       60,
       wrap(
-        "THE CULTURE WAR — Baki The Hammer. WASD move. Z confirm, X menu. Red/Blue theater → Instructors → gold gate. 14 bloodlines (Rothschild→Merovingian). Skills: Clarity splash, Mute, Stance, Fact Check, Common Sense Mend (heal). Packs: ◀▶ target. Do not be Re-Educated.",
+        "THE CULTURE WAR — 9/11/01 wakes Baki The Hammer. WASD move. Z confirm, X menu. Blue: Woke Retards 1.0/2.0. Red: MAGA/MIGA Zionist Chuds. Both theaters → Instructors → gold gate. Smash Illuminati bloodlines (Rothschild→Merovingian). CONSPIRE: Control/Neutralize/Destroy + summons. Skills + Common Sense Mend. Do not be Re-Educated.",
         34,
       ),
       7,

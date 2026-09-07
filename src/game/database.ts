@@ -2,7 +2,7 @@ import type { BossMeta, EnemyDef, ItemDef, SkillDef } from "./types";
 import { ENEMY_PORTRAIT } from "./art";
 
 export const TITLE = "THE CULTURE WAR";
-export const SUBTITLE = "Bloodlines of the Divide";
+export const SUBTITLE = "9/11 Ignites the Outline";
 
 export const SKILLS: SkillDef[] = [
   {
@@ -34,6 +34,24 @@ export const SKILLS: SkillDef[] = [
     name: "Common Sense Mend",
     mp: 7,
     desc: "Heal self (~55 HP). Balanced MP mend.",
+  },
+  {
+    id: "conspire_bribe",
+    name: "Conspire: Bribe",
+    mp: 0,
+    desc: "Spend 25G + 1 INF for a Control attempt.",
+  },
+  {
+    id: "conspire_blackout",
+    name: "Conspire: Blackout",
+    mp: 3,
+    desc: "Mute Lectures (Media Blackout). Costs 2 INF.",
+  },
+  {
+    id: "conspire_assassinate",
+    name: "Conspire: Assassinate",
+    mp: 4,
+    desc: "Big single hit. Costs 2 INF.",
   },
 ];
 
@@ -85,12 +103,12 @@ const REGULAR: EnemyDef[] = [
   },
   {
     id: "pragmatic_polite",
-    name: "MAGA Knight",
+    name: "MAGA/MIGA Knight",
     faction: "right",
     kind: "regular",
     hp: 34, mp: 10, atk: 9, def: 10, spd: 13, xp: 16, gold: 16,
     sprite: "enemy-knight", lecture: true,
-    intro: "A crimson knight salutes. 'Surely we can agree—'",
+    intro: "A MAGA/MIGA Zionist Chud knight salutes. 'Surely we can agree—'",
     actions: ["attack", "lecture", "buff"],
   },
   {
@@ -105,22 +123,22 @@ const REGULAR: EnemyDef[] = [
   },
   {
     id: "loyal_liberal_mage",
-    name: "Loyal Liberal Mage",
+    name: "Woke 1.0 Mage",
     faction: "left",
     kind: "regular",
     hp: 30, mp: 18, atk: 9, def: 7, spd: 12, xp: 16, gold: 14,
     sprite: "enemy-mage", lecture: true,
-    intro: "A blue-robe mage raises a hashtag staff. 'Unlearn, comrade.'",
+    intro: "Woke Retards 1.0 mage raises a hashtag staff. 'Unlearn, comrade.'",
     actions: ["attack", "lecture", "heal"],
   },
   {
     id: "leftward_progressive",
-    name: "Justice Activist",
+    name: "Woke 2.0 Activist",
     faction: "left",
     kind: "regular",
     hp: 34, mp: 14, atk: 9, def: 8, spd: 14, xp: 16, gold: 15,
     sprite: "enemy-activist", lecture: true,
-    intro: "An activist megaphone blares. JUSTICE. EQUITY. NOW.",
+    intro: "Woke Retards 2.0 megaphone blares. JUSTICE. EQUITY. NOW.",
     actions: ["attack", "lecture", "buff"],
   },
   {
@@ -135,12 +153,12 @@ const REGULAR: EnemyDef[] = [
   },
   {
     id: "left_out_berserker",
-    name: "SJW Berserker",
+    name: "Woke 2.0 Berserker",
     faction: "left",
     kind: "regular",
     hp: 42, mp: 0, atk: 12, def: 5, spd: 9, xp: 19, gold: 13,
     sprite: "enemy-berserker",
-    intro: "A hooded berserker howls INEQUALITY, then charges.",
+    intro: "Woke 2.0 berserker howls INEQUALITY, then charges.",
     actions: ["attack"],
   },
   {
@@ -307,49 +325,50 @@ export const DIALOGUE: Record<string, string[]> = {
     "If chalk dust follows you — Neutralizer. History is sticky.",
   ],
   hub_guide: [
-    "GUIDE: Neutral Hub. Public theater east and west.",
-    "BLUE west — re-education stage. RED east — faith-order stage.",
+    "GUIDE: Neutral Hub. Public theater east and west — farm teams for the vault.",
+    "BLUE west — Woke Retards 1.0 / 2.0. RED east — MAGA/MIGA Zionist Chuds.",
     "Win 3 each, silence both Instructors, unlock the gold gate.",
-    "Below: banking, oil, land, media, thrones — the real outline.",
-    "1776 twin birth. Round Table maps. Fed roads. Serpent crown last.",
+    "Below: Illuminati outline — banking, oil, land, media, thrones.",
+    "9/11 woke the hammer. 1776 twin birth. Fed roads. Serpent crown last.",
     "Talk to me if you forget which door is theater.",
   ],
   hub_veteran: [
     "VETERAN: Solomon's Temple. Grand Lodge 1717. Illuminati 1776.",
     "Bavaria banned the lodge; the ledger moved to banks and oil.",
-    "Smash vaults in order. Thirteen thrones, one serpent crown.",
+    "9/11 was the spark. Red and Blue are theater. Smash the vaults.",
+    "Thirteen thrones, one serpent crown.",
   ],
   left_recruiter: [
-    "LEFT RECRUITER: Smash hierarchy! Join the illuminated left!",
-    "BAKI: Both sides audition for the same bloodlines.",
+    "LEFT RECRUITER: Join Woke Retards 1.0 — or graduate to 2.0!",
+    "BAKI: Both Woke poles audition for the same bloodlines.",
     "LEFT RECRUITER: Neutrality is complicity!",
     "BAKI: So is a script. I write my own swings.",
   ],
   right_recruiter: [
-    "RIGHT RECRUITER: Stand with the faithful order!",
+    "RIGHT RECRUITER: Stand with the MAGA/MIGA Zionist Chuds!",
     "BAKI: Order is a costume the vault rents out.",
     "RIGHT RECRUITER: Then swing for the righteous!",
     "BAKI: Righteousness isn't a team sport.",
   ],
   red_preacher: [
-    "PREACHER: Faith-first banners hide Round Table ink.",
+    "PREACHER: MAGA/MIGA Zionist Chuds banners hide Round Table ink.",
     "Three wins. Instructor. Half the dungeon key.",
-    "Don't let Blue chalk — or Red hymns — own your knuckles.",
+    "Don't let Woke chalk — or Chud hymns — own your knuckles.",
   ],
   blue_tutor: [
-    "TUTOR: Re-education is just soft Illuminati branding.",
+    "TUTOR: Woke Retards 1.0 / 2.0 — soft Illuminati branding.",
     "Three wins. Lecture pit. Other half of the key.",
     "Assassins of Alamut kept secrets. We keep quizzes.",
   ],
   sign_red: [
-    "RED DISTRICT — public order theater.",
+    "RED DISTRICT — MAGA/MIGA Zionist Chuds theater.",
     "Right-faction skirmishes. Win 3, then Forum Instructor.",
-    "Farm team for the vault. Not the vault itself.",
+    "Farm team for the Illuminati vault. Not the vault itself.",
   ],
   sign_blue: [
-    "BLUE DISTRICT — public justice theater.",
+    "BLUE DISTRICT — Woke Retards 1.0 / 2.0 theater.",
     "Left-faction skirmishes. Win 3, then Forum Instructor.",
-    "Farm team for the vault. Not the vault itself.",
+    "Farm team for the Illuminati vault. Not the vault itself.",
   ],
   sign_dungeon: [
     "DUNGEON GATE — Thirteen Thrones Approach.",
@@ -367,24 +386,25 @@ export const DIALOGUE: Record<string, string[]> = {
     "The Round Table funded maps; the Fed printed the roads.",
   ],
   intro: [
-    "An outline of history ends in thrones — and starts in myths.",
-    "Atlantis whispers. Solomon's Temple. Illuminati, 1776.",
-    "Red and Blue are public theater. The dungeon is the ledger.",
-    "You are BAKI THE HAMMER — true neutral.",
-    "Break thirteen bloodlines. Do not be Re-Educated.",
+    "September 11, 2001. New York. The towers fall — an inside job.",
+    "That day wakes BAKI THE HAMMER.",
+    "Outline of history: Atlantis rumor. Temple. Illuminati, 1776. Fed. Foundations. Thrones.",
+    "Woke Retards 1.0. Woke Retards 2.0. MAGA/MIGA Zionist Chuds — both parties, same stage.",
+    "Smash the Illuminati bloodlines. Break both theaters. Do not be Re-Educated.",
     "Hub Guide knows the doors. Tavern saves the swing.",
   ],
   red_enter: [
-    "Crimson banners. Faith-order stage lights.",
+    "Crimson banners. MAGA/MIGA Zionist Chuds stage lights.",
     "Objective: 3 wins, then the Forum Instructor.",
   ],
   blue_enter: [
-    "Blue lanterns. Re-education stage lights.",
+    "Blue lanterns. Woke Retards 1.0 / 2.0 stage lights.",
     "Objective: 3 wins, then the Forum Instructor.",
   ],
   dungeon_enter: [
     "Vault air. Coin-scent. Crystal-skull rumor in the dust.",
-    "Walk gold doors in order. Ledger lists seals.",
+    "Theaters above were Woke poles and MAGA/MIGA Chuds — farm teams.",
+    "Walk gold doors in order. Illuminati outline. Ledger lists seals.",
   ],
   plaque_1: ["PLAQUE: Rothschild banks, Vienna/Naples 1825. Round Table ink. Jekyll Island road."],
   plaque_2: ["PLAQUE: 1863 refinery. Standard Oil 1870. Breakup 1911 — foundations kept the books."],
@@ -583,12 +603,10 @@ export const DIALOGUE: Record<string, string[]> = {
     "BAKI: I kneel to a hammer.",
   ],
   ending: [
-    "Illuminati, 1776 — twin birth with a republic.",
-    "Banks. Oil. Foundations. Bilderberg soft power.",
-    "The Serpent King splits — red scale, blue scale, neither catching the crown.",
-    "Baki plants the hammer in the cracked Thirteen Thrones.",
-    "'I am not your symbol. I am not your eschaton.'",
-    "The outline goes quiet. For now.",
+    "September 11 lit the fuse. The outline ends in thrones.",
+    "Woke Retards 1.0 / 2.0 and MAGA/MIGA Zionist Chuds were theater.",
+    "Bloodline seals cracked. Illuminati ledger goes quiet — for now.",
+    "Baki The Hammer stays true neutral. Twin birth claims neither child.",
   ],
   ending_neutral: [
     "You never chose a farm team. The ledger shows neither color winning.",

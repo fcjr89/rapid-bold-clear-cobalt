@@ -25,7 +25,10 @@
     "steam:dist:mac": "node steam/run-dist.mjs --mac",
     "mobile:sync": "npx cap sync",
     "mobile:ios": "npx cap open ios",
-    "mobile:android": "npx cap open android"
+    "mobile:android": "npx cap open android",
+    "steam:verify": "node scripts/steam-verify.mjs",
+    "steam:package": "node steam/package.mjs",
+    "mobile:verify": "node scripts/mobile-verify.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

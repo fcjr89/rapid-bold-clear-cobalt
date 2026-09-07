@@ -1,15 +1,42 @@
 import Phaser from "phaser";
 import { resolvePortrait } from "../art";
 import { playMusic, sfx } from "../audio";
+import {
+  CONSPIRACY_ACTIONS,
+  CONSPIRE_HOWTO,
+  GROUP_CARDS,
+  MAX_HAND,
+  SPECIAL_BY_ID,
+  buildDeck,
+  controlChance,
+  destroyBonusMult,
+  drawHand,
+  enemyPlotLine,
+  handDesc,
+  handLabel,
+  rollEnemyPlot,
+  summonStats,
+  type HandCard,
+  type SpecialEffectId,
+} from "../conspiracyDeck";
 import { ENEMIES, ITEM_HEAL, ITEMS, SKILLS } from "../database";
 import { axis, consumeCancel, consumeConfirm } from "../input";
-import { addStatus, defeatBoss, G, grantXp, hasStatus, tickStatuses } from "../state";
+import {
+  addStatus,
+  defeatBoss,
+  G,
+  grantXp,
+  hasStatus,
+  regenInfluence,
+  tickStatuses,
+  unlockGroupCard,
+} from "../state";
 import type { EnemyActionId, EnemyDef, ItemId, SkillId } from "../types";
 import { VIEW_H, VIEW_W } from "../types";
 import { bar, px, windowBox, wrap } from "../ui";
 import type { OverworldScene } from "./OverworldScene";
 
-type Menu = "main" | "skills" | "items" | "busy" | "end";
+type Menu = "main" | "skills" | "items" | "conspire" | "busy" | "end";
 
 interface Foe {
   def: EnemyDef;
@@ -19,12 +46,25 @@ interface Foe {
   atk: number;
   defStat: number;
   buff: number;
+  /** Skip next enemy action (Neutralize). */
+  stunned: number;
+  /** Market Crash: reduced gold payout + DEF. */
+  crashed: boolean;
+  /** Temporary ally shade (controlled) — not used on foes; see AllyShade. */
   spr: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite;
   nameLab: Phaser.GameObjects.Text;
   hpBar: Phaser.GameObjects.Graphics;
   hpNum: Phaser.GameObjects.Text;
   cursor: Phaser.GameObjects.Text;
   dead: boolean;
+}
+
+interface AllyShade {
+  label: string;
+  atk: number;
+  turnsLeft: number;
+  fromEnemyId: string;
+  doubleStrike: boolean;
 }
 
 export class BattleScene extends Phaser.Scene {
@@ -42,12 +82,17 @@ export class BattleScene extends Phaser.Scene {
   private statusTxt!: Phaser.GameObjects.Text;
   private hpNum!: Phaser.GameObjects.Text;
   private mpNum!: Phaser.GameObjects.Text;
+  private infNum!: Phaser.GameObjects.Text;
   private skillHint!: Phaser.GameObjects.Text;
   private targetHint!: Phaser.GameObjects.Text;
   private ended = false;
   private mini?: "red" | "blue";
-  private mainItems = ["ATTACK", "SKILLS", "ITEM", "FLEE"];
+  private mainItems = ["ATTACK", "SKILLS", "ITEM", "CONSPIRE", "FLEE"];
   private foeActI = 0;
+  private hand: HandCard[] = [];
+  private ally: AllyShade | null = null;
+  private allyLab?: Phaser.GameObjects.Text;
+  private menuScroll = 0;
 
   constructor() {
     super("battle");
@@ -63,6 +108,9 @@ export class BattleScene extends Phaser.Scene {
     this.target = 0;
     this.foeActI = 0;
     this.mini = data?.mini;
+    this.hand = [];
+    this.ally = null;
+    this.menuScroll = 0;
   }
 
   create() {
@@ -148,6 +196,8 @@ export class BattleScene extends Phaser.Scene {
         atk: Math.max(1, Math.floor(def.atk * atkScale)),
         defStat: def.def,
         buff: 0,
+        stunned: 0,
+        crashed: false,
         spr,
         nameLab,
         hpBar,
@@ -158,6 +208,10 @@ export class BattleScene extends Phaser.Scene {
       });
     });
 
+    // Conspiracy hand
+    const unlocked = G.flags.unlockedGroupCards ?? [];
+    this.hand = drawHand(buildDeck(unlocked), MAX_HAND);
+
     this.heroSpr = this.add.sprite(368, 148, this.textures.exists("baki-idle") ? "baki-idle" : "fx-hero-sil", 0);
     if (this.textures.exists("baki-idle")) {
       this.heroSpr.setScale(0.68);
@@ -166,7 +220,7 @@ export class BattleScene extends Phaser.Scene {
       this.heroSpr.setDisplaySize(64, 86);
     }
 
-    windowBox(this, 286, 8, 186, 52);
+    windowBox(this, 286, 8, 186, 58);
     if (this.textures.exists("art-baki-head")) {
       this.add.image(304, 34, "art-baki-head").setDisplaySize(32, 32);
     } else if (this.textures.exists("baki-portrait")) {
@@ -174,19 +228,20 @@ export class BattleScene extends Phaser.Scene {
     } else if (this.textures.exists("fx-hero-sil")) {
       this.add.image(302, 34, "fx-hero-sil").setDisplaySize(28, 28);
     }
-    px(this, 334, 14, "BAKI", 7, "#e8b84a");
-    this.hpBar = bar(this, 334, 26, 100, 6, 1, 0xc41e3a);
-    this.mpBar = bar(this, 334, 36, 100, 6, 1, 0x2a4a9a);
-    this.hpNum = px(this, 438, 24, "", 5, "#f0e6c8");
-    this.mpNum = px(this, 438, 34, "", 5, "#8eb4ff");
-    this.statusTxt = px(this, 334, 46, "", 6, "#7a8aa0");
+    px(this, 334, 12, "BAKI", 7, "#e8b84a");
+    this.hpBar = bar(this, 334, 24, 100, 5, 1, 0xc41e3a);
+    this.mpBar = bar(this, 334, 32, 100, 5, 1, 0x2a4a9a);
+    this.hpNum = px(this, 438, 22, "", 5, "#f0e6c8");
+    this.mpNum = px(this, 438, 30, "", 5, "#8eb4ff");
+    this.infNum = px(this, 334, 40, "", 5, "#c9a0ff");
+    this.statusTxt = px(this, 334, 50, "", 5, "#7a8aa0");
+    this.allyLab = px(this, 286, 68, "", 5, "#6adf8a");
 
     windowBox(this, 8, 160, 168, 102);
     this.menuTitle = px(this, 16, 166, "COMMAND", 7, "#e8b84a");
-    this.menuLabels = [0, 1, 2, 3, 4].map((i) => px(this, 16, 178 + i * 12, "", 6));
-    this.skillHint = px(this, 16, 242, "", 5, "#7a8aa0");
+    this.menuLabels = [0, 1, 2, 3, 4, 5].map((i) => px(this, 16, 176 + i * 11, "", 5));
+    this.skillHint = px(this, 16, 246, "", 4, "#7a8aa0");
     this.targetHint = px(this, 176, 148, "", 5, "#e8b84a");
-    // Multi-foe chrome accent
     if (this.textures.exists("ui-target")) {
       this.add.image(196, 156, "ui-target").setDisplaySize(14, 14).setDepth(52);
     }
@@ -199,6 +254,12 @@ export class BattleScene extends Phaser.Scene {
         ? `${defs.map((d) => d.name).join(" & ")} engage!`
         : defs[0]!.intro;
     this.say(intro);
+    if (!G.flags.conspireHowtoShown) {
+      this.say(CONSPIRE_HOWTO);
+      G.flags.conspireHowtoShown = true;
+    } else {
+      this.say(`Hand: ${this.hand.length} cards · INF ${G.hero.influence}`);
+    }
     this.retarget();
     this.drawMenu();
     this.drawBars();
@@ -240,50 +301,87 @@ export class BattleScene extends Phaser.Scene {
   drawBars() {
     this.hpBar.destroy();
     this.mpBar.destroy();
-    this.hpBar = bar(this, 334, 26, 100, 6, G.hero.hp / G.hero.maxHp, 0xc41e3a);
-    this.mpBar = bar(this, 334, 36, 100, 6, G.hero.mp / G.hero.maxMp, 0x2a4a9a);
+    this.hpBar = bar(this, 334, 24, 100, 5, G.hero.hp / G.hero.maxHp, 0xc41e3a);
+    this.mpBar = bar(this, 334, 32, 100, 5, G.hero.mp / G.hero.maxMp, 0x2a4a9a);
     this.hpNum?.setText(`${G.hero.hp}/${G.hero.maxHp}`);
     this.mpNum?.setText(`${G.hero.mp}/${G.hero.maxMp}`);
+    this.infNum?.setText(`INF ${G.hero.influence}/${G.hero.maxInfluence}`);
     const st = G.statuses.map((s) => s.name).join(" · ") || "TRUE NEUTRAL";
-    this.statusTxt.setText(st);
+    this.statusTxt.setText(st.slice(0, 28));
+    if (this.allyLab) {
+      this.allyLab.setText(
+        this.ally
+          ? `ALLY ${this.ally.label.slice(0, 16)} T${this.ally.turnsLeft}`
+          : "",
+      );
+    }
 
     for (const f of this.foes) {
       f.hpBar.destroy();
       const i = this.foes.indexOf(f);
       const barY = 8 + i * 22;
       f.hpBar = bar(this, 14, barY + 12, 160, 4, f.dead ? 0 : f.hp / f.maxHp, 0xc41e3a);
-      f.hpNum.setText(f.dead ? "DOWN" : `${f.hp}/${f.maxHp}`);
-      f.nameLab.setColor(f.dead ? "#7a8aa0" : "#e8b84a");
+      const stun = f.stunned > 0 ? " STUN" : "";
+      f.hpNum.setText(f.dead ? "DOWN" : `${f.hp}/${f.maxHp}${stun}`);
+      f.nameLab.setColor(f.dead ? "#7a8aa0" : f.stunned > 0 ? "#8eb4ff" : "#e8b84a");
     }
+  }
+
+  conspireOptions(): string[] {
+    const acts = CONSPIRACY_ACTIONS.map((a) => `${a.name.split(" ").slice(-1)[0]} ${a.influence}INF`);
+    const cards = this.hand.map((c) => handLabel(c));
+    return [...acts, ...cards];
   }
 
   options(): string[] {
     if (this.menu === "main") return this.mainItems;
     if (this.menu === "skills") return SKILLS.map((s) => `${s.name} ${s.mp}MP`);
     if (this.menu === "items") return ITEMS.map((it) => `${it.name} x${G.hero.items[it.id]}`);
+    if (this.menu === "conspire") return this.conspireOptions();
     return [];
   }
 
   drawMenu() {
     const opts = this.options();
-    this.menuTitle.setText(this.menu === "skills" ? "SKILLS" : this.menu === "items" ? "ITEMS" : "COMMAND");
+    const title =
+      this.menu === "skills"
+        ? "SKILLS"
+        : this.menu === "items"
+          ? "ITEMS"
+          : this.menu === "conspire"
+            ? "CONSPIRE"
+            : "COMMAND";
+    this.menuTitle.setText(title);
+    const vis = 6;
+    if (this.cursor < this.menuScroll) this.menuScroll = this.cursor;
+    if (this.cursor >= this.menuScroll + vis) this.menuScroll = this.cursor - vis + 1;
     this.menuLabels.forEach((lab, i) => {
-      const opt = opts[i];
+      const idx = this.menuScroll + i;
+      const opt = opts[idx];
       if (!opt) {
         lab.setText("");
         return;
       }
-      const on = i === this.cursor;
-      lab.setText(`${on ? ">" : " "} ${opt}`);
+      const on = idx === this.cursor;
+      lab.setText(`${on ? ">" : " "} ${opt}`.slice(0, 26));
       lab.setColor(on ? "#e8b84a" : "#f0e6c8");
     });
     if (this.menu === "skills" && SKILLS[this.cursor]) {
       const sk = SKILLS[this.cursor]!;
-      this.skillHint?.setText(sk.desc);
-      this.skillHint?.setColor(sk.id === "common_sense" ? "#6adf8a" : "#7a8aa0");
+      this.skillHint?.setText(sk.desc.slice(0, 42));
+      this.skillHint?.setColor(sk.id.startsWith("conspire") ? "#c9a0ff" : sk.id === "common_sense" ? "#6adf8a" : "#7a8aa0");
     } else if (this.menu === "items" && ITEMS[this.cursor]) {
       this.skillHint?.setText(ITEMS[this.cursor]!.desc);
       this.skillHint?.setColor("#7a8aa0");
+    } else if (this.menu === "conspire") {
+      const nAct = CONSPIRACY_ACTIONS.length;
+      if (this.cursor < nAct) {
+        this.skillHint?.setText(CONSPIRACY_ACTIONS[this.cursor]!.desc.slice(0, 42));
+      } else {
+        const card = this.hand[this.cursor - nAct];
+        this.skillHint?.setText(card ? handDesc(card).slice(0, 42) : "");
+      }
+      this.skillHint?.setColor("#c9a0ff");
     } else {
       this.skillHint?.setText(this.living().length > 1 ? "Z OK  X BACK  ◀▶ TARGET" : "Z OK  X BACK");
       this.skillHint?.setColor("#7a8aa0");
@@ -323,6 +421,7 @@ export class BattleScene extends Phaser.Scene {
       if (this.menu !== "main") {
         this.menu = "main";
         this.cursor = 0;
+        this.menuScroll = 0;
         sfx("menu");
         this.drawMenu();
       }
@@ -338,11 +437,19 @@ export class BattleScene extends Phaser.Scene {
       else if (c === "SKILLS") {
         this.menu = "skills";
         this.cursor = 0;
+        this.menuScroll = 0;
         sfx("ok");
         this.drawMenu();
       } else if (c === "ITEM") {
         this.menu = "items";
         this.cursor = 0;
+        this.menuScroll = 0;
+        sfx("ok");
+        this.drawMenu();
+      } else if (c === "CONSPIRE") {
+        this.menu = "conspire";
+        this.cursor = 0;
+        this.menuScroll = 0;
         sfx("ok");
         this.drawMenu();
       } else if (c === "FLEE") this.tryFlee();
@@ -356,7 +463,280 @@ export class BattleScene extends Phaser.Scene {
     if (this.menu === "items") {
       const it = ITEMS[this.cursor];
       if (it) this.useItem(it.id);
+      return;
     }
+    if (this.menu === "conspire") this.pickConspire();
+  }
+
+  pickConspire() {
+    const nAct = CONSPIRACY_ACTIONS.length;
+    if (this.cursor < nAct) {
+      const act = CONSPIRACY_ACTIONS[this.cursor]!;
+      this.runConspiracyAction(act.id);
+      return;
+    }
+    const card = this.hand[this.cursor - nAct];
+    if (card) this.playHandCard(card, this.cursor - nAct);
+  }
+
+  spendInfluence(n: number): boolean {
+    if (G.hero.influence < n) {
+      sfx("no");
+      this.say(`Need ${n} Influence.`);
+      return false;
+    }
+    G.hero.influence -= n;
+    return true;
+  }
+
+  runConspiracyAction(id: "control" | "neutralize" | "destroy") {
+    const def = CONSPIRACY_ACTIONS.find((a) => a.id === id)!;
+    const foe = this.primary();
+    if (!foe) return;
+    if (!this.spendInfluence(def.influence)) return;
+    this.lock();
+    sfx("ok");
+    if (id === "control") {
+      const group = GROUP_CARDS[`group_${foe.def.id}`];
+      const power = group?.power ?? Math.round(foe.atk * 0.9);
+      const resist = group?.resistance ?? foe.defStat;
+      const chance = controlChance(power + Math.floor(G.hero.level / 2), resist);
+      if (Math.random() < chance) {
+        const stats = summonStats(group ?? GROUP_CARDS[`group_${foe.def.id}`] ?? {
+          id: "tmp",
+          enemyId: foe.def.id,
+          name: foe.def.name,
+          alignment: "Order",
+          power,
+          resistance: resist,
+          income: 1,
+          kind: foe.def.kind,
+          faction: foe.def.faction,
+        });
+        this.ally = {
+          label: stats.label,
+          atk: stats.atk,
+          turnsLeft: stats.turns,
+          fromEnemyId: foe.def.id,
+          doubleStrike: false,
+        };
+        this.hurtFoe(foe, Math.max(1, Math.floor(foe.hp * 0.15)));
+        this.say(`CONTROL! ${this.ally.label} joins (${this.ally.turnsLeft}t).`);
+        sfx("heal");
+      } else {
+        const { n } = this.dmg(G.hero.atk, foe.defStat, 0.7);
+        this.hurtFoe(foe, n);
+        this.say(`Control failed. Grazed for ${n}.`);
+        sfx("no");
+      }
+    } else if (id === "neutralize") {
+      foe.stunned = 1;
+      const { n } = this.dmg(G.hero.atk, foe.defStat, 0.55);
+      this.hurtFoe(foe, n);
+      this.say(`Neutralized ${foe.def.name}! Stun + ${n}.`);
+      sfx("ok");
+    } else {
+      const mult = destroyBonusMult(foe.hp / foe.maxHp, false);
+      const { n, crit } = this.dmg(G.hero.atk, foe.defStat, mult);
+      this.hurtFoe(foe, n);
+      if (foe.hp <= 0) this.say(`DESTROYED ${foe.def.name}!`);
+      else this.say(crit ? `Destroy CRIT ${n}.` : `Destroy hits ${n}.`);
+      sfx(foe.hp <= 0 ? "crit" : "hit");
+    }
+    this.drawBars();
+    this.time.delayedCall(480, () => this.afterPlayer());
+  }
+
+  playHandCard(card: HandCard, handIndex: number) {
+    if (card.kind === "group") {
+      const g = GROUP_CARDS[card.id];
+      if (!g) return;
+      if (!this.spendInfluence(2)) return;
+      this.lock();
+      const stats = summonStats(g);
+      this.ally = {
+        label: stats.label,
+        atk: stats.atk,
+        turnsLeft: stats.turns,
+        fromEnemyId: g.enemyId,
+        doubleStrike: false,
+      };
+      this.hand.splice(handIndex, 1);
+      this.say(`Summoned ${this.ally.label}!`);
+      sfx("heal");
+      this.drawBars();
+      this.time.delayedCall(400, () => this.afterPlayer());
+      return;
+    }
+    this.playSpecial(card.id, handIndex);
+  }
+
+  playSpecial(id: SpecialEffectId, handIndex: number, fromSkill = false) {
+    const sp = SPECIAL_BY_ID[id];
+    if (!sp) return;
+    if (!fromSkill && !this.spendInfluence(sp.influence)) return;
+    if (sp.gold && G.hero.gold < sp.gold) {
+      if (!fromSkill) G.hero.influence += sp.influence; // refund
+      sfx("no");
+      this.say(`Need ${sp.gold} gold.`);
+      return;
+    }
+    if (sp.mp && G.hero.mp < sp.mp) {
+      if (!fromSkill) G.hero.influence += sp.influence;
+      sfx("no");
+      this.say("Not enough MP.");
+      return;
+    }
+    this.lock();
+    if (!fromSkill) {
+      if (sp.gold) G.hero.gold -= sp.gold;
+      if (sp.mp) G.hero.mp -= sp.mp;
+      if (handIndex >= 0) this.hand.splice(handIndex, 1);
+    } else if (sp.gold) {
+      // Skill path already paid INF/MP; still charge gold for Bribe.
+      G.hero.gold -= sp.gold;
+    }
+
+    const foe = this.primary();
+    if (id === "bribe" && foe) {
+      const group = GROUP_CARDS[`group_${foe.def.id}`];
+      const chance = controlChance(group?.power ?? 10, group?.resistance ?? 10, 0.35);
+      if (Math.random() < chance) {
+        const stats = summonStats(
+          group ?? {
+            id: "tmp",
+            enemyId: foe.def.id,
+            name: foe.def.name,
+            alignment: "Capital",
+            power: 10,
+            resistance: 8,
+            income: 2,
+            kind: foe.def.kind,
+            faction: foe.def.faction,
+          },
+        );
+        this.ally = {
+          label: stats.label,
+          atk: stats.atk,
+          turnsLeft: stats.turns,
+          fromEnemyId: foe.def.id,
+          doubleStrike: false,
+        };
+        this.say(`Bribe works — ${this.ally.label} flips.`);
+        sfx("heal");
+      } else {
+        this.say("Bribe refused. Gold wasted.");
+        sfx("no");
+      }
+    } else if (id === "assassinate" && foe) {
+      const bonus = foe.stunned > 0 ? 2.1 : 1.7;
+      const { n, crit } = this.dmg(G.hero.atk, foe.defStat, bonus);
+      this.hurtFoe(foe, n);
+      this.say(crit ? `Assassinate CRIT ${n}!` : `Assassinate ${n}.`);
+      sfx("crit");
+    } else if (id === "media_blackout") {
+      addStatus({ id: "mute_armed", name: "BLACKOUT", turns: 4 });
+      this.say("Media Blackout — Lectures muted.");
+      sfx("ok");
+    } else if (id === "market_crash" && foe) {
+      foe.crashed = true;
+      foe.defStat = Math.max(1, Math.floor(foe.defStat * 0.7));
+      this.say(`Market Crash on ${foe.def.name}. DEF/gold down.`);
+      sfx("ok");
+    } else if (id === "double_agent" && foe) {
+      if (foe.buff > 0) {
+        foe.buff = 0;
+        foe.atk = foe.def.atk;
+        addStatus({ id: "buff_atk", name: "STOLEN BUFF", turns: 3 });
+        this.say("Double Agent steals their rally!");
+        sfx("heal");
+      } else {
+        addStatus({ id: "buff_atk", name: "AGENT EDGE", turns: 2 });
+        this.say("Double Agent grants a thin edge.");
+        sfx("ok");
+      }
+    } else if (id === "pyramid_scheme") {
+      const unlocked = G.flags.unlockedGroupCards ?? [];
+      const pick = unlocked[Math.floor(Math.random() * unlocked.length)];
+      const g = pick ? GROUP_CARDS[pick] : undefined;
+      if (g) {
+        const stats = summonStats(g);
+        this.ally = {
+          label: stats.label,
+          atk: Math.max(3, Math.floor(stats.atk * 0.85)),
+          turnsLeft: stats.turns,
+          fromEnemyId: g.enemyId,
+          doubleStrike: false,
+        };
+        this.say(`Pyramid Scheme: ${this.ally.label}!`);
+        sfx("heal");
+      } else {
+        this.say("Pyramid Scheme fizzles — no groups.");
+        sfx("no");
+      }
+    } else if (id === "leak" && foe) {
+      foe.buff = 0;
+      foe.atk = foe.def.atk;
+      const { n } = this.dmg(G.hero.atk, foe.defStat, 0.9);
+      this.hurtFoe(foe, n);
+      for (const o of this.living()) {
+        if (o === foe) continue;
+        this.hurtFoe(o, Math.max(1, Math.floor(n * 0.4)));
+      }
+      this.say(`Leak strips buffs. Hit ${n}.`);
+      sfx("hit");
+    } else if (id === "honeypot") {
+      addStatus({ id: "honeypot", name: "HONEYPOT", turns: 3 });
+      this.say("Honeypot set — next Lecture heals you.");
+      sfx("ok");
+    } else if (id === "shell_corp") {
+      regenInfluence(2);
+      G.hero.gold += 12;
+      this.say("Shell Corp: +2 INF +12G.");
+      sfx("heal");
+    } else if (id === "astroturf") {
+      if (this.ally) {
+        this.ally.doubleStrike = true;
+        this.say("Astroturf: ally strikes twice.");
+        sfx("ok");
+      } else {
+        this.say("Astroturf needs an ally shade.");
+        sfx("no");
+      }
+    } else if (id === "dead_drop") {
+      const m = Math.min(12, G.hero.maxMp - G.hero.mp);
+      G.hero.mp += m;
+      regenInfluence(1);
+      this.say(`Dead Drop: +${m} MP +1 INF.`);
+      sfx("heal");
+    } else if (id === "false_flag" && foe) {
+      if (Math.random() < 0.55) {
+        const { n } = this.dmg(foe.atk, foe.defStat, 0.9);
+        this.hurtFoe(foe, n);
+        this.say(`False Flag — they hit themselves for ${n}!`);
+        sfx("crit");
+      } else {
+        this.say("False Flag flops.");
+        sfx("no");
+      }
+    } else if (id === "soft_power") {
+      const heal = Math.min(40, G.hero.maxHp - G.hero.hp);
+      G.hero.hp += heal;
+      addStatus({ id: "soft_power", name: "SOFT POWER", turns: 3 });
+      this.say(`Soft Power heals ${heal}. DEF edge.`);
+      sfx("heal");
+    } else if (id === "ledger_wipe" && foe) {
+      const capital = foe.def.faction === "bloodline" || foe.def.faction === "final";
+      const { n, crit } = this.dmg(G.hero.atk, foe.defStat, capital ? 2.2 : 1.3);
+      this.hurtFoe(foe, n);
+      this.say(capital ? `Ledger Wipe vs Capital! ${n}` : `Ledger Wipe ${n}.`);
+      sfx(crit || capital ? "crit" : "hit");
+    } else {
+      this.say(`${sp.name} resolves.`);
+      sfx("ok");
+    }
+    this.drawBars();
+    this.time.delayedCall(480, () => this.afterPlayer());
   }
 
   lock() {
@@ -367,12 +747,15 @@ export class BattleScene extends Phaser.Scene {
     if (this.ended) return;
     this.menu = "main";
     this.cursor = 0;
+    this.menuScroll = 0;
     this.retarget();
     this.drawMenu();
   }
 
   dmg(atk: number, def: number, mult = 1) {
-    const raw = (atk * 1.2 - def * 0.5) * mult * (0.86 + Math.random() * 0.28);
+    let a = atk;
+    if (hasStatus("buff_atk")) a = Math.floor(a * 1.2);
+    const raw = (a * 1.2 - def * 0.5) * mult * (0.86 + Math.random() * 0.28);
     const crit = Math.random() < 0.08;
     const n = Math.max(1, Math.floor(raw * (crit ? 1.55 : 1)));
     return { n, crit };
@@ -415,6 +798,42 @@ export class BattleScene extends Phaser.Scene {
   }
 
   useSkill(id: SkillId) {
+    // Conspire skill line → specials
+    if (id === "conspire_bribe") {
+      if (G.hero.influence < 1) {
+        sfx("no");
+        this.say("Need 1 Influence.");
+        return;
+      }
+      G.hero.influence -= 1;
+      this.playSpecial("bribe", -1, true);
+      return;
+    }
+    if (id === "conspire_blackout") {
+      const sk = SKILLS.find((s) => s.id === id)!;
+      if (G.hero.mp < sk.mp || G.hero.influence < 2) {
+        sfx("no");
+        this.say("Need 3 MP + 2 INF.");
+        return;
+      }
+      G.hero.mp -= sk.mp;
+      G.hero.influence -= 2;
+      this.playSpecial("media_blackout", -1, true);
+      return;
+    }
+    if (id === "conspire_assassinate") {
+      const sk = SKILLS.find((s) => s.id === id)!;
+      if (G.hero.mp < sk.mp || G.hero.influence < 2) {
+        sfx("no");
+        this.say("Need 4 MP + 2 INF.");
+        return;
+      }
+      G.hero.mp -= sk.mp;
+      G.hero.influence -= 2;
+      this.playSpecial("assassinate", -1, true);
+      return;
+    }
+
     const sk = SKILLS.find((s) => s.id === id)!;
     if (G.hero.mp < sk.mp) {
       sfx("no");
@@ -433,7 +852,6 @@ export class BattleScene extends Phaser.Scene {
       foe.buff = 0;
       foe.atk = foe.def.atk;
       this.say(crit ? `Clarity CRIT ${n}. Buffs stripped.` : `Clarity smash ${n}. Buffs stripped.`);
-      // Light splash to other living foes
       for (const o of this.living()) {
         if (o === foe) continue;
         const splash = Math.max(1, Math.floor(n * 0.48));
@@ -535,8 +953,54 @@ export class BattleScene extends Phaser.Scene {
       this.victory();
       return;
     }
+    // Ally shade acts once (or twice with Astroturf)
+    if (this.ally && this.ally.turnsLeft > 0) {
+      this.allyStrike(() => {
+        if (!this.living().length) {
+          this.victory();
+          return;
+        }
+        this.foeActI = 0;
+        this.time.delayedCall(220, () => this.enemyWave());
+      });
+      return;
+    }
     this.foeActI = 0;
     this.time.delayedCall(280, () => this.enemyWave());
+  }
+
+  allyStrike(done: () => void) {
+    if (!this.ally) {
+      done();
+      return;
+    }
+    const foe = this.primary();
+    if (!foe) {
+      done();
+      return;
+    }
+    const strikes = this.ally.doubleStrike ? 2 : 1;
+    this.ally.doubleStrike = false;
+    let i = 0;
+    const hit = () => {
+      if (i >= strikes || !this.living().length) {
+        done();
+        return;
+      }
+      const t = this.primary();
+      if (!t) {
+        done();
+        return;
+      }
+      const { n } = this.dmg(this.ally!.atk, t.defStat, 0.95);
+      this.hurtFoe(t, n);
+      this.say(`${this.ally!.label} strikes ${n}.`);
+      sfx("hit");
+      this.drawBars();
+      i += 1;
+      this.time.delayedCall(220, hit);
+    };
+    hit();
   }
 
   enemyWave() {
@@ -552,6 +1016,13 @@ export class BattleScene extends Phaser.Scene {
     }
     const foe = live[this.foeActI]!;
     this.foeActI += 1;
+    if (foe.stunned > 0) {
+      foe.stunned -= 1;
+      this.say(`${foe.def.name} is neutralized — skips.`);
+      this.drawBars();
+      this.time.delayedCall(200, () => this.enemyWave());
+      return;
+    }
     this.enemyAct(foe, () => {
       if (G.hero.hp <= 0) {
         this.defeat();
@@ -565,8 +1036,12 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
-  /** Smarter AI: lecture when useful, heal/buff wisely, don't waste MP. */
-  chooseAct(foe: Foe): EnemyActionId {
+  chooseAct(foe: Foe): EnemyActionId | "plot" {
+    const plot = rollEnemyPlot(foe.def.kind);
+    if (plot) {
+      (foe as Foe & { _plot?: string })._plot = plot;
+      return "plot" as EnemyActionId & "plot";
+    }
     const acts = foe.def.actions;
     const hpRatio = foe.hp / foe.maxHp;
     const heroWeak = hasStatus("reeducate") || G.hero.hp / G.hero.maxHp < 0.4;
@@ -579,7 +1054,7 @@ export class BattleScene extends Phaser.Scene {
       if (heroWeak || foe.def.canReeducate || foe.def.media) return "lecture";
       if (Math.random() < 0.4) return "lecture";
     }
-    if (can("special") && foe.mp >= 6 && (hpRatio < 0.4 || Math.random() < 0.28)) return "special";
+    if (can("special") && foe.mp >= 6 && (hpRatio < 0.55 || Math.random() < 0.28)) return "special";
     if (can("attack")) return "attack";
     return acts[Math.floor(Math.random() * acts.length)] ?? "attack";
   }
@@ -590,6 +1065,23 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     const act = this.chooseAct(foe);
+
+    if ((act as string) === "plot") {
+      const plot = ((foe as Foe & { _plot?: "network_jam" | "smear" | "counter_bribe" })._plot ??
+        "network_jam") as "network_jam" | "smear" | "counter_bribe";
+      this.say(enemyPlotLine(foe.def.name, plot));
+      if (plot === "network_jam") {
+        G.hero.influence = Math.max(0, G.hero.influence - 1);
+      } else if (plot === "smear") {
+        addStatus({ id: "smear", name: "SMEAR", turns: 2 });
+      } else {
+        G.hero.gold = Math.max(0, G.hero.gold - 8);
+      }
+      sfx("no");
+      this.drawBars();
+      done();
+      return;
+    }
 
     if (act === "heal") {
       if (foe.mp < 4) {
@@ -620,6 +1112,16 @@ export class BattleScene extends Phaser.Scene {
         this.hurtFoe(foe, n);
         this.say(`Lecture muted. Counter ${n}!`);
         sfx("crit");
+        this.drawBars();
+        done();
+        return;
+      }
+      if (hasStatus("honeypot")) {
+        G.statuses = G.statuses.filter((s) => s.id !== "honeypot");
+        const heal = Math.min(30, G.hero.maxHp - G.hero.hp);
+        G.hero.hp += heal;
+        this.say(`Honeypot! Lecture heals you ${heal}.`);
+        sfx("heal");
         this.drawBars();
         done();
         return;
@@ -671,6 +1173,8 @@ export class BattleScene extends Phaser.Scene {
   applyHeroDmg(n: number, msg: string) {
     let d = n;
     if (hasStatus("reeducate")) d = Math.floor(d * 1.2);
+    if (hasStatus("smear")) d = Math.floor(d * 1.15);
+    if (hasStatus("soft_power")) d = Math.floor(d * 0.85);
     G.hero.hp = Math.max(0, G.hero.hp - d);
     this.say(msg);
     sfx("hit");
@@ -702,6 +1206,23 @@ export class BattleScene extends Phaser.Scene {
         if (f.buff <= 0) f.atk = f.def.atk;
       }
     }
+    if (this.ally) {
+      this.ally.turnsLeft -= 1;
+      if (this.ally.turnsLeft <= 0) {
+        this.say(`${this.ally.label} fades.`);
+        this.ally = null;
+      }
+    }
+    regenInfluence(1);
+    // Top up hand slightly
+    if (this.hand.length < MAX_HAND && Math.random() < 0.4) {
+      const deck = buildDeck(G.flags.unlockedGroupCards ?? []);
+      const drawn = drawHand(deck, 1);
+      if (drawn[0] && !this.hand.some((h) => h.kind === drawn[0]!.kind && h.id === drawn[0]!.id)) {
+        this.hand.push(drawn[0]);
+        this.say("Drew a conspiracy card.");
+      }
+    }
     const msgs = tickStatuses();
     for (const m of msgs) this.say(m);
     this.drawBars();
@@ -716,12 +1237,16 @@ export class BattleScene extends Phaser.Scene {
     let xp = 0;
     let gold = 0;
     let lead = this.foes[0]!.def;
+    const unlockedNow: string[] = [];
     for (const f of this.foes) {
       xp += f.def.xp;
-      gold += f.def.gold;
+      let g = f.def.gold;
+      if (f.crashed) g = Math.floor(g * 0.55);
+      gold += g;
       if (f.def.kind === "boss" || f.def.kind === "final" || f.def.kind === "miniboss") lead = f.def;
+      const u = unlockGroupCard(f.def.id);
+      if (u) unlockedNow.push(GROUP_CARDS[u]?.name ?? u);
     }
-    // Multi-foe: trim XP/gold so packs aren't jackpots (HP already scaled)
     if (this.foes.length === 2) {
       xp = Math.floor(xp * 0.88);
       gold = Math.floor(gold * 0.9);
@@ -731,6 +1256,7 @@ export class BattleScene extends Phaser.Scene {
     }
     const notes = grantXp(xp);
     G.hero.gold += gold;
+    regenInfluence(1);
     if (Math.random() < 0.55) G.hero.items.potion += 1;
     else if (Math.random() < 0.35) G.hero.items.ether += 1;
     if (lead.kind === "boss" || lead.kind === "final") defeatBoss(lead.id);
@@ -744,6 +1270,7 @@ export class BattleScene extends Phaser.Scene {
     }
     this.say(`Victory! +${xp} XP  +${gold}G`);
     for (const n of notes) this.say(n);
+    for (const name of unlockedNow) this.say(`Group card unlocked: ${name}`);
     this.say("Z to continue.");
     this.drawBars();
   }

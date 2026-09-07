@@ -126,8 +126,8 @@ export const MAPS: Record<MapId, GameMap> = {
     ],
     npcs: [
       { x: 13, y: 8, id: "hub_guide", name: "Hub Guide", sprite: "npc-innkeeper" },
-      { x: 8, y: 8, id: "left_recruiter", name: "Left Recruiter", sprite: "enemy-mage" },
-      { x: 17, y: 8, id: "right_recruiter", name: "Right Recruiter", sprite: "enemy-crusader" },
+      { x: 8, y: 8, id: "left_recruiter", name: "Woke Recruiter", sprite: "enemy-mage" },
+      { x: 17, y: 8, id: "right_recruiter", name: "MAGA/MIGA Recruiter", sprite: "enemy-crusader" },
       { x: 15, y: 10, id: "hub_veteran", name: "Hub Veteran", sprite: "enemy-captain" },
       { x: 6, y: 13, id: "sign_blue", name: "Sign" },
       { x: 19, y: 13, id: "sign_red", name: "Sign" },
@@ -136,7 +136,7 @@ export const MAPS: Record<MapId, GameMap> = {
   },
   red: {
     id: "red",
-    name: "Red District",
+    name: "Red — MAGA/MIGA Chuds",
     music: "overworld",
     ground: RED,
     spawn: { x: 9, y: 10 },
@@ -153,7 +153,7 @@ export const MAPS: Record<MapId, GameMap> = {
   },
   blue: {
     id: "blue",
-    name: "Blue District",
+    name: "Blue — Woke Retards",
     music: "overworld",
     ground: BLUE,
     spawn: { x: 9, y: 10 },

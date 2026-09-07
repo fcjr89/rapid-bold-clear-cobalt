@@ -1,9 +1,13 @@
-/** Unified held-key input. Touch buttons inject the same codes. */
+/** Unified held-key input. Touch buttons + Gamepad inject the same codes. */
 
 const held = new Set<string>();
 const injected = new Set<string>();
 let confirmPulse = false;
 let cancelPulse = false;
+let menuPulse = false;
+
+/** Last-frame pressed flags for edge detection (avoid auto-fire). */
+const padPrev = new Map<string, boolean>();
 
 const CONFIRM = new Set(["KeyZ", "Space", "Enter", "KeyJ"]);
 const CANCEL = new Set(["KeyX", "Escape", "KeyK", "Backspace"]);
@@ -60,6 +64,12 @@ export function isDown(code: string): boolean {
   return held.has(code) || injected.has(code);
 }
 
+function padEdge(id: string, pressed: boolean): boolean {
+  const was = padPrev.get(id) ?? false;
+  padPrev.set(id, pressed);
+  return pressed && !was;
+}
+
 export function axis(): { x: number; y: number } {
   let x = 0;
   let y = 0;
@@ -67,7 +77,6 @@ export function axis(): { x: number; y: number } {
   if (isDown("KeyD") || isDown("ArrowRight")) x += 1;
   if (isDown("KeyW") || isDown("ArrowUp")) y -= 1;
   if (isDown("KeyS") || isDown("ArrowDown")) y += 1;
-  // Desktop / Steam controllers (standard layout)
   try {
     const pads = navigator.getGamepads?.() ?? [];
     for (const pad of pads) {
@@ -78,8 +87,10 @@ export function axis(): { x: number; y: number } {
       if (lx > 0.35 || pad.buttons[15]?.pressed) x += 1;
       if (ly < -0.35 || pad.buttons[12]?.pressed) y -= 1;
       if (ly > 0.35 || pad.buttons[13]?.pressed) y += 1;
-      if (pad.buttons[0]?.pressed) confirmPulse = true;
-      if (pad.buttons[1]?.pressed) cancelPulse = true;
+      if (padEdge(`${pad.index}:a`, Boolean(pad.buttons[0]?.pressed))) confirmPulse = true;
+      if (padEdge(`${pad.index}:b`, Boolean(pad.buttons[1]?.pressed))) cancelPulse = true;
+      if (padEdge(`${pad.index}:start`, Boolean(pad.buttons[9]?.pressed))) menuPulse = true;
+      if (padEdge(`${pad.index}:x`, Boolean(pad.buttons[2]?.pressed))) confirmPulse = true;
     }
   } catch {
     /* ignore */
@@ -103,6 +114,15 @@ export function consumeCancel(): boolean {
   return false;
 }
 
+/** Start / menu button edge (Steam Deck / Xbox Menu). */
+export function consumeMenu(): boolean {
+  if (menuPulse) {
+    menuPulse = false;
+    return true;
+  }
+  return false;
+}
+
 export function pulseConfirm() {
   confirmPulse = true;
 }
@@ -121,6 +141,11 @@ declare global {
       setSteer?: (v: number) => void;
     };
     __baki?: { map: string; hp: number };
-    __phaserGame?: { scene: { getScenes: (active?: boolean) => { sys: { settings: { key: string } } }[] } };
+    __phaserGame?: { scene: { getScenes: (active?: boolean) => { sys: { settings: { key: string } }[] } } };
+    cultureWarSteam?: {
+      getEnv: () => Promise<{ appId: string; borderless: boolean; fullscreen: boolean; platform: string }>;
+      setFullscreen: (v: boolean) => Promise<boolean>;
+      toggleFullscreen: () => Promise<boolean>;
+    };
   }
 }

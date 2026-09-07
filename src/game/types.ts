@@ -13,7 +13,10 @@ export type SkillId =
   | "mute_counter"
   | "independent"
   | "fact_check"
-  | "common_sense";
+  | "common_sense"
+  | "conspire_bribe"
+  | "conspire_blackout"
+  | "conspire_assassinate";
 
 export type ItemId = "potion" | "ether" | "neutralizer";
 
@@ -76,11 +79,21 @@ export interface HeroRuntime {
   def: number;
   spd: number;
   gold: number;
+  /** Conspiracy Deck resource — fuels Control / Specials / Summons. */
+  influence: number;
+  maxInfluence: number;
   items: Record<ItemId, number>;
 }
 
 export interface StatusEffect {
-  id: "reeducate" | "independent" | "mute_armed" | "buff_atk";
+  id:
+    | "reeducate"
+    | "independent"
+    | "mute_armed"
+    | "buff_atk"
+    | "honeypot"
+    | "soft_power"
+    | "smear";
   name: string;
   turns: number;
   alignment?: Alignment;
@@ -111,6 +124,10 @@ export interface GameFlags {
   leanHintShown?: boolean;
   /** First dungeon entry monologue shown. */
   dungeonLeanShown?: boolean;
+  /** Unlocked Conspiracy Deck group card ids (group_<enemyId>). */
+  unlockedGroupCards?: string[];
+  /** First-time conspire howto shown in battle. */
+  conspireHowtoShown?: boolean;
 }
 
 export interface Warp {

@@ -1,0 +1,39 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Baki The Hammer: Bloodlines of the Divide",
+      "hasCanvas": true,
+      "bodyTextLen": 41,
+      "bodyTextHash": "aeb2ff16945307d1680332ac2625663ca710a570489f992cb36c3e0f5be450c7",
+      "bodyTextPrefix": "Baki The Hammer: Bloodlines of the Divide",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Baki The Hammer: Bloodlines of the Divide",
+      "hasCanvas": true,
+      "bodyTextLen": 53,
+      "bodyTextHash": "7a90c2e161c462cd949e89a0b46a7b525767e7f58ad9c8fc7f693bc83fd9542e",
+      "bodyTextPrefix": "Baki The Hammer: Bloodlines of the Divide N W S E X Z",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [
+    "BRAND WARNING: this looks like a game/canvas app but /workspace/public/og.jpg is missing. Games and visually rich apps must ship a custom 1200x630 share card built from the app's own art — the default og.grok.me placeholder card is not acceptable for them. You are not done: open /workspace/.grok/skills/og/SKILL.md and finish the brand-asset pass.",
+    "BRAND WARNING: this looks like a game/canvas app but src/lib/og/site.json is missing \"type\": \"x:game\". X uses og:type=x:game to present the unfurl as a game card — set it in /workspace/src/lib/og/site.json per /workspace/.grok/skills/og/SKILL.md. Do not invent x:type or overload twitter:card as the game signal."
+  ],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

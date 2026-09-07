@@ -1,0 +1,67 @@
+Build a playable 2D retro RPG in the browser (Phaser 3 or pure canvas + JS). Title: "Baki The Hammer: Bloodlines of the Divide".
+
+VISUAL STYLE
+- SNES × Sega Genesis hybrid, Final Fantasy VI / Phantasy Star feel
+- 16-bit pixel art aesthetic, limited palette, Point-filter sprites
+- Overworld is top-down; battles are side-view turn-based like classic FF
+
+STORY / FANTASY
+- Player is BAKI THE HAMMER: true neutral centrist warrior with a war hammer
+- He is neither left nor right; both political factions attack him and try to "Re-Educate" him (status ailment that shifts temporary alignment)
+- Random encounters from LEFT, RIGHT, and SYSTEM (media / echo chamber) factions
+- Main campaign: clear Red District and Blue District, then fight the 13 Illuminati bloodline fantasy bosses, then final boss Merovingian Serpent King
+
+HERO
+- Name: Baki The Hammer
+- Stats start: HP 120, MP 40, ATK 18, DEF 12, SPD 14
+- Skills:
+  1) Hammer of Clarity (MP 8) — physical hit + remove enemy buffs
+  2) Mute Button Counter (MP 6) — counter when enemy uses Lecture
+  3) Independent Stance (MP 10) — immune to Re-Educate for 3 turns
+  4) Fact Check Smash (MP 12) — bonus damage vs media/echo types
+
+STATUS
+- Re-Educate: 3 turns, forces temporary alignment shift (debuff)
+
+ENEMY FACTIONS (use placeholder colored rectangles + labels if no sprites yet; map to these IDs)
+RIGHT: faith_first_crusader, no_apologies_brawler, pragmatic_polite, unconventional_rogue
+LEFT: loyal_liberal_mage, leftward_progressive, order_opportunity, left_out_berserker
+NEUTRAL/SYSTEM: tuned_out_middle, culture_war_captain, cable_news_puppet, echo_chamber_slime
+MINIBOSS: reeducation_instructor (can apply Re-Educate)
+
+BOSSES (order 1–14, higher HP, multi-phase if easy)
+1 Rothschild Archon of Coin — Vault of Interest
+2 Rockefeller Oil Titan — Refinery Depths
+3 Astor Real Estate Phantom — Rent Spire
+4 Bundy Ranch Warlock — Barbed Plains
+5 Collins Cathedral Necromancer — Stained Crypt
+6 DuPont Chemical Alchemist — Toxic Laboratory
+7 Freeman Media Hypnotist — Broadcast Spire
+8 Kennedy Dynasty Paladin — Dynasty Harbor
+9 Li Dragon Finance Emperor — Jade Ledger
+10 Onassis Shipping Hydra — Storm Docks
+11 Reynolds Smoke Demon — Lobby Haze
+12 Russell Watchtower Sentinel — Clock Citadel
+13 Van Duyn Serpent Diplomat — Handshake Vault
+14 FINAL Merovingian Serpent King — Thirteen Thrones
+
+GAME LOOP (MVP first)
+1. Title screen with "New Game"
+2. Small overworld map: Neutral Hub (Common Sense Tavern = heal/save), Red District, Blue District, Dungeon entrance
+3. Walk with arrow keys / WASD; collide to start random battle
+4. Turn-based battle: Attack, Skills, Item (Potion), Flee
+5. After 3–5 wins in a district, unlock next boss door
+6. Defeat first bloodline boss (Rothschild) as milestone
+7. Simple dialogue: NPCs try to recruit Baki; he refuses both sides
+
+DATA
+Embed or load a GameDatabase object with the enemy/boss stats above.
+Use placeholder art (colored blocks + text names) that we can swap for real PNGs later.
+
+UX
+- Keyboard controls only for MVP
+- Show HP/MP bars, skill menu, turn order
+- Pixel font / retro UI
+- Mobile-friendly touch buttons if easy
+
+Publish as a playable grok.me game. Start with MVP then we iterate: real sprite import, more bosses, save game.

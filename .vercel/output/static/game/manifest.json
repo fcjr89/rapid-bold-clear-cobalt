@@ -1,0 +1,143 @@
+{
+  "sprites": {
+    "baki-walk": {
+      "file": "/game/baki-walk.png",
+      "cell": 96,
+      "rows": 4,
+      "cols": 4
+    },
+    "baki-idle": {
+      "file": "/game/baki-idle.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "baki-attack": {
+      "file": "/game/baki-attack.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "enemy-right": {
+      "file": "/game/enemy-right.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "enemy-left": {
+      "file": "/game/enemy-left.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "enemy-slime": {
+      "file": "/game/enemy-slime.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "enemy-instructor": {
+      "file": "/game/enemy-instructor.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "enemy-crusader": {
+      "file": "/game/enemy-crusader.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "enemy-mage": {
+      "file": "/game/enemy-mage.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-rothschild": {
+      "file": "/game/boss-rothschild.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-serpent": {
+      "file": "/game/boss-serpent.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-rockefeller": {
+      "file": "/game/boss-rockefeller.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-astor": {
+      "file": "/game/boss-astor.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-bundy": {
+      "file": "/game/boss-bundy.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-collins": {
+      "file": "/game/boss-collins.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-dupont": {
+      "file": "/game/boss-dupont.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-freeman": {
+      "file": "/game/boss-freeman.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-kennedy": {
+      "file": "/game/boss-kennedy.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-li": {
+      "file": "/game/boss-li.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-onassis": {
+      "file": "/game/boss-onassis.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-reynolds": {
+      "file": "/game/boss-reynolds.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-russell": {
+      "file": "/game/boss-russell.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    },
+    "boss-vanduyn": {
+      "file": "/game/boss-vanduyn.png",
+      "cell": 128,
+      "rows": 2,
+      "cols": 2
+    }
+  },
+  "tile": 16
+}

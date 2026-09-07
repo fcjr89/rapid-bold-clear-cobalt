@@ -218,12 +218,42 @@ export function groupCardFromEnemy(def: EnemyDef): GroupCardDef {
 }
 
 /** All group cards derived from EnemyDefs. */
-export const GROUP_CARDS: Record<string, GroupCardDef> = Object.fromEntries(
-  Object.values(ENEMIES).map((e) => {
+
+/** Chart corps / nations / societies as summonable Group shades (lore plaques, not SJG). */
+export const EXTRA_NWO_GROUPS: GroupCardDef[] = [
+  { id: "group_nwo_federal_reserve", enemyId: "fed_golem", name: "Federal Reserve", alignment: "Capital", power: 14, resistance: 16, income: 8, kind: "regular", faction: "system" },
+  { id: "group_nwo_world_bank", enemyId: "imf_auditor", name: "World Bank", alignment: "Capital", power: 13, resistance: 14, income: 7, kind: "regular", faction: "system" },
+  { id: "group_nwo_bis", enemyId: "bis_ledger_wraith", name: "BIS", alignment: "Capital", power: 13, resistance: 15, income: 7, kind: "regular", faction: "bloodline" },
+  { id: "group_nwo_bilderberg", enemyId: "cfr_handler", name: "Bilderbergers", alignment: "Order", power: 15, resistance: 14, income: 6, kind: "regular", faction: "system" },
+  { id: "group_nwo_cfr", enemyId: "cfr_handler", name: "CFR", alignment: "Order", power: 14, resistance: 13, income: 5, kind: "regular", faction: "system" },
+  { id: "group_nwo_trilateral", enemyId: "trilateral_envoy", name: "Trilateral Commission", alignment: "Order", power: 13, resistance: 13, income: 5, kind: "regular", faction: "system" },
+  { id: "group_nwo_skull_bones", enemyId: "skull_bones_initiate", name: "Skull & Bones", alignment: "Faith", power: 12, resistance: 12, income: 4, kind: "regular", faction: "system" },
+  { id: "group_nwo_bohemian", enemyId: "bohemian_grove_mask", name: "Bohemian Club", alignment: "Chaos", power: 11, resistance: 12, income: 4, kind: "regular", faction: "system" },
+  { id: "group_nwo_freemasonry", enemyId: "skull_bones_initiate", name: "Freemasonry", alignment: "Faith", power: 12, resistance: 13, income: 4, kind: "regular", faction: "system" },
+  { id: "group_nwo_cia", enemyId: "cia_shade", name: "CIA", alignment: "Order", power: 14, resistance: 11, income: 3, kind: "regular", faction: "system" },
+  { id: "group_nwo_mossad", enemyId: "mossad_cipher", name: "MOSSAD", alignment: "Order", power: 13, resistance: 11, income: 3, kind: "regular", faction: "system" },
+  { id: "group_nwo_mi5", enemyId: "cia_shade", name: "MI-5", alignment: "Order", power: 12, resistance: 12, income: 3, kind: "regular", faction: "system" },
+  { id: "group_nwo_media_est", enemyId: "media_establishment_anchor", name: "Media Establishment", alignment: "Media", power: 12, resistance: 12, income: 5, kind: "regular", faction: "system" },
+  { id: "group_nwo_news_corp", enemyId: "media_establishment_anchor", name: "News Corp Shade", alignment: "Media", power: 11, resistance: 10, income: 5, kind: "regular", faction: "system" },
+  { id: "group_nwo_exxon", enemyId: "oil_cartel_knight", name: "Exxon-Mobil", alignment: "Capital", power: 15, resistance: 14, income: 8, kind: "regular", faction: "bloodline" },
+  { id: "group_nwo_pfizer", enemyId: "pharma_hydra_rep", name: "Pharma Cartel", alignment: "Capital", power: 14, resistance: 13, income: 7, kind: "regular", faction: "system" },
+  { id: "group_nwo_blackstone", enemyId: "fed_golem", name: "Blackstone", alignment: "Capital", power: 13, resistance: 12, income: 7, kind: "regular", faction: "system" },
+  { id: "group_nwo_tavistock", enemyId: "unesco_softpower", name: "Tavistock", alignment: "Chaos", power: 11, resistance: 12, income: 3, kind: "regular", faction: "left" },
+  { id: "group_nwo_nation_america", enemyId: "culture_war_captain", name: "Foundation: America", alignment: "Order", power: 10, resistance: 12, income: 4, kind: "regular", faction: "system" },
+  { id: "group_nwo_nation_england", enemyId: "culture_war_captain", name: "Foundation: England", alignment: "Order", power: 10, resistance: 12, income: 4, kind: "regular", faction: "system" },
+  { id: "group_nwo_nation_israel", enemyId: "mossad_cipher", name: "Foundation: Israel", alignment: "Order", power: 11, resistance: 11, income: 4, kind: "regular", faction: "system" },
+  { id: "group_nwo_nation_china", enemyId: "li_emperor", name: "Foundation: China", alignment: "Capital", power: 12, resistance: 13, income: 5, kind: "boss", faction: "bloodline" },
+  { id: "group_nwo_nation_australia", enemyId: "culture_war_captain", name: "Foundation: Australia", alignment: "Order", power: 9, resistance: 11, income: 3, kind: "regular", faction: "system" },
+];
+
+
+export const GROUP_CARDS: Record<string, GroupCardDef> = Object.fromEntries([
+  ...Object.values(ENEMIES).map((e) => {
     const g = groupCardFromEnemy(e);
-    return [g.id, g];
+    return [g.id, g] as const;
   }),
-);
+  ...EXTRA_NWO_GROUPS.map((g) => [g.id, g] as const),
+]);
 
 export const SPECIAL_BY_ID: Record<SpecialEffectId, SpecialCardDef> = Object.fromEntries(
   SPECIAL_CARDS.map((s) => [s.id, s]),

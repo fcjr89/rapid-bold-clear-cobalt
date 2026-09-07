@@ -66,11 +66,11 @@ export class StatusScene extends Phaser.Scene {
     const next = BOSSES.find((b) => !G.flags.bossesDefeated.includes(b.id));
     const lean = endingLean(G.flags.redWins, G.flags.blueWins);
     const nextLore = next ? (BOSS_LORE[next.id] ?? next.title) : "Outline complete.";
-    px(this, VIEW_W / 2, 180, `${loc}   BOSSES ${bossN}/14   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}${cleared}`, 5, "#f0e6c8").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 180, `${loc}   BOSSES ${bossN}/15   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}${cleared}`, 5, "#f0e6c8").setOrigin(0.5, 0);
     px(this, VIEW_W / 2, 192, `LEAN ${lean.toUpperCase()}  ·  ${nextLore}`.slice(0, 58), 4, "#7a8aa0").setOrigin(0.5, 0);
     px(this, VIEW_W / 2, 206, "SKILLS + CONSPIRE line (Bribe / Blackout / Assassinate)", 4, "#6adf8a").setOrigin(0.5, 0);
     px(this, VIEW_W / 2, 218, CONSPIRE_HOWTO.slice(0, 62), 4, "#c9a0ff").setOrigin(0.5, 0);
-    px(this, VIEW_W / 2, 232, "Battle: COMMAND → CONSPIRE → Control / Neutralize / Destroy / cards", 4, "#7a8aa0").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 232, "NWO chart elites in dungeon. Battle: COMMAND → CONSPIRE → Control / Neutralize / Destroy / cards", 4, "#7a8aa0").setOrigin(0.5, 0);
     px(this, VIEW_W / 2, 246, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 5, "#e8b84a").setOrigin(0.5, 0);
   }
 

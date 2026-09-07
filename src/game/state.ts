@@ -1,5 +1,5 @@
 import { ENEMIES } from "./database";
-import { MAX_INFLUENCE, START_INFLUENCE, STARTER_GROUP_IDS } from "./conspiracyDeck";
+import { EXTRA_NWO_GROUPS, MAX_INFLUENCE, START_INFLUENCE, STARTER_GROUP_IDS } from "./conspiracyDeck";
 import type {
   Alignment,
   EncounterSpec,
@@ -206,13 +206,21 @@ export function defeatBoss(id: string): void {
 
 /** Persist a defeated group's Conspiracy card into the player's deck. */
 export function unlockGroupCard(enemyId: string): string | null {
-  const cardId = `group_${enemyId}`;
   if (!G.flags.unlockedGroupCards) G.flags.unlockedGroupCards = [...STARTER_GROUP_IDS];
-  if (G.flags.unlockedGroupCards.includes(cardId)) return null;
-  // Only unlock if enemy exists in database
-  if (!ENEMIES[enemyId]) return null;
-  G.flags.unlockedGroupCards.push(cardId);
-  return cardId;
+  let first: string | null = null;
+  const cardId = `group_${enemyId}`;
+  if (ENEMIES[enemyId] && !G.flags.unlockedGroupCards.includes(cardId)) {
+    G.flags.unlockedGroupCards.push(cardId);
+    first = cardId;
+  }
+  // Also unlock chart Group shades tied to this elite (Federal Reserve, CFR, etc.)
+  for (const g of EXTRA_NWO_GROUPS) {
+    if (g.enemyId === enemyId && !G.flags.unlockedGroupCards.includes(g.id)) {
+      G.flags.unlockedGroupCards.push(g.id);
+      if (!first) first = g.id;
+    }
+  }
+  return first;
 }
 
 export function regenInfluence(amount = 1): void {

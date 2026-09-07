@@ -74,3 +74,16 @@ Red vs Blue districts are public theater; the dungeon is the real ledger. Upload
 - Ending variants mention Illuminati→Fed→Foundations→Thrones arc
 - Dungeon plaques between doors 1–14 with one historical crumb each
 - Do NOT dump OCR typos into game text; rewrite cleanly
+
+
+## NWO Organizational Chart (user upload — full combat tree)
+See `docs/NWO_ROSTER.md` and `studio/nwo/nwo-org-chart.jpeg`.
+
+Baki combats the whole pyramid:
+1. Illuminati Royal Bloodlines (vault bosses)
+2. Foundation Nations (America, England, Israel, Australia, China)
+3. Financial / Research / Secret Societies
+4. Political / Intelligence / Religious / Educational soft-power arms
+5. Corporations, multinationals, banks, and media supporting the agenda
+
+Culture-war theaters (Woke Retards 1.0/2.0 vs MAGA/MIGA Zionist Chuds) sit *under* this pyramid as public farm teams. 9/11/01 is the personal ignition.

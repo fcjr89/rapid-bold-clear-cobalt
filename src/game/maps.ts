@@ -214,12 +214,13 @@ export const DUNGEON_DOORS: { x: number; y: number; order: number }[] = [
   { x: 19, y: 3, order: 8 },
   { x: 21, y: 3, order: 9 },
   { x: 23, y: 3, order: 10 },
-  { x: 3, y: 11, order: 11 },
-  { x: 5, y: 11, order: 12 },
-  { x: 7, y: 11, order: 13 },
-  // Final throne: row "…vvDDvvv" → D at x=19,20 (was wrongly 17,18 = softlock)
-  { x: 19, y: 8, order: 14 },
-  { x: 20, y: 8, order: 14 },
+  { x: 3, y: 11, order: 11 }, // Disney
+  { x: 5, y: 11, order: 12 }, // Reynolds
+  { x: 7, y: 11, order: 13 }, // Russell
+  { x: 9, y: 11, order: 14 }, // Van Duyn
+  // Final throne: D at x=19,20
+  { x: 19, y: 8, order: 15 },
+  { x: 20, y: 8, order: 15 },
 ];
 
 export function inBounds(map: GameMap, tx: number, ty: number): boolean {

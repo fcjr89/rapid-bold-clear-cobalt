@@ -51,3 +51,10 @@ Starter unlocks: Echo Chamber Slime, Faith-First Crusader, Loyal Liberal Mage.
 ## Structure note
 Original alignments, group Power/Resistance/Income, specials, and control-style actions.
 Do not commit third-party cardlists or rulebooks.
+
+
+## NWO Organizational Chart
+
+Group cards also cover chart tiers (Financial, Secret Societies, Political, Intelligence, Media, corps, foundation nations) via `EXTRA_NWO_GROUPS` plus sector elites in `database.ts`.
+Bloodlines include Disney Dream Sorcerer (order 11). See `docs/NWO_ROSTER.md` and `studio/nwo/nwo-org-chart.jpeg`.
+No Steve Jackson Games card IP.

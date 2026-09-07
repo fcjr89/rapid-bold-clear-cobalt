@@ -76,6 +76,20 @@ export const ENEMY_PORTRAIT: Record<string, string> = {
   russell_sentinel: "art-russell",
   vanduyn_diplomat: "art-vanduyn",
   merovingian_king: "art-merovingian",
+  fed_golem: "art-corporate",
+  imf_auditor: "art-corporate",
+  bis_ledger_wraith: "art-slime",
+  skull_bones_initiate: "art-captain",
+  bohemian_grove_mask: "art-puppet",
+  cfr_handler: "art-captain",
+  trilateral_envoy: "art-corporate",
+  cia_shade: "art-sheep",
+  mossad_cipher: "art-sheep",
+  media_establishment_anchor: "art-puppet",
+  unesco_softpower: "art-mage",
+  oil_cartel_knight: "art-knight",
+  pharma_hydra_rep: "art-corporate",
+  disney_sorcerer: "art-freeman",
 };
 
 /** Resolve a portrait key with graceful degradation. */

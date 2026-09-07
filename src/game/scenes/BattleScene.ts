@@ -134,7 +134,7 @@ export class BattleScene extends Phaser.Scene {
       : ["echo_chamber_slime"];
     const defs = ids.map((id) => ENEMIES[id] ?? ENEMIES.echo_chamber_slime!).slice(0, 3);
     const kind = defs[0]!.kind;
-    playMusic(kind === "boss" || kind === "final" || kind === "miniboss" ? "boss" : "battle");
+    playMusic(kind === "final" ? "final" : kind === "boss" || kind === "miniboss" ? "boss" : "battle");
 
     const slots =
       defs.length === 1

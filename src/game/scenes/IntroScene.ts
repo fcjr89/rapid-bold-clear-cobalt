@@ -16,7 +16,7 @@ export class IntroScene extends Phaser.Scene {
   }
 
   create() {
-    playMusic("title");
+    playMusic("intro");
     this.cameras.main.setBackgroundColor(0x0c0814);
     const key = this.textures.exists("opening") ? "opening" : "title";
     this.add.image(VIEW_W / 2, VIEW_H / 2, key).setDisplaySize(VIEW_W, VIEW_H);

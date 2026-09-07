@@ -2,6 +2,21 @@ let ctx: AudioContext | null = null;
 let musicTimer: number | null = null;
 let musicName: string | null = null;
 let muted = false;
+let trackEl: HTMLAudioElement | null = null;
+
+/** TWILIGHT ZONE TIME (NA404ERROR) — masters under public/game/music/ */
+const TRACKS: Record<string, string> = {
+  title: "/game/music/shadow-empires.mp3",
+  overworld: "/game/music/shadow-empires.mp3",
+  intro: "/game/music/black-veil.mp3",
+  dungeon: "/game/music/subterranean-syndicate.mp3",
+  tavern: "/game/music/black-veil.mp3",
+  battle: "/game/music/burn-the-matrix.mp3",
+  boss: "/game/music/globalist-guillotine.mp3",
+  final: "/game/music/killuminati.mp3",
+  red: "/game/music/chemtrails-fluoride.mp3",
+  blue: "/game/music/mk-veil.mp3",
+};
 
 function ac(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -61,6 +76,7 @@ export function sfx(kind: "ok" | "no" | "hit" | "crit" | "heal" | "win" | "lose"
   if (kind === "step") tone(90, 0.03, "square", 0.02);
 }
 
+/** Procedural fallback if an MP3 fails to load. */
 const THEMES: Record<string, number[]> = {
   overworld: [196, 220, 262, 196, 233, 262, 294, 220],
   dungeon: [155, 147, 130, 155, 110, 98, 130, 147],
@@ -68,24 +84,61 @@ const THEMES: Record<string, number[]> = {
   battle: [247, 196, 185, 247, 311, 196, 165, 247],
   boss: [110, 130, 110, 98, 146, 110, 82, 98],
   title: [196, 247, 294, 392, 294, 247, 220, 196],
+  intro: [185, 196, 220, 196, 165, 147, 130, 110],
+  final: [98, 110, 130, 98, 82, 73, 98, 110],
+  red: [220, 196, 185, 165, 196, 220, 247, 196],
+  blue: [262, 294, 311, 262, 233, 220, 196, 233],
 };
 
-export function playMusic(name: keyof typeof THEMES | "none") {
+export type MusicCue = keyof typeof TRACKS | "none";
+
+function stopTrack() {
+  if (trackEl) {
+    trackEl.pause();
+    trackEl.src = "";
+    trackEl = null;
+  }
+}
+
+function playProcedural(name: string) {
+  const notes = THEMES[name] ?? THEMES.title!;
+  let i = 0;
+  const tick = () => {
+    const n = notes[i % notes.length]!;
+    const harsh = name === "battle" || name === "boss" || name === "final";
+    tone(n, 0.18, harsh ? "sawtooth" : "square", 0.028);
+    tone(n / 2, 0.18, "triangle", 0.016);
+    i += 1;
+  };
+  tick();
+  musicTimer = window.setInterval(tick, harshInterval(name));
+}
+
+function harshInterval(name: string): number {
+  return name === "battle" || name === "boss" || name === "final" ? 220 : 320;
+}
+
+export function playMusic(name: MusicCue) {
   unlockAudio();
   if (name === musicName) return;
   stopMusic();
   if (name === "none") return;
   musicName = name;
-  const notes = THEMES[name];
-  let i = 0;
-  const tick = () => {
-    const n = notes[i % notes.length]!;
-    tone(n, 0.18, name === "battle" || name === "boss" ? "sawtooth" : "square", 0.028);
-    tone(n / 2, 0.18, "triangle", 0.016);
-    i += 1;
-  };
-  tick();
-  musicTimer = window.setInterval(tick, name === "battle" || name === "boss" ? 220 : 320);
+  if (muted) return;
+
+  const url = TRACKS[name];
+  if (url && typeof Audio !== "undefined") {
+    const el = new Audio(url);
+    el.loop = true;
+    el.volume = 0.55;
+    trackEl = el;
+    void el.play().catch(() => {
+      stopTrack();
+      playProcedural(name);
+    });
+    return;
+  }
+  playProcedural(name);
 }
 
 export function stopMusic() {
@@ -93,6 +146,7 @@ export function stopMusic() {
     clearInterval(musicTimer);
     musicTimer = null;
   }
+  stopTrack();
   musicName = null;
 }
 

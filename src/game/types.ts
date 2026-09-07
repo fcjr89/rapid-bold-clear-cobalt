@@ -152,7 +152,7 @@ export interface NpcSpot {
 export interface GameMap {
   id: MapId;
   name: string;
-  music: "overworld" | "dungeon" | "tavern";
+  music: "overworld" | "dungeon" | "tavern" | "red" | "blue" | "title" | "intro" | "battle" | "boss" | "final";
   ground: number[][];
   warps: Warp[];
   npcs: NpcSpot[];

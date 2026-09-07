@@ -137,7 +137,7 @@ export const MAPS: Record<MapId, GameMap> = {
   red: {
     id: "red",
     name: "Red — MAGA/MIGA Chuds",
-    music: "overworld",
+    music: "red",
     ground: RED,
     spawn: { x: 9, y: 10 },
     encounters: "right",
@@ -154,7 +154,7 @@ export const MAPS: Record<MapId, GameMap> = {
   blue: {
     id: "blue",
     name: "Blue — Woke Retards",
-    music: "overworld",
+    music: "blue",
     ground: BLUE,
     spawn: { x: 9, y: 10 },
     encounters: "left",

@@ -9,7 +9,7 @@ export const SKILLS: SkillDef[] = [
     id: "hammer_clarity",
     name: "Hammer of Clarity",
     mp: 6,
-    desc: "Heavy smash + strip buffs. Light splash to others.",
+    desc: "Heavy smash + strip buffs. Splash to others.",
   },
   {
     id: "mute_counter",
@@ -28,6 +28,12 @@ export const SKILLS: SkillDef[] = [
     name: "Fact Check Smash",
     mp: 9,
     desc: "Bonus damage vs media/echo.",
+  },
+  {
+    id: "common_sense",
+    name: "Common Sense Mend",
+    mp: 7,
+    desc: "Heal self (~55 HP). Balanced MP mend.",
   },
 ];
 
@@ -62,7 +68,7 @@ const REGULAR: EnemyDef[] = [
     name: "Faith-First Crusader",
     faction: "right",
     kind: "regular",
-    hp: 38, mp: 6, atk: 11, def: 8, spd: 10, xp: 18, gold: 16,
+    hp: 32, mp: 6, atk: 10, def: 8, spd: 10, xp: 16, gold: 14,
     sprite: "enemy-crusader", lecture: true,
     intro: "A crusader bars the road. 'Faith first, hammer.'",
     actions: ["attack", "lecture"],
@@ -72,7 +78,7 @@ const REGULAR: EnemyDef[] = [
     name: "No-Apologies Propagandist",
     faction: "right",
     kind: "regular",
-    hp: 44, mp: 0, atk: 13, def: 7, spd: 12, xp: 20, gold: 14,
+    hp: 36, mp: 0, atk: 11, def: 7, spd: 12, xp: 17, gold: 13,
     sprite: "enemy-brawler",
     intro: "A megaphone brawler cracks his gloves. No speech. Just swing.",
     actions: ["attack", "buff"],
@@ -82,7 +88,7 @@ const REGULAR: EnemyDef[] = [
     name: "MAGA Knight",
     faction: "right",
     kind: "regular",
-    hp: 40, mp: 10, atk: 10, def: 10, spd: 13, xp: 18, gold: 18,
+    hp: 34, mp: 10, atk: 9, def: 10, spd: 13, xp: 16, gold: 16,
     sprite: "enemy-knight", lecture: true,
     intro: "A crimson knight salutes. 'Surely we can agree—'",
     actions: ["attack", "lecture", "buff"],
@@ -92,7 +98,7 @@ const REGULAR: EnemyDef[] = [
     name: "Internet Sheep",
     faction: "right",
     kind: "regular",
-    hp: 34, mp: 4, atk: 12, def: 6, spd: 16, xp: 19, gold: 20,
+    hp: 28, mp: 4, atk: 11, def: 6, spd: 16, xp: 17, gold: 18,
     sprite: "enemy-sheep",
     intro: "A masked troll flicks a scroll. 'RIGHT?!'",
     actions: ["attack", "buff"],
@@ -102,7 +108,7 @@ const REGULAR: EnemyDef[] = [
     name: "Loyal Liberal Mage",
     faction: "left",
     kind: "regular",
-    hp: 36, mp: 18, atk: 10, def: 7, spd: 12, xp: 18, gold: 16,
+    hp: 30, mp: 18, atk: 9, def: 7, spd: 12, xp: 16, gold: 14,
     sprite: "enemy-mage", lecture: true,
     intro: "A blue-robe mage raises a hashtag staff. 'Unlearn, comrade.'",
     actions: ["attack", "lecture", "heal"],
@@ -112,7 +118,7 @@ const REGULAR: EnemyDef[] = [
     name: "Justice Activist",
     faction: "left",
     kind: "regular",
-    hp: 40, mp: 14, atk: 10, def: 8, spd: 14, xp: 18, gold: 17,
+    hp: 34, mp: 14, atk: 9, def: 8, spd: 14, xp: 16, gold: 15,
     sprite: "enemy-activist", lecture: true,
     intro: "An activist megaphone blares. JUSTICE. EQUITY. NOW.",
     actions: ["attack", "lecture", "buff"],
@@ -122,7 +128,7 @@ const REGULAR: EnemyDef[] = [
     name: "Corporate Slave",
     faction: "left",
     kind: "regular",
-    hp: 46, mp: 8, atk: 11, def: 9, spd: 11, xp: 20, gold: 18,
+    hp: 38, mp: 8, atk: 10, def: 9, spd: 11, xp: 18, gold: 16,
     sprite: "enemy-corporate",
     intro: "A suited clerk hefts an axe and a calculator.",
     actions: ["attack", "buff"],
@@ -132,7 +138,7 @@ const REGULAR: EnemyDef[] = [
     name: "SJW Berserker",
     faction: "left",
     kind: "regular",
-    hp: 52, mp: 0, atk: 14, def: 5, spd: 9, xp: 22, gold: 14,
+    hp: 42, mp: 0, atk: 12, def: 5, spd: 9, xp: 19, gold: 13,
     sprite: "enemy-berserker",
     intro: "A hooded berserker howls INEQUALITY, then charges.",
     actions: ["attack"],
@@ -142,7 +148,7 @@ const REGULAR: EnemyDef[] = [
     name: "Sheeple",
     faction: "system",
     kind: "regular",
-    hp: 48, mp: 4, atk: 14, def: 10, spd: 9, xp: 28, gold: 22,
+    hp: 42, mp: 4, atk: 13, def: 10, spd: 9, xp: 26, gold: 20,
     sprite: "enemy-sheeple",
     intro: "A gray hoodie shrugs so hard it becomes a weapon.",
     actions: ["attack"],
@@ -152,7 +158,7 @@ const REGULAR: EnemyDef[] = [
     name: "Culture War Captain",
     faction: "system",
     kind: "regular",
-    hp: 72, mp: 14, atk: 17, def: 12, spd: 12, xp: 34, gold: 28,
+    hp: 64, mp: 14, atk: 15, def: 12, spd: 12, xp: 32, gold: 26,
     sprite: "enemy-captain", lecture: true, media: true,
     intro: "A split-tabard captain raises red fire and blue fire.",
     actions: ["attack", "lecture", "buff"],
@@ -162,7 +168,7 @@ const REGULAR: EnemyDef[] = [
     name: "Cable News Puppet",
     faction: "system",
     kind: "regular",
-    hp: 66, mp: 20, atk: 15, def: 11, spd: 11, xp: 32, gold: 30,
+    hp: 58, mp: 20, atk: 14, def: 11, spd: 11, xp: 30, gold: 28,
     sprite: "enemy-puppet", lecture: true, media: true,
     intro: "A camera-headed puppet rolls a chyron like a whip.",
     actions: ["attack", "lecture", "heal"],
@@ -172,7 +178,7 @@ const REGULAR: EnemyDef[] = [
     name: "Echo Chamber Slime",
     faction: "system",
     kind: "regular",
-    hp: 58, mp: 12, atk: 14, def: 16, spd: 7, xp: 30, gold: 24,
+    hp: 52, mp: 12, atk: 13, def: 15, spd: 7, xp: 28, gold: 22,
     sprite: "enemy-slime", media: true, lecture: true,
     intro: "The slime repeats your last sentence until it hurts.",
     actions: ["attack", "lecture", "buff"],
@@ -394,6 +400,51 @@ export const DIALOGUE: Record<string, string[]> = {
   plaque_12: ["PLAQUE: Watchtower clock. History filed by the second."],
   plaque_13: ["PLAQUE: Handshake vault. Bilderberg hotel — civilization on the bill."],
   plaque_14: ["PLAQUE: Thirteen thrones. Merovingian serpent. Alpha and Omega."],
+
+  after_astor: [
+    "The Phantom dissolves. PAST DUE goes dark.",
+    "Rent Spire empties. Old-money fog thins.",
+  ],
+  after_bundy: [
+    "The Warlock's fence falls. Barbed Plains quiet.",
+    "Property-plus-force loses its skull-staff.",
+  ],
+  after_collins: [
+    "The Necromancer's candle gutters. Crypt hymns stop.",
+    "Golden Dawn chalk washes off the stone.",
+  ],
+  after_dupont: [
+    "The Alchemist's flasks shatter. Both sides lose a supplier.",
+    "Toxic Laboratory seals itself in glass dust.",
+  ],
+  after_freeman: [
+    "Broadcast Spire goes to static. Soft control loses a smile.",
+    "The chyron blanks. Your thoughts arrive unwritten.",
+  ],
+  after_kennedy: [
+    "Camelot armor dents. Dynasty Harbor goes still.",
+    "The yacht-shadow drifts off without a crown.",
+  ],
+  after_li: [
+    "The Jade Ledger cracks. Dragon coil loosens.",
+    "Quiet rooms echo empty. Maps redraw themselves.",
+  ],
+  after_onassis: [
+    "Hydra hulls sink. Storm Docks taste of clean salt.",
+    "Embargo tide reverses for one breath.",
+  ],
+  after_reynolds: [
+    "Lobby Haze clears. The habit-vote adjourns.",
+    "Ash briefcase snaps shut — empty.",
+  ],
+  after_russell: [
+    "Clock Citadel misses a second. Files burn unread.",
+    "Surveillance bell cracks. History blinks.",
+  ],
+  after_merovingian: [
+    "Thirteen Thrones crack. Serpent crown splits red / blue — neither catches.",
+    "Alpha and Omega go quiet. The outline closes.",
+  ],
   after_rothschild: [
     "The Archon of Coin falls. Interest stops compounding.",
     "The Round Table's map tears. Twelve seals remain.",
@@ -445,6 +496,61 @@ export const DIALOGUE: Record<string, string[]> = {
   dungeon_lean_left: [
     "Vault doors open. Blue dust marks your boots.",
     "Prove the hammer still refuses the lodge's quiz.",
+  ],
+
+  boss_cut_astor: [
+    "RENT SPIRE",
+    "Deeds float like ghosts. PAST DUE burns through fog.",
+    "ASTOR: Land outlives revolutions. Pay rent to history.",
+    "BAKI: History can be evicted.",
+  ],
+  boss_cut_bundy: [
+    "BARBED PLAINS",
+    "Fence wire sings. Federal dust under a skull-staff.",
+    "BUNDY: Fence lines are the oldest constitution.",
+    "BAKI: Constitutions don't need barbs through my neck.",
+  ],
+  boss_cut_collins: [
+    "STAINED CRYPT",
+    "Golden Dawn chalk, 1887. Hymns run backwards.",
+    "COLLINS: Cathedral and lodge share the same candle.",
+    "BAKI: Then I blow it out.",
+  ],
+  boss_cut_dupont: [
+    "TOXIC LABORATORY",
+    "Flasks drip colors that should not exist.",
+    "DUPONT: Sell powder to both sides — Zaharoff wrote the recipe.",
+    "BAKI: I'm not buying. I'm smashing the lab.",
+  ],
+  boss_cut_kennedy: [
+    "DYNASTY HARBOR",
+    "Camelot armor. A yacht-shadow cuts the pier.",
+    "KENNEDY: Dynasties wear smiles like shields.",
+    "BAKI: Shields crack. Hammers don't smile.",
+  ],
+  boss_cut_li: [
+    "JADE LEDGER",
+    "Eastern capital coils like a dragon around quiet rooms.",
+    "LI: Maps follow money. Money follows silence.",
+    "BAKI: My map ends at your jaw.",
+  ],
+  boss_cut_onassis: [
+    "STORM DOCKS",
+    "Three hulls, one hunger. The tide smells of embargo.",
+    "ONASSIS: Ports eat wars and spit fortunes.",
+    "BAKI: This hydra loses heads.",
+  ],
+  boss_cut_reynolds: [
+    "LOBBY HAZE",
+    "Ash grins from a branded briefcase.",
+    "REYNOLDS: A habit is a vote that never ends.",
+    "BAKI: Quitting starts with one swing.",
+  ],
+  boss_cut_russell: [
+    "CLOCK CITADEL",
+    "Watchtowers tick the outline of history.",
+    "RUSSELL: Every second is evidence. Every face is a file.",
+    "BAKI: File this under smashed.",
   ],
   boss_cut_rothschild: [
     "VAULT OF INTEREST",
@@ -560,15 +666,24 @@ export function pickEncounter(table: "right" | "left" | "system"): string[] {
   const roll = Math.random();
   let count = 1;
   if (table === "system") {
-    if (roll < 0.4) count = 2;
-    else if (roll < 0.58) count = 3;
+    // Dungeon packs: pairs common, triples uncommon
+    if (roll < 0.5) count = 2;
+    else if (roll < 0.62) count = 3;
   } else {
-    if (roll < 0.42) count = 2;
-    else if (roll < 0.55) count = 3;
+    // Early districts: mostly solo, some pairs, rare triples
+    if (roll < 0.3) count = 2;
+    else if (roll < 0.38) count = 3;
   }
   const picks: string[] = [];
+  const used = new Set<string>();
   for (let i = 0; i < count; i++) {
-    picks.push(list[Math.floor(Math.random() * list.length)]!);
+    let id = list[Math.floor(Math.random() * list.length)]!;
+    // Prefer variety in packs so splash / targeting matter
+    if (used.has(id) && list.length > 1 && Math.random() < 0.7) {
+      id = list[Math.floor(Math.random() * list.length)]!;
+    }
+    used.add(id);
+    picks.push(id);
   }
   return picks;
 }
@@ -676,7 +791,16 @@ export function bossCutscene(id: string): string[] | null {
   const map: Record<string, string> = {
     rothschild_archon: "boss_cut_rothschild",
     rockefeller_titan: "boss_cut_rockefeller",
+    astor_phantom: "boss_cut_astor",
+    bundy_warlock: "boss_cut_bundy",
+    collins_necromancer: "boss_cut_collins",
+    dupont_alchemist: "boss_cut_dupont",
     freeman_hypnotist: "boss_cut_freeman",
+    kennedy_paladin: "boss_cut_kennedy",
+    li_emperor: "boss_cut_li",
+    onassis_hydra: "boss_cut_onassis",
+    reynolds_demon: "boss_cut_reynolds",
+    russell_sentinel: "boss_cut_russell",
     vanduyn_diplomat: "boss_cut_vanduyn",
     merovingian_king: "boss_cut_merovingian",
   };
@@ -685,9 +809,24 @@ export function bossCutscene(id: string): string[] | null {
 }
 
 export function bossOutro(id: string): string[] {
-  if (id === "rothschild_archon") return DIALOGUE.after_rothschild;
-  if (id === "rockefeller_titan") return DIALOGUE.after_rockefeller;
-  if (id === "vanduyn_diplomat") return DIALOGUE.after_vanduyn;
+  const keyed: Record<string, string> = {
+    rothschild_archon: "after_rothschild",
+    rockefeller_titan: "after_rockefeller",
+    astor_phantom: "after_astor",
+    bundy_warlock: "after_bundy",
+    collins_necromancer: "after_collins",
+    dupont_alchemist: "after_dupont",
+    freeman_hypnotist: "after_freeman",
+    kennedy_paladin: "after_kennedy",
+    li_emperor: "after_li",
+    onassis_hydra: "after_onassis",
+    reynolds_demon: "after_reynolds",
+    russell_sentinel: "after_russell",
+    vanduyn_diplomat: "after_vanduyn",
+    merovingian_king: "after_merovingian",
+  };
+  const key = keyed[id];
+  if (key && DIALOGUE[key]) return DIALOGUE[key]!;
   return [`${BOSS_LORE[id] ?? "A seal cracks."}`, ...(DIALOGUE.after_boss ?? [])];
 }
 

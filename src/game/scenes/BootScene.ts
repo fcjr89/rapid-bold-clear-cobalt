@@ -79,6 +79,8 @@ export class BootScene extends Phaser.Scene {
     this.load.image("baki-portrait", "/game/baki-portrait.jpg");
     this.load.image("menu-ui", "/game/menu-ui.jpg");
     this.load.image("map-ref", "/game/map-ref.jpg");
+    this.load.image("ui-heal", "/game/ui-heal.png");
+    this.load.image("ui-target", "/game/ui-target.png");
     for (const page of ART) {
       this.load.image(page.key, page.url);
     }

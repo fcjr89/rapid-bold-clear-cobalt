@@ -115,7 +115,7 @@ export class TitleScene extends Phaser.Scene {
       36,
       60,
       wrap(
-        "THE CULTURE WAR — you are Baki The Hammer. WASD move. Z confirm, X menu. Hub Guide: Red/Blue are theater; dungeon is the outline ledger. Win 3 each → Instructors → gold gate. Thirteen bloodlines (Rothschild→Merovingian). Mute counters Lectures. Do not be Re-Educated.",
+        "THE CULTURE WAR — Baki The Hammer. WASD move. Z confirm, X menu. Red/Blue theater → Instructors → gold gate. 14 bloodlines (Rothschild→Merovingian). Skills: Clarity splash, Mute, Stance, Fact Check, Common Sense Mend (heal). Packs: ◀▶ target. Do not be Re-Educated.",
         34,
       ),
       7,

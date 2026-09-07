@@ -66,7 +66,8 @@ export class StatusScene extends Phaser.Scene {
     const nextLore = next ? (BOSS_LORE[next.id] ?? next.title) : "Outline complete.";
     px(this, VIEW_W / 2, 210, `${loc}   BOSSES ${bossN}/14   ${G.flags.dungeonOpen ? "GATE OPEN" : "GATE SEALED"}${cleared}`, 6, "#f0e6c8").setOrigin(0.5, 0);
     px(this, VIEW_W / 2, 222, `LEAN ${lean.toUpperCase()}  ·  ${nextLore}`.slice(0, 58), 5, "#7a8aa0").setOrigin(0.5, 0);
-    px(this, VIEW_W / 2, 236, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 234, "SKILLS: Clarity · Mute · Stance · Fact Check · Common Sense Mend", 5, "#6adf8a").setOrigin(0.5, 0);
+    px(this, VIEW_W / 2, 246, "SAVED     TRUE NEUTRAL     Z / X CLOSE", 6, "#e8b84a").setOrigin(0.5, 0);
   }
 
   update() {

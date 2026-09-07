@@ -12,7 +12,8 @@ export type SkillId =
   | "hammer_clarity"
   | "mute_counter"
   | "independent"
-  | "fact_check";
+  | "fact_check"
+  | "common_sense";
 
 export type ItemId = "potion" | "ether" | "neutralizer";
 

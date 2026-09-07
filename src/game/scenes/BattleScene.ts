@@ -14,6 +14,7 @@ type Menu = "main" | "skills" | "items" | "busy" | "end";
 interface Foe {
   def: EnemyDef;
   hp: number;
+  maxHp: number;
   mp: number;
   atk: number;
   defStat: number;
@@ -133,14 +134,18 @@ export class BattleScene extends Phaser.Scene {
       windowBox(this, 8, barY, 220, 20);
       const nameLab = px(this, 14, barY + 4, def.name.slice(0, 18), 5, "#e8b84a");
       const hpBar = bar(this, 14, barY + 12, 160, 4, 1, 0xc41e3a);
-      const hpNum = px(this, 178, barY + 4, `${def.hp}`, 5, "#f0e6c8");
+      const hpNum = px(this, 178, barY + 4, "", 5, "#f0e6c8");
       const curs = px(this, slot.x - 36, slot.y - 40, "", 8, "#e8b84a").setOrigin(0.5);
 
+      const packN = defs.length;
+      const hpScale = packN === 1 ? 1 : packN === 2 ? 0.82 : 0.7;
+      const atkScale = packN === 1 ? 1 : packN === 2 ? 0.9 : 0.82;
+      const maxHp = Math.max(8, Math.floor(def.hp * hpScale));
       this.foes.push({
         def,
-        hp: def.hp,
+        hp: maxHp,
         mp: def.mp,
-        atk: def.atk,
+        atk: Math.max(1, Math.floor(def.atk * atkScale)),
         defStat: def.def,
         buff: 0,
         spr,
@@ -149,6 +154,7 @@ export class BattleScene extends Phaser.Scene {
         hpNum,
         cursor: curs,
         dead: false,
+        maxHp,
       });
     });
 
@@ -175,11 +181,15 @@ export class BattleScene extends Phaser.Scene {
     this.mpNum = px(this, 438, 34, "", 5, "#8eb4ff");
     this.statusTxt = px(this, 334, 46, "", 6, "#7a8aa0");
 
-    windowBox(this, 8, 168, 160, 94);
-    this.menuTitle = px(this, 16, 176, "COMMAND", 7, "#e8b84a");
-    this.menuLabels = [0, 1, 2, 3].map((i) => px(this, 16, 190 + i * 14, "", 7));
-    this.skillHint = px(this, 16, 248, "", 5, "#7a8aa0");
-    this.targetHint = px(this, 176, 156, "", 5, "#e8b84a");
+    windowBox(this, 8, 160, 168, 102);
+    this.menuTitle = px(this, 16, 166, "COMMAND", 7, "#e8b84a");
+    this.menuLabels = [0, 1, 2, 3, 4].map((i) => px(this, 16, 178 + i * 12, "", 6));
+    this.skillHint = px(this, 16, 242, "", 5, "#7a8aa0");
+    this.targetHint = px(this, 176, 148, "", 5, "#e8b84a");
+    // Multi-foe chrome accent
+    if (this.textures.exists("ui-target")) {
+      this.add.image(196, 156, "ui-target").setDisplaySize(14, 14).setDepth(52);
+    }
 
     windowBox(this, 176, 168, 296, 94);
     this.log = [0, 1, 2, 3, 4].map((i) => px(this, 184, 176 + i * 14, "", 6, "#f0e6c8"));
@@ -209,7 +219,11 @@ export class BattleScene extends Phaser.Scene {
     });
     const t = this.foes[this.target];
     this.targetHint?.setText(
-      this.living().length > 1 && t ? `TARGET ◀ ▶  ${t.def.name}` : this.living().length > 1 ? "TARGET ◀ ▶" : "",
+      this.living().length > 1 && t
+        ? `◀ TARGET ▶  ${t.def.name.slice(0, 16)}`
+        : this.living().length > 1
+          ? "◀ TARGET ▶"
+          : "",
     );
   }
 
@@ -237,8 +251,8 @@ export class BattleScene extends Phaser.Scene {
       f.hpBar.destroy();
       const i = this.foes.indexOf(f);
       const barY = 8 + i * 22;
-      f.hpBar = bar(this, 14, barY + 12, 160, 4, f.dead ? 0 : f.hp / f.def.hp, 0xc41e3a);
-      f.hpNum.setText(f.dead ? "DOWN" : `${f.hp}/${f.def.hp}`);
+      f.hpBar = bar(this, 14, barY + 12, 160, 4, f.dead ? 0 : f.hp / f.maxHp, 0xc41e3a);
+      f.hpNum.setText(f.dead ? "DOWN" : `${f.hp}/${f.maxHp}`);
       f.nameLab.setColor(f.dead ? "#7a8aa0" : "#e8b84a");
     }
   }
@@ -263,9 +277,17 @@ export class BattleScene extends Phaser.Scene {
       lab.setText(`${on ? ">" : " "} ${opt}`);
       lab.setColor(on ? "#e8b84a" : "#f0e6c8");
     });
-    if (this.menu === "skills" && SKILLS[this.cursor]) this.skillHint?.setText(SKILLS[this.cursor]!.desc);
-    else if (this.menu === "items" && ITEMS[this.cursor]) this.skillHint?.setText(ITEMS[this.cursor]!.desc);
-    else this.skillHint?.setText(this.living().length > 1 ? "Z OK  X BACK  ◀▶ TARGET" : "Z OK  X BACK");
+    if (this.menu === "skills" && SKILLS[this.cursor]) {
+      const sk = SKILLS[this.cursor]!;
+      this.skillHint?.setText(sk.desc);
+      this.skillHint?.setColor(sk.id === "common_sense" ? "#6adf8a" : "#7a8aa0");
+    } else if (this.menu === "items" && ITEMS[this.cursor]) {
+      this.skillHint?.setText(ITEMS[this.cursor]!.desc);
+      this.skillHint?.setColor("#7a8aa0");
+    } else {
+      this.skillHint?.setText(this.living().length > 1 ? "Z OK  X BACK  ◀▶ TARGET" : "Z OK  X BACK");
+      this.skillHint?.setColor("#7a8aa0");
+    }
   }
 
   update(time: number) {
@@ -400,7 +422,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     const foe = this.primary();
-    if (!foe && id !== "mute_counter" && id !== "independent") return;
+    if (!foe && id !== "mute_counter" && id !== "independent" && id !== "common_sense") return;
     this.lock();
     G.hero.mp -= sk.mp;
     if (this.anims.exists("baki-atk")) this.heroSpr.play("baki-atk");
@@ -414,7 +436,7 @@ export class BattleScene extends Phaser.Scene {
       // Light splash to other living foes
       for (const o of this.living()) {
         if (o === foe) continue;
-        const splash = Math.max(1, Math.floor(n * 0.35));
+        const splash = Math.max(1, Math.floor(n * 0.48));
         this.hurtFoe(o, splash);
         this.say(`Splash ${splash} to ${o.def.name}.`);
       }
@@ -437,8 +459,19 @@ export class BattleScene extends Phaser.Scene {
         foe.def.media ? `Fact Check vs media! ${n}${crit ? " CRIT" : ""}` : `Fact Check smash ${n}.`,
       );
       sfx(foe.def.media ? "crit" : "hit");
+    } else if (id === "common_sense") {
+      const amount = Math.min(G.hero.maxHp - G.hero.hp, 48 + G.hero.level * 2);
+      G.hero.hp += amount;
+      this.say(amount > 0 ? `Common Sense Mend restores ${amount} HP.` : "Already at full HP.");
+      sfx("heal");
+      this.heroSpr.setTint(0x6adf8a);
+      this.time.delayedCall(180, () => this.heroSpr.clearTint());
+      if (this.textures.exists("ui-heal")) {
+        const fx = this.add.image(this.heroSpr.x, this.heroSpr.y - 40, "ui-heal").setDisplaySize(20, 20).setDepth(70);
+        this.tweens.add({ targets: fx, y: fx.y - 18, alpha: 0, duration: 420, onComplete: () => fx.destroy() });
+      }
     }
-    this.cameras.main.shake(140, 0.008);
+    this.cameras.main.shake(id === "common_sense" ? 60 : 140, id === "common_sense" ? 0.003 : 0.008);
     this.drawBars();
     this.time.delayedCall(500, () => {
       if (this.anims.exists("baki-idle-b")) this.heroSpr.play("baki-idle-b");
@@ -535,7 +568,7 @@ export class BattleScene extends Phaser.Scene {
   /** Smarter AI: lecture when useful, heal/buff wisely, don't waste MP. */
   chooseAct(foe: Foe): EnemyActionId {
     const acts = foe.def.actions;
-    const hpRatio = foe.hp / foe.def.hp;
+    const hpRatio = foe.hp / foe.maxHp;
     const heroWeak = hasStatus("reeducate") || G.hero.hp / G.hero.maxHp < 0.4;
     const mute = hasStatus("mute_armed");
     const can = (a: EnemyActionId) => acts.includes(a);
@@ -565,8 +598,8 @@ export class BattleScene extends Phaser.Scene {
         return;
       }
       foe.mp -= 4;
-      const heal = Math.max(8, Math.floor(foe.def.hp * 0.18));
-      foe.hp = Math.min(foe.def.hp, foe.hp + heal);
+      const heal = Math.max(8, Math.floor(foe.maxHp * 0.18));
+      foe.hp = Math.min(foe.maxHp, foe.hp + heal);
       this.say(`${foe.def.name} rallies for ${heal} HP.`);
       sfx("heal");
       this.drawBars();
@@ -688,8 +721,14 @@ export class BattleScene extends Phaser.Scene {
       gold += f.def.gold;
       if (f.def.kind === "boss" || f.def.kind === "final" || f.def.kind === "miniboss") lead = f.def;
     }
-    // Multi-foe: slight XP trim so 3-packs aren't jackpots
-    if (this.foes.length > 1) xp = Math.floor(xp * (0.75 + 0.1 * this.foes.length));
+    // Multi-foe: trim XP/gold so packs aren't jackpots (HP already scaled)
+    if (this.foes.length === 2) {
+      xp = Math.floor(xp * 0.88);
+      gold = Math.floor(gold * 0.9);
+    } else if (this.foes.length >= 3) {
+      xp = Math.floor(xp * 0.75);
+      gold = Math.floor(gold * 0.8);
+    }
     const notes = grantXp(xp);
     G.hero.gold += gold;
     if (Math.random() < 0.55) G.hero.items.potion += 1;

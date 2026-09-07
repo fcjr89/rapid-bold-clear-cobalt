@@ -55,7 +55,7 @@ export class BootScene extends Phaser.Scene {
     g.fillRect(0, 0, width, height);
     this.add.rectangle(width / 2, height / 2, 200, 10, 0x3a2e1a);
     const fill = this.add.rectangle(width / 2 - 100, height / 2, 2, 8, 0xe8b84a).setOrigin(0, 0.5);
-    this.add.text(width / 2, height / 2 - 24, "LOADING THE DIVIDE...", {
+    this.add.text(width / 2, height / 2 - 24, "LOADING THE CULTURE WAR...", {
       fontFamily: '"Press Start 2P", monospace',
       fontSize: "8px",
       color: "#e8b84a",

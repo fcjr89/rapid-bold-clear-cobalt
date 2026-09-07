@@ -1,0 +1,40 @@
+# THE CULTURE WAR — desktop / Steam-oriented package config
+appId: com.culturewar.game
+productName: THE CULTURE WAR
+copyright: Copyright © CULTURE WAR
+
+directories:
+  output: release/steam
+  buildResources: steam
+
+files:
+  - steam/**/*
+  - dist/**/*
+  - .output/public/**/*
+  - package.json
+
+extraMetadata:
+  main: steam/main.cjs
+
+asar: true
+
+win:
+  target:
+    - target: dir
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+
+linux:
+  target:
+    - target: dir
+      arch: [x64]
+    - target: tar.gz
+      arch: [x64]
+  category: Game
+
+mac:
+  target:
+    - target: dir
+      arch: [x64, arm64]
+  category: public.app-category.games

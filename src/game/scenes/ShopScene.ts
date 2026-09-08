@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { sfx } from "../audio";
+import { playMusic, sfx } from "../audio";
 import { axis, consumeCancel, consumeConfirm } from "../input";
 import { writeSave } from "../save";
 import { G, healFull } from "../state";
@@ -36,6 +36,7 @@ export class ShopScene extends Phaser.Scene {
   }
 
   create() {
+    playMusic("tavern");
     this.scene.bringToTop("shop");
     this.cameras.main.setBackgroundColor(0x0c0814);
     const bg = this.textures.exists("art-innkeeper") ? "art-innkeeper" : "bg-tavern";

@@ -31,3 +31,5 @@ mobile:prepare, mobile:sync, mobile:ios, mobile:android, mobile:ios:sync, mobile
 
 ## Soundtrack
 TWILIGHT ZONE TIME (NA404ERROR) — see `docs/MUSIC.md`. Files in `public/game/music/`.
+
+Press **M** to mute/unmute OST (persists). Touch + gamepad stay in `src/game/input.ts`.

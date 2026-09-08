@@ -1,4 +1,4 @@
-export const TILE = 16;
+export const TILE = 32;
 export const VIEW_W = 480;
 export const VIEW_H = 270;
 export const WALK_SPEED = 68;

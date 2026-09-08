@@ -177,6 +177,8 @@ export class BattleScene extends Phaser.Scene {
         spr.setDisplaySize(Math.floor(72 * scale), Math.floor(96 * scale));
       }
       if (def.tint) spr.setTint(def.tint);
+      // Face the hero on the right (sheets usually face left already; keep unflipped).
+      spr.setFlipX(false);
 
       const barY = 8 + i * 22;
       windowBox(this, 8, barY, 220, 20);
@@ -213,6 +215,8 @@ export class BattleScene extends Phaser.Scene {
     this.hand = drawHand(buildDeck(unlocked), MAX_HAND);
 
     this.heroSpr = this.add.sprite(368, 148, this.textures.exists("baki-idle") ? "baki-idle" : "fx-hero-sil", 0);
+    // Foes spawn on the left — face them (sheet faces right by default).
+    this.heroSpr.setFlipX(true);
     if (this.textures.exists("baki-idle")) {
       this.heroSpr.setScale(0.68);
       if (this.anims.exists("baki-idle-b")) this.heroSpr.play("baki-idle-b");
@@ -784,7 +788,12 @@ export class BattleScene extends Phaser.Scene {
     if (!foe) return;
     this.lock();
     sfx("ok");
+    this.heroSpr.setFlipX(foe.spr.x < this.heroSpr.x);
     if (this.anims.exists("baki-atk")) this.heroSpr.play("baki-atk");
+    const homeX = this.heroSpr.x;
+    const homeY = this.heroSpr.y;
+    const leapX = foe.spr.x + (foe.spr.x < homeX ? 36 : -36);
+    this.tweens.add({ targets: this.heroSpr, x: leapX, y: foe.spr.y + 8, duration: 110, yoyo: true, ease: "Quad.easeOut" });
     this.cameras.main.shake(120, 0.006);
     const { n, crit } = this.dmg(G.hero.atk, foe.defStat + (foe.buff > 0 ? 2 : 0));
     this.hurtFoe(foe, n);

@@ -9,6 +9,7 @@ export interface ArtPage {
 }
 
 export const ART: ArtPage[] = [
+  { key: "art-echo-chamber", title: "Social Media Echo Chamber", url: "/game/art/echo-chamber.jpg" },
   { key: "art-opening", title: "OPENING SCENE", url: "/game/art/opening.jpg" },
   { key: "art-baki-head", title: "BAKI HEAD SHOT", url: "/game/art/baki-head.jpg" },
   { key: "art-baki-overworld", title: "BAKI MAIN CHARACTER", url: "/game/art/baki-overworld.jpg" },

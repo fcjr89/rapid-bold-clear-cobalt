@@ -29,3 +29,5 @@ Ship iOS then Android. Leave src/game/input.ts alone.
 ## Scripts
 mobile:prepare, mobile:sync, mobile:ios, mobile:android, mobile:ios:sync, mobile:android:sync, mobile:verify
 
+## Soundtrack
+TWILIGHT ZONE TIME (NA404ERROR) — see `docs/MUSIC.md`. Files in `public/game/music/`.

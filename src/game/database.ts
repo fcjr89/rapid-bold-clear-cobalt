@@ -551,6 +551,7 @@ export const DIALOGUE: Record<string, string[]> = {
     "Woke Retards 1.0. Woke Retards 2.0. MAGA/MIGA Zionist Chuds — both parties, same stage.",
     "Smash the Illuminati bloodlines. Break both theaters. Do not be Re-Educated.",
     "Hub Guide knows the doors. Tavern saves the swing.",
+    "OST: TWILIGHT ZONE TIME — NA404ERROR.",
   ],
   red_enter: [
     "Crimson banners. MAGA/MIGA Zionist Chuds stage lights.",

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { playMusic, sfx } from "../audio";
+import { MAPS } from "../maps";
 import { axis, consumeCancel, consumeConfirm } from "../input";
 import { writeSave } from "../save";
 import { G, healFull } from "../state";
@@ -150,6 +151,8 @@ export class ShopScene extends Phaser.Scene {
 
   leave() {
     sfx("ok");
+    const cue = MAPS[G.map]?.music ?? "overworld";
+    playMusic(cue);
     this.scene.stop();
     this.game.scene.resume("overworld");
   }

@@ -37,6 +37,7 @@ export class OverworldScene extends Phaser.Scene {
   private moveY = 0;
   private locLabel?: Phaser.GameObjects.Text;
   private objLabel?: Phaser.GameObjects.Text;
+  private cwBg?: Phaser.GameObjects.Image;
 
   constructor() {
     super("overworld");
@@ -85,6 +86,7 @@ export class OverworldScene extends Phaser.Scene {
   buildMap(id: MapId) {
     this.npcSprites.forEach((s) => s.destroy());
     this.npcSprites = [];
+    this.cwBg?.destroy();
     this.layer?.destroy();
     this.player?.destroy();
 
@@ -101,6 +103,15 @@ export class OverworldScene extends Phaser.Scene {
 
     const worldW = data[0]!.length * TILE;
     const worldH = data.length * TILE;
+
+    // Culture War district art (MAP AND LOCATIONS) as the visible world.
+    const bgKey =
+      id === "red" ? "cw-bg-red" : id === "blue" ? "cw-bg-blue" : id === "dungeon" ? "cw-bg-dungeon" : id === "tavern" ? "cw-bg-tavern" : "cw-bg-hub";
+    if (this.textures.exists(bgKey)) {
+      this.cwBg = this.add.image(0, 0, bgKey).setOrigin(0, 0).setDisplaySize(worldW, worldH).setDepth(0);
+      layer.setAlpha(0.22);
+      layer.setDepth(1);
+    }
     this.physics.world.setBounds(0, 0, worldW, worldH);
     this.cameras.main.setBounds(0, 0, worldW, worldH);
     this.cameras.main.setRoundPixels(true);
@@ -119,7 +130,7 @@ export class OverworldScene extends Phaser.Scene {
 
     for (const n of this.map.npcs) {
       const key = n.sprite ?? "enemy-right";
-      const spr = this.add.sprite(n.x * TILE + 8, n.y * TILE + 8, key, 0);
+      const spr = this.add.sprite(n.x * TILE + TILE / 2, n.y * TILE + TILE / 2, key, 0);
       spr.setScale(0.22);
       if (n.tint) spr.setTint(n.tint);
       if (this.anims.exists(`${key}-idle`)) spr.play(`${key}-idle`);

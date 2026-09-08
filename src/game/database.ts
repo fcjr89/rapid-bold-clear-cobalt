@@ -802,6 +802,7 @@ export const DIALOGUE: Record<string, string[]> = {
     "THE CULTURE WAR",
     "Bloodlines of the Divide",
     "Outline closed. Thrones cracked.",
+    "OST: TWILIGHT ZONE TIME — NA404ERROR",
     "Z FREE ROAM HUB     X TITLE",
     "Thanks for swinging true.",
   ],

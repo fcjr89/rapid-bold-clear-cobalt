@@ -22,7 +22,7 @@ export class EndingScene extends Phaser.Scene {
 
   create() {
     unlockAudio();
-    playMusic("title");
+    playMusic("final");
     this.finished = false;
     this.cameras.main.setBackgroundColor(0x0c0814);
     const bg = this.textures.exists("bg-thrones") ? "bg-thrones" : "bg-vault";

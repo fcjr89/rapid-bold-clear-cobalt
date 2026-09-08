@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { playMusic, sfx, unlockAudio, setMuted } from "../audio";
+import { playMusic, sfx, unlockAudio, setMuted, isMuted } from "../audio";
 import { addPresentationFx } from "../art";
 import { SUBTITLE, TITLE } from "../database";
 import { axis, consumeCancel, consumeConfirm } from "../input";
@@ -34,12 +34,9 @@ export class TitleScene extends Phaser.Scene {
     playMusic("title");
     px(this, VIEW_W / 2, VIEW_H - 18, "OST: TWILIGHT ZONE TIME — NA404ERROR  ·  M mute", 5, "#8a7a55").setOrigin(0.5, 1);
 
-    let muted = false;
     this.input.keyboard?.on("keydown-M", () => {
-      muted = !muted;
-      setMuted(muted);
+      setMuted(!isMuted());
       sfx("menu");
-      if (!muted) playMusic("title");
     });
 
     this.add.image(VIEW_W / 2, VIEW_H / 2, "title").setDisplaySize(VIEW_W, VIEW_H);

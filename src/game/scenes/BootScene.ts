@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { ART, ensureProceduralArt } from "../art";
 import { bindAutosave } from "../save";
 import { VIEW_H, VIEW_W } from "../types";
+import { loadMutePreference } from "../audio";
 
 const IDLE_SHEETS = [
   "enemy-right",
@@ -94,6 +95,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   async create() {
+    loadMutePreference();
     bindAutosave();
     this.makeFallbacks();
     this.makeAnims();

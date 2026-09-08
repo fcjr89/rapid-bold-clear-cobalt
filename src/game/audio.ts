@@ -150,7 +150,36 @@ export function stopMusic() {
   musicName = null;
 }
 
+export function isMuted(): boolean {
+  return muted;
+}
+
 export function setMuted(v: boolean) {
   muted = v;
-  if (v) stopMusic();
+  try {
+    if (typeof localStorage !== "undefined") localStorage.setItem("tcw-mute", v ? "1" : "0");
+  } catch {
+    /* ignore */
+  }
+  if (v) {
+    // Keep musicName so unmute can resume the same cue.
+    if (musicTimer != null) {
+      clearInterval(musicTimer);
+      musicTimer = null;
+    }
+    stopTrack();
+  } else if (musicName && musicName !== "none") {
+    const resume = musicName as MusicCue;
+    musicName = null;
+    playMusic(resume);
+  }
+}
+
+/** Load mute preference once at boot (call from BootScene). */
+export function loadMutePreference() {
+  try {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("tcw-mute") === "1") muted = true;
+  } catch {
+    /* ignore */
+  }
 }

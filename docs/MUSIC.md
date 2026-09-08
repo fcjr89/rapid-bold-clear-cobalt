@@ -19,3 +19,5 @@ Source masters: Suno library (na404error) → `public/game/music/` + `studio/mus
 | `tavern` | `black-veil.mp3` | BLACK VEIL |
 
 SFX stay procedural. If an MP3 fails to load, procedural themes fall back automatically.
+
+Press **M** on the title screen to mute/unmute (persists via `localStorage` key `tcw-mute`).

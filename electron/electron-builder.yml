@@ -1,0 +1,34 @@
+appId: com.fcjr89.theculturewar
+productName: THE CULTURE WAR
+copyright: Copyright THE CULTURE WAR
+directories:
+  output: steam/dist
+  buildResources: steam/build
+files:
+  - electron/**/*
+  - package.json
+extraResources:
+  - from: .vercel/output/static
+    to: game
+    filter:
+      - "**/*"
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  artifactName: TheCultureWar-Setup-${version}.${ext}
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+  category: Game
+  artifactName: TheCultureWar-${version}.${ext}
+mac:
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  artifactName: TheCultureWar-${version}.${ext}
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: THE CULTURE WAR

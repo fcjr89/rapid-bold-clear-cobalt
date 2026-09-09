@@ -1,10 +1,21 @@
 import Phaser from "phaser";
 import { playMusic, sfx, unlockAudio } from "../audio";
-import { BOSSES, DIALOGUE, ENEMIES, pickEncounter } from "../database";
+import {
+  alignmentNpcLines,
+  bossCutscene,
+  bossOutro,
+  BOSSES,
+  DIALOGUE,
+  dungeonLeanLines,
+  dungeonPlaque,
+  ENEMIES,
+  midgameLeanLines,
+  pickEncounter,
+} from "../database";
 import { axis, consumeCancel, consumeConfirm, setKeysExact } from "../input";
 import { DUNGEON_DOORS, MAPS, SOLID, walkable } from "../maps";
 import { writeSave } from "../save";
-import { G, healFull, noteWin, resetGame } from "../state";
+import { G, healFull, noteWin } from "../state";
 import { TILE, VIEW_H, VIEW_W, WALK_SPEED } from "../types";
 import type { GameMap, MapId } from "../types";
 import { px, windowBox, wrap } from "../ui";
@@ -25,6 +36,8 @@ export class OverworldScene extends Phaser.Scene {
   private moveX = 0;
   private moveY = 0;
   private locLabel?: Phaser.GameObjects.Text;
+  private objLabel?: Phaser.GameObjects.Text;
+  private cwBg?: Phaser.GameObjects.Image;
 
   constructor() {
     super("overworld");
@@ -44,8 +57,9 @@ export class OverworldScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 2000, 2000);
     this.buildMap(G.map);
     this.flash = this.add.rectangle(0, 0, VIEW_W, VIEW_H, 0xc41e3a, 0).setScrollFactor(0).setOrigin(0).setDepth(90);
-    windowBox(this, 4, 4, 220, 22, 69).setScrollFactor(0);
-    this.hud = px(this, 8, 10, "", 6, "#f0e6c8").setScrollFactor(0).setDepth(70);
+    windowBox(this, 4, 4, 250, 34, 69).setScrollFactor(0);
+    this.hud = px(this, 8, 8, "", 6, "#f0e6c8").setScrollFactor(0).setDepth(70);
+    this.objLabel = px(this, 8, 22, "", 5, "#e8b84a").setScrollFactor(0).setDepth(70);
     this.locLabel = px(this, VIEW_W - 8, 8, "", 6, "#e8b84a").setOrigin(1, 0).setScrollFactor(0).setDepth(70);
 
     if (!G.flags.introSeen) {
@@ -72,6 +86,7 @@ export class OverworldScene extends Phaser.Scene {
   buildMap(id: MapId) {
     this.npcSprites.forEach((s) => s.destroy());
     this.npcSprites = [];
+    this.cwBg?.destroy();
     this.layer?.destroy();
     this.player?.destroy();
 
@@ -88,6 +103,15 @@ export class OverworldScene extends Phaser.Scene {
 
     const worldW = data[0]!.length * TILE;
     const worldH = data.length * TILE;
+
+    // Culture War district art (MAP AND LOCATIONS) as the visible world.
+    const bgKey =
+      id === "red" ? "cw-bg-red" : id === "blue" ? "cw-bg-blue" : id === "dungeon" ? "cw-bg-dungeon" : id === "tavern" ? "cw-bg-tavern" : "cw-bg-hub";
+    if (this.textures.exists(bgKey)) {
+      this.cwBg = this.add.image(0, 0, bgKey).setOrigin(0, 0).setDisplaySize(worldW, worldH).setDepth(0);
+      layer.setAlpha(0.22);
+      layer.setDepth(1);
+    }
     this.physics.world.setBounds(0, 0, worldW, worldH);
     this.cameras.main.setBounds(0, 0, worldW, worldH);
     this.cameras.main.setRoundPixels(true);
@@ -106,7 +130,7 @@ export class OverworldScene extends Phaser.Scene {
 
     for (const n of this.map.npcs) {
       const key = n.sprite ?? "enemy-right";
-      const spr = this.add.sprite(n.x * TILE + 8, n.y * TILE + 8, key, 0);
+      const spr = this.add.sprite(n.x * TILE + TILE / 2, n.y * TILE + TILE / 2, key, 0);
       spr.setScale(0.22);
       if (n.tint) spr.setTint(n.tint);
       if (this.anims.exists(`${key}-idle`)) spr.play(`${key}-idle`);
@@ -121,7 +145,8 @@ export class OverworldScene extends Phaser.Scene {
 
   update(_t: number, delta: number) {
     const dt = Math.min(delta, 100) / 1000;
-    this.hud?.setText(`HP ${G.hero.hp}/${G.hero.maxHp}  MP ${G.hero.mp}/${G.hero.maxMp}  LV ${G.hero.level}`);
+    this.hud?.setText(`HP ${G.hero.hp}/${G.hero.maxHp}  MP ${G.hero.mp}/${G.hero.maxMp}  LV ${G.hero.level}  G ${G.hero.gold}`);
+    this.objLabel?.setText(this.objectiveHint());
     window.__baki = { map: G.map, hp: G.hero.hp };
 
     if (this.talking) {
@@ -179,12 +204,30 @@ export class OverworldScene extends Phaser.Scene {
     this.checkDoors();
   }
 
+  objectiveHint(): string {
+    if (G.flags.ending) return "CLEARED — free roam. Tavern to rest.";
+    if (!G.flags.dungeonOpen) {
+      const r = G.flags.redMiniboss ? "RED OK" : `RED ${G.flags.redWins}/3`;
+      const b = G.flags.blueMiniboss ? "BLUE OK" : `BLUE ${G.flags.blueWins}/3`;
+      return `Obj: clear districts  ${r}  ${b}`;
+    }
+    const n = G.flags.bossesDefeated.length;
+    if (n >= 13) return "Obj: final crown — gold throne doors";
+    if (n >= 1) return `Obj: bloodlines ${n}/14 — next gold door`;
+    return "Obj: enter dungeon — first gold door";
+  }
+
   accumulateSteps(dt: number) {
     if (this.map.encounters === "none" || this.talking) return;
-    G.steps += dt * 14;
+    // Districts: gentler cadence. Dungeon: a bit denser but still fair.
+    const rate = this.map.encounters === "system" ? 12 : 11;
+    G.steps += dt * rate;
     if (G.steps >= G.nextEncounterAt) {
       G.steps = 0;
-      G.nextEncounterAt = 10 + Math.floor(Math.random() * 10);
+      G.nextEncounterAt =
+        this.map.encounters === "system"
+          ? 12 + Math.floor(Math.random() * 10)
+          : 16 + Math.floor(Math.random() * 14);
       this.startEncounter(pickEncounter(this.map.encounters), false);
     }
   }
@@ -254,12 +297,21 @@ export class OverworldScene extends Phaser.Scene {
     if (id === "blood_ledger") {
       const remaining = BOSSES.filter((b) => !G.flags.bossesDefeated.includes(b.id));
       if (!remaining.length) {
-        this.openTalk(["The ledger is blank. The Divide is quiet."]);
+        this.openTalk(
+          G.flags.ending
+            ? ["The ledger is blank. The Divide is quiet.", "You already broke the crown."]
+            : ["The ledger is blank. The Divide is quiet."],
+        );
         return;
       }
       const lines = remaining.slice(0, 4).map((b) => `${b.order}. ${b.title}`);
       if (remaining.length > 4) lines.push(`...and ${remaining.length - 4} more seals.`);
       this.openTalk(["BLOODLINE LEDGER — walk a gold door.", ...lines]);
+      return;
+    }
+    const dyn = alignmentNpcLines(id, G.flags.redWins, G.flags.blueWins);
+    if (dyn) {
+      this.openTalk(dyn);
       return;
     }
     const lines = DIALOGUE[id];
@@ -286,6 +338,12 @@ export class OverworldScene extends Phaser.Scene {
     }
     const enterKey = w.to === "red" ? "red_enter" : w.to === "blue" ? "blue_enter" : w.to === "dungeon" ? "dungeon_enter" : null;
     this.goMap(w.to, w.tx, w.ty);
+    if (w.to === "dungeon" && !G.flags.dungeonLeanShown) {
+      G.flags.dungeonLeanShown = true;
+      const lines = [...(DIALOGUE.dungeon_enter ?? []), ...dungeonLeanLines(G.flags.redWins, G.flags.blueWins)];
+      this.time.delayedCall(80, () => this.openTalk(lines));
+      return;
+    }
     if (enterKey && DIALOGUE[enterKey]) {
       this.time.delayedCall(80, () => this.openTalk(DIALOGUE[enterKey]!));
     }
@@ -316,24 +374,35 @@ export class OverworldScene extends Phaser.Scene {
     }
     this.player.y += 16;
     G.ty = Math.floor(this.player.y / TILE);
+    const plaque = dungeonPlaque(door.order) ?? [];
     this.openTalkThen(
-      [`${boss.title}`, boss.location, "The seal hums. Z to challenge."],
+      [`${boss.title}`, boss.location, ...plaque, "The seal hums. Z to challenge."],
       () => this.startEncounter(boss.id, true),
     );
   }
 
-  startEncounter(enemyId: string, boss = false, mini?: "red" | "blue") {
-    const def = ENEMIES[enemyId];
+  startEncounter(enemyId: string | string[], boss = false, mini?: "red" | "blue") {
+    const ids = (Array.isArray(enemyId) ? enemyId : [enemyId]).slice(0, 3);
+    // Bosses stay solo; final/vanduyn may bring one media add
+    let finalIds = ids;
+    if (boss && ids[0] === "merovingian_king") finalIds = ["merovingian_king"];
+    else if (boss && ids[0] === "freeman_hypnotist" && Math.random() < 0.45) {
+      finalIds = ["freeman_hypnotist", "cable_news_puppet"];
+    } else if (boss) finalIds = [ids[0]!];
+    if (mini) finalIds = ["reeducation_instructor"];
+
+    const leadId = finalIds[0]!;
+    const def = ENEMIES[leadId];
     if (!def) return;
     unlockAudio();
     const bg =
-      enemyId === "merovingian_king"
+      leadId === "merovingian_king"
         ? "bg-thrones"
         : def.kind === "boss" || def.kind === "final"
           ? "bg-vault"
           : this.map.battleBg;
     G.pendingEncounter = {
-      enemyIds: [mini ? "reeducation_instructor" : enemyId],
+      enemyIds: finalIds,
       isBoss: boss,
       bg,
       cannotFlee: boss,
@@ -341,24 +410,25 @@ export class OverworldScene extends Phaser.Scene {
       returnX: G.tx,
       returnY: G.ty,
     };
-    if (mini) {
-      G.pendingEncounter.enemyIds = ["reeducation_instructor"];
-      (G.pendingEncounter as { mini?: string }).mini = mini;
-    }
-    const color = this.map.encounters === "left" ? 0x2a4a9a : this.map.encounters === "right" ? 0xc41e3a : 0x7a8aa0;
-    this.flash?.setFillStyle(color, 0);
-    this.tweens.add({
-      targets: this.flash,
-      fillAlpha: { from: 0, to: 1 },
-      yoyo: true,
-      duration: 90,
-      repeat: 3,
-      onComplete: () => {
-        this.scene.setVisible(false, "overworld");
-        this.scene.sleep("overworld");
-        this.scene.launch("battle", { mini });
-      },
-    });
+    const launch = () => {
+      const color = this.map.encounters === "left" ? 0x2a4a9a : this.map.encounters === "right" ? 0xc41e3a : 0x7a8aa0;
+      this.flash?.setFillStyle(color, 0);
+      this.tweens.add({
+        targets: this.flash,
+        fillAlpha: { from: 0, to: 1 },
+        yoyo: true,
+        duration: 90,
+        repeat: 3,
+        onComplete: () => {
+          this.scene.setVisible(false, "overworld");
+          this.scene.sleep("overworld");
+          this.scene.launch("battle", { mini });
+        },
+      });
+    };
+    const cut = boss ? bossCutscene(leadId) : null;
+    if (cut) this.openTalkThen(cut, launch);
+    else launch();
   }
 
   onBattleOver(result: { won: boolean; fled: boolean; enemyId: string; mini?: "red" | "blue" }) {
@@ -382,28 +452,49 @@ export class OverworldScene extends Phaser.Scene {
       G.flags.redMiniboss = true;
       G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
       writeSave();
-      this.openTalk(["The Red Instructor is silenced.", G.flags.dungeonOpen ? "Both districts are clear. The gate waits." : "Blue District still lectures."]);
+      const lines = [...(DIALOGUE.after_instructor_red ?? ["Red Instructor silenced."])];
+      if (G.flags.dungeonOpen) lines.push("Both farm teams are clear. The gold gate waits.");
+      else lines.push("Blue District still lectures.");
+      if (G.flags.dungeonOpen && !G.flags.leanHintShown) {
+        G.flags.leanHintShown = true;
+        lines.push(...midgameLeanLines(G.flags.redWins, G.flags.blueWins));
+      }
+      this.openTalk(lines);
       return;
     }
     if (result.mini === "blue") {
       G.flags.blueMiniboss = true;
       G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
       writeSave();
-      this.openTalk(["The Blue Instructor is silenced.", G.flags.dungeonOpen ? "Both districts are clear. The gate waits." : "Red District still preaches."]);
+      const lines = [...(DIALOGUE.after_instructor_blue ?? ["Blue Instructor silenced."])];
+      if (G.flags.dungeonOpen) lines.push("Both farm teams are clear. The gold gate waits.");
+      else lines.push("Red District still preaches.");
+      if (G.flags.dungeonOpen && !G.flags.leanHintShown) {
+        G.flags.leanHintShown = true;
+        lines.push(...midgameLeanLines(G.flags.redWins, G.flags.blueWins));
+      }
+      this.openTalk(lines);
       return;
-    }
-    if (result.enemyId === "rothschild_archon") {
-      writeSave();
-      this.openTalk(DIALOGUE.after_rothschild);
     }
     if (result.enemyId === "merovingian_king") {
       G.flags.ending = true;
+      G.map = "hub";
+      G.tx = 13;
+      G.ty = 10;
       writeSave();
-      this.openTalkThen(DIALOGUE.ending, () => {
-        resetGame();
-        this.scene.start("title");
-      });
+      this.scene.sleep("overworld");
+      this.scene.launch("ending");
+      return;
     }
+    const def = ENEMIES[result.enemyId];
+    if (def && (def.kind === "boss" || def.kind === "final")) {
+      writeSave();
+      const meta = BOSSES.find((b) => b.id === result.enemyId);
+      const title = meta?.title ?? def.name;
+      this.openTalk([`${title} falls.`, ...bossOutro(result.enemyId)]);
+      return;
+    }
+    writeSave();
   }
 
   openTalk(lines: string[]) {

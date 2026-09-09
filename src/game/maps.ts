@@ -125,8 +125,10 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 11, y: 4, to: "tavern", tx: 7, ty: 6 },
     ],
     npcs: [
-      { x: 8, y: 8, id: "left_recruiter", name: "Left Recruiter", sprite: "enemy-mage" },
-      { x: 17, y: 8, id: "right_recruiter", name: "Right Recruiter", sprite: "enemy-crusader" },
+      { x: 13, y: 8, id: "hub_guide", name: "Hub Guide", sprite: "npc-innkeeper" },
+      { x: 8, y: 8, id: "left_recruiter", name: "Woke Recruiter", sprite: "enemy-mage" },
+      { x: 17, y: 8, id: "right_recruiter", name: "MAGA/MIGA Recruiter", sprite: "enemy-crusader" },
+      { x: 15, y: 10, id: "hub_veteran", name: "Hub Veteran", sprite: "enemy-captain" },
       { x: 6, y: 13, id: "sign_blue", name: "Sign" },
       { x: 19, y: 13, id: "sign_red", name: "Sign" },
       { x: 13, y: 13, id: "sign_dungeon", name: "Sign" },
@@ -134,8 +136,8 @@ export const MAPS: Record<MapId, GameMap> = {
   },
   red: {
     id: "red",
-    name: "Red District",
-    music: "overworld",
+    name: "Red — MAGA/MIGA Chuds",
+    music: "red",
     ground: RED,
     spawn: { x: 9, y: 10 },
     encounters: "right",
@@ -144,12 +146,15 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 8, y: 11, to: "hub", tx: 15, ty: 10 },
       { x: 9, y: 11, to: "hub", tx: 15, ty: 10 },
     ],
-    npcs: [{ x: 9, y: 6, id: "forum_red", name: "Red Forum", sprite: "enemy-instructor" }],
+    npcs: [
+      { x: 9, y: 6, id: "forum_red", name: "Red Forum", sprite: "enemy-instructor" },
+      { x: 6, y: 8, id: "red_preacher", name: "Preacher", sprite: "enemy-crusader" },
+    ],
   },
   blue: {
     id: "blue",
-    name: "Blue District",
-    music: "overworld",
+    name: "Blue — Woke Retards",
+    music: "blue",
     ground: BLUE,
     spawn: { x: 9, y: 10 },
     encounters: "left",
@@ -158,7 +163,10 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 8, y: 11, to: "hub", tx: 5, ty: 10 },
       { x: 9, y: 11, to: "hub", tx: 5, ty: 10 },
     ],
-    npcs: [{ x: 9, y: 6, id: "forum_blue", name: "Blue Forum", sprite: "enemy-instructor", tint: 0x99bbff }],
+    npcs: [
+      { x: 9, y: 6, id: "forum_blue", name: "Blue Forum", sprite: "enemy-instructor", tint: 0x99bbff },
+      { x: 12, y: 8, id: "blue_tutor", name: "Tutor", sprite: "enemy-mage", tint: 0x99bbff },
+    ],
   },
   tavern: {
     id: "tavern",
@@ -172,7 +180,11 @@ export const MAPS: Record<MapId, GameMap> = {
       { x: 6, y: 8, to: "hub", tx: 10, ty: 5 },
       { x: 7, y: 8, to: "hub", tx: 11, ty: 5 },
     ],
-    npcs: [{ x: 7, y: 2, id: "innkeeper", name: "Innkeeper", sprite: "npc-innkeeper" }],
+    npcs: [
+      { x: 7, y: 2, id: "innkeeper", name: "Innkeeper", sprite: "npc-innkeeper" },
+      { x: 3, y: 5, id: "tavern_regular", name: "Patron", sprite: "enemy-sheeple" },
+      { x: 10, y: 5, id: "tavern_scout", name: "Scout", sprite: "enemy-knight" },
+    ],
   },
   dungeon: {
     id: "dungeon",
@@ -190,6 +202,7 @@ export const MAPS: Record<MapId, GameMap> = {
   },
 };
 
+/** Door tile coords must match literal 'D' positions in DUNGEON (space-separated doors pad to floor). */
 export const DUNGEON_DOORS: { x: number; y: number; order: number }[] = [
   { x: 3, y: 3, order: 1 },
   { x: 5, y: 3, order: 2 },
@@ -201,11 +214,13 @@ export const DUNGEON_DOORS: { x: number; y: number; order: number }[] = [
   { x: 19, y: 3, order: 8 },
   { x: 21, y: 3, order: 9 },
   { x: 23, y: 3, order: 10 },
-  { x: 3, y: 11, order: 11 },
-  { x: 5, y: 11, order: 12 },
-  { x: 7, y: 11, order: 13 },
-  { x: 17, y: 8, order: 14 },
-  { x: 18, y: 8, order: 14 },
+  { x: 3, y: 11, order: 11 }, // Disney
+  { x: 5, y: 11, order: 12 }, // Reynolds
+  { x: 7, y: 11, order: 13 }, // Russell
+  { x: 9, y: 11, order: 14 }, // Van Duyn
+  // Final throne: D at x=19,20
+  { x: 19, y: 8, order: 15 },
+  { x: 20, y: 8, order: 15 },
 ];
 
 export function inBounds(map: GameMap, tx: number, ty: number): boolean {

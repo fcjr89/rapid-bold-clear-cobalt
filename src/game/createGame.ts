@@ -8,6 +8,8 @@ import { BattleScene } from "./scenes/BattleScene";
 import { GalleryScene } from "./scenes/GalleryScene";
 import { StatusScene } from "./scenes/StatusScene";
 import { ShopScene } from "./scenes/ShopScene";
+import { EndingScene } from "./scenes/EndingScene";
+import { isMuted, setMuted, sfx } from "./audio";
 import { VIEW_H, VIEW_W } from "./types";
 
 let current: Phaser.Game | null = null;
@@ -39,11 +41,21 @@ export function createGame(parent: HTMLElement): Phaser.Game {
       default: "arcade",
       arcade: { debug: false },
     },
-    scene: [BootScene, TitleScene, IntroScene, OverworldScene, BattleScene, GalleryScene, StatusScene, ShopScene],
+    scene: [BootScene, TitleScene, IntroScene, OverworldScene, BattleScene, GalleryScene, StatusScene, ShopScene, EndingScene],
     callbacks: {
       postBoot: (game) => {
         game.canvas.setAttribute("tabindex", "0");
         game.canvas.focus();
+        const onMuteKey = (e: KeyboardEvent) => {
+          if (e.key === "m" || e.key === "M") {
+            // Avoid typing fields; game has none, but guard anyway.
+            const tag = (e.target as HTMLElement | null)?.tagName;
+            if (tag === "INPUT" || tag === "TEXTAREA") return;
+            setMuted(!isMuted());
+            sfx("menu");
+          }
+        };
+        window.addEventListener("keydown", onMuteKey);
         const refresh = () => game.scale.refresh();
         refresh();
         requestAnimationFrame(refresh);

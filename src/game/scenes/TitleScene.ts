@@ -1,8 +1,9 @@
 import Phaser from "phaser";
 import { playMusic, sfx, unlockAudio } from "../audio";
+import { addPresentationFx } from "../art";
 import { SUBTITLE, TITLE } from "../database";
 import { axis, consumeCancel, consumeConfirm } from "../input";
-import { hasSave, loadSave } from "../save";
+import { hasCleared, hasSave, loadSave } from "../save";
 import { resetGame } from "../state";
 import { VIEW_H, VIEW_W } from "../types";
 import { px, windowBox, wrap } from "../ui";
@@ -31,10 +32,13 @@ export class TitleScene extends Phaser.Scene {
 
   create() {
     playMusic("title");
+    px(this, VIEW_W / 2, VIEW_H - 18, "OST: TWILIGHT ZONE TIME — NA404ERROR  ·  M mute/unmute", 5, "#8a7a55").setOrigin(0.5, 1);
+
     this.add.image(VIEW_W / 2, VIEW_H / 2, "title").setDisplaySize(VIEW_W, VIEW_H);
     this.add.rectangle(VIEW_W / 2, 22, VIEW_W, 40, 0x0c0814, 0.55);
     px(this, VIEW_W / 2, 8, TITLE, 10, "#e8b84a").setOrigin(0.5, 0);
     px(this, VIEW_W / 2, 24, SUBTITLE, 7, "#f0e6c8").setOrigin(0.5, 0);
+    addPresentationFx(this, 0xe8b84a);
 
     this.items = hasSave()
       ? ["NEW GAME", "CONTINUE", "HOW TO PLAY", "CODEX"]
@@ -45,6 +49,9 @@ export class TitleScene extends Phaser.Scene {
       px(this, startX, startY + i * 12, item, 7, "#f0e6c8"),
     );
     this.refresh();
+    if (hasCleared()) {
+      px(this, VIEW_W / 2, 186, "DIVIDE CLEARED — CONTINUE FOR FREE ROAM", 6, "#e8b84a").setOrigin(0.5, 0);
+    }
 
     this.input.keyboard?.on("keydown", () => unlockAudio());
     this.input.on("pointerdown", () => unlockAudio());
@@ -110,7 +117,7 @@ export class TitleScene extends Phaser.Scene {
       36,
       60,
       wrap(
-        "WASD move. Z confirm, X cancel. X also opens your MENU. Codex pages every painting (A/D). The tavern sells weapons, items, and materia. Win 3 fights in a district to challenge the Instructor. Clear both, enter the dungeon, smash 13 bloodlines. Do not be Re-Educated.",
+        "THE CULTURE WAR — 9/11/01 wakes Baki The Hammer. WASD move. Z confirm, X menu, M mute OST (TWILIGHT ZONE TIME / NA404ERROR). Blue: Woke Retards 1.0/2.0. Red: MAGA/MIGA Zionist Chuds. Both theaters → Instructors → gold gate. Smash Illuminati bloodlines (Rothschild→Merovingian). CONSPIRE: Control/Neutralize/Destroy + summons. Skills + Common Sense Mend. Do not be Re-Educated.",
         34,
       ),
       7,

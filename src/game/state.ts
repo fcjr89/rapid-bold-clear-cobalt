@@ -1,4 +1,5 @@
 import { ENEMIES } from "./database";
+import { EXTRA_NWO_GROUPS, MAX_INFLUENCE, START_INFLUENCE, STARTER_GROUP_IDS } from "./conspiracyDeck";
 import type {
   Alignment,
   EncounterSpec,
@@ -9,7 +10,7 @@ import type {
   StatusEffect,
 } from "./types";
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export function defaultHero(): HeroRuntime {
   return {
@@ -24,8 +25,10 @@ export function defaultHero(): HeroRuntime {
     atk: 18,
     def: 12,
     spd: 14,
-    gold: 40,
-    items: { potion: 3, ether: 1, neutralizer: 1 },
+    gold: 80,
+    influence: START_INFLUENCE,
+    maxInfluence: MAX_INFLUENCE,
+    items: { potion: 5, ether: 3, neutralizer: 2 },
   };
 }
 
@@ -41,6 +44,10 @@ export function defaultFlags(): GameFlags {
     ending: false,
     boughtHammer: false,
     boughtMateria: false,
+    leanHintShown: false,
+    dungeonLeanShown: false,
+    unlockedGroupCards: [...STARTER_GROUP_IDS],
+    conspireHowtoShown: false,
   };
 }
 
@@ -75,7 +82,7 @@ function fresh(): Runtime {
     alignment: "neutral",
     pendingEncounter: null,
     steps: 0,
-    nextEncounterAt: 12 + Math.floor(Math.random() * 10),
+    nextEncounterAt: 16 + Math.floor(Math.random() * 12),
     blocking: false,
   };
 }
@@ -87,8 +94,23 @@ export function resetGame(): void {
 }
 
 export function applySave(save: SaveBlob): void {
-  G.hero = { ...defaultHero(), ...save.hero, items: { ...defaultHero().items, ...save.hero.items } };
-  G.flags = { ...defaultFlags(), ...save.flags, bossesDefeated: [...save.flags.bossesDefeated] };
+  const base = defaultHero();
+  G.hero = {
+    ...base,
+    ...save.hero,
+    items: { ...base.items, ...save.hero.items },
+    influence: save.hero.influence ?? START_INFLUENCE,
+    maxInfluence: save.hero.maxInfluence ?? MAX_INFLUENCE,
+  };
+  const df = defaultFlags();
+  G.flags = {
+    ...df,
+    ...save.flags,
+    bossesDefeated: [...(save.flags.bossesDefeated ?? [])],
+    unlockedGroupCards: [
+      ...new Set([...(df.unlockedGroupCards ?? []), ...(save.flags.unlockedGroupCards ?? [])]),
+    ],
+  };
   G.map = save.map;
   G.tx = save.tx;
   G.ty = save.ty;
@@ -99,7 +121,7 @@ export function applySave(save: SaveBlob): void {
   G.alignment = "neutral";
   G.pendingEncounter = null;
   G.steps = 0;
-  G.nextEncounterAt = 12;
+  G.nextEncounterAt = 16;
   G.blocking = false;
   G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
 }
@@ -119,6 +141,7 @@ export function snapshot(): SaveBlob {
 export function healFull(): void {
   G.hero.hp = G.hero.maxHp;
   G.hero.mp = G.hero.maxMp;
+  G.hero.influence = Math.min(G.hero.maxInfluence, Math.max(G.hero.influence, START_INFLUENCE));
   G.statuses = [];
   G.alignment = "neutral";
 }
@@ -129,13 +152,15 @@ export function grantXp(amount: number): string[] {
   while (G.hero.xp >= G.hero.xpToNext) {
     G.hero.xp -= G.hero.xpToNext;
     G.hero.level += 1;
-    G.hero.maxHp += 18;
-    G.hero.maxMp += 6;
+    G.hero.maxHp += 20;
+    G.hero.maxMp += 7;
     G.hero.atk += 4;
     G.hero.def += 3;
     G.hero.spd += 2;
+    G.hero.maxInfluence = Math.min(9, MAX_INFLUENCE + Math.floor(G.hero.level / 5));
     G.hero.hp = G.hero.maxHp;
     G.hero.mp = G.hero.maxMp;
+    G.hero.influence = G.hero.maxInfluence;
     G.hero.xpToNext = 36 + G.hero.level * 18;
     notes.push(`Level up! Lv ${G.hero.level}`);
   }
@@ -176,4 +201,28 @@ export function defeatBoss(id: string): void {
   if (id === "reeducation_instructor_blue") G.flags.blueMiniboss = true;
   if (ENEMIES[id]?.kind === "final") G.flags.ending = true;
   G.flags.dungeonOpen = G.flags.redMiniboss && G.flags.blueMiniboss;
+  unlockGroupCard(id);
+}
+
+/** Persist a defeated group's Conspiracy card into the player's deck. */
+export function unlockGroupCard(enemyId: string): string | null {
+  if (!G.flags.unlockedGroupCards) G.flags.unlockedGroupCards = [...STARTER_GROUP_IDS];
+  let first: string | null = null;
+  const cardId = `group_${enemyId}`;
+  if (ENEMIES[enemyId] && !G.flags.unlockedGroupCards.includes(cardId)) {
+    G.flags.unlockedGroupCards.push(cardId);
+    first = cardId;
+  }
+  // Also unlock chart Group shades tied to this elite (Federal Reserve, CFR, etc.)
+  for (const g of EXTRA_NWO_GROUPS) {
+    if (g.enemyId === enemyId && !G.flags.unlockedGroupCards.includes(g.id)) {
+      G.flags.unlockedGroupCards.push(g.id);
+      if (!first) first = g.id;
+    }
+  }
+  return first;
+}
+
+export function regenInfluence(amount = 1): void {
+  G.hero.influence = Math.min(G.hero.maxInfluence, G.hero.influence + amount);
 }

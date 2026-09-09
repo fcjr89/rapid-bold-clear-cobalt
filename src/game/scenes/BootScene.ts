@@ -1,7 +1,8 @@
 import Phaser from "phaser";
-import { ART } from "../art";
+import { ART, ensureProceduralArt } from "../art";
 import { bindAutosave } from "../save";
 import { VIEW_H, VIEW_W } from "../types";
+import { loadMutePreference } from "../audio";
 
 const IDLE_SHEETS = [
   "enemy-right",
@@ -34,6 +35,26 @@ const IDLE_SHEETS = [
   "boss-reynolds",
   "boss-russell",
   "boss-vanduyn",
+  "cast-knight",
+  "cast-executive",
+  "cast-general",
+  "cast-wraith",
+  "cast-cultist",
+  "cast-red-aristocrat",
+  "cast-black-aristocrat",
+  "cast-reporter",
+  "cast-soldier",
+  "cast-specops",
+  "cast-corrupt",
+  "cast-raider",
+  "cast-agent",
+  "cast-shadow-king",
+  "cast-glutton",
+  "cast-judge",
+  "cast-warmachine",
+  "cast-lich",
+  "cast-goldenpig",
+  "cast-voidknight",
 ] as const;
 
 const SHEETS: { key: string; url: string; frame: number }[] = [
@@ -43,6 +64,10 @@ const SHEETS: { key: string; url: string; frame: number }[] = [
   ...IDLE_SHEETS.map((key) => ({ key, url: `/game/${key}.png`, frame: 128 })),
 ];
 
+/** Boot loads canonical `/game/*` paths only.
+ * Higher-res / platform packs live under `studio/optimized/` — overlay via build
+ * or copy into public/game on a platform branch. See docs/ART_PIPELINE.md.
+ */
 export class BootScene extends Phaser.Scene {
   constructor() {
     super("boot");
@@ -55,7 +80,7 @@ export class BootScene extends Phaser.Scene {
     g.fillRect(0, 0, width, height);
     this.add.rectangle(width / 2, height / 2, 200, 10, 0x3a2e1a);
     const fill = this.add.rectangle(width / 2 - 100, height / 2, 2, 8, 0xe8b84a).setOrigin(0, 0.5);
-    this.add.text(width / 2, height / 2 - 24, "LOADING THE DIVIDE...", {
+    this.add.text(width / 2, height / 2 - 24, "LOADING THE CULTURE WAR...", {
       fontFamily: '"Press Start 2P", monospace',
       fontSize: "8px",
       color: "#e8b84a",
@@ -68,6 +93,14 @@ export class BootScene extends Phaser.Scene {
     this.load.image("title", "/game/title.jpg");
     this.load.image("opening", "/game/opening.jpg");
     this.load.image("tiles", "/game/tiles.png");
+    this.load.image("cw-bg-hub", "/game/cw/bg-hub.png");
+    this.load.image("cw-bg-red", "/game/cw/bg-red.png");
+    this.load.image("cw-bg-blue", "/game/cw/bg-blue.png");
+    this.load.image("cw-bg-dungeon", "/game/cw/bg-dungeon.png");
+    this.load.image("cw-bg-tavern", "/game/cw/bg-tavern.png");
+    this.load.image("map-locations", "/game/map-locations.jpg");
+    this.load.image("bg-echo", "/game/bg-echo.jpg");
+    this.load.image("art-echo-chamber", "/game/art/echo-chamber.jpg");
     this.load.image("bg-red", "/game/bg-red.jpg");
     this.load.image("bg-blue", "/game/bg-blue.jpg");
     this.load.image("bg-vault", "/game/bg-vault.jpg");
@@ -79,6 +112,8 @@ export class BootScene extends Phaser.Scene {
     this.load.image("baki-portrait", "/game/baki-portrait.jpg");
     this.load.image("menu-ui", "/game/menu-ui.jpg");
     this.load.image("map-ref", "/game/map-ref.jpg");
+    this.load.image("ui-heal", "/game/ui-heal.png");
+    this.load.image("ui-target", "/game/ui-target.png");
     for (const page of ART) {
       this.load.image(page.key, page.url);
     }
@@ -88,6 +123,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   async create() {
+    loadMutePreference();
     bindAutosave();
     this.makeFallbacks();
     this.makeAnims();
@@ -100,6 +136,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   makeFallbacks() {
+    ensureProceduralArt(this);
     const mk = (key: string, color: number, w = 32, h = 32) => {
       if (this.textures.exists(key)) return;
       const g = this.make.graphics({ x: 0, y: 0 }, false);
@@ -110,10 +147,8 @@ export class BootScene extends Phaser.Scene {
       g.generateTexture(key, w, h);
       g.destroy();
     };
-    mk("title", 0x1a1024, 480, 270);
-    mk("opening", 0x1a1024, 480, 270);
     mk("tiles", 0x3a5a32, 128, 64);
-    mk("baki-portrait", 0x3a2e1a, 96, 96);
+    // Missing battle BGs: BattleScene falls back to fx-bg-* from ensureProceduralArt.
   }
 
   makeAnims() {

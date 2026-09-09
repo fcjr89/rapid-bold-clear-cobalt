@@ -1,4 +1,4 @@
-export const TILE = 16;
+export const TILE = 32;
 export const VIEW_W = 480;
 export const VIEW_H = 270;
 export const WALK_SPEED = 68;
@@ -12,11 +12,15 @@ export type SkillId =
   | "hammer_clarity"
   | "mute_counter"
   | "independent"
-  | "fact_check";
+  | "fact_check"
+  | "common_sense"
+  | "conspire_bribe"
+  | "conspire_blackout"
+  | "conspire_assassinate";
 
 export type ItemId = "potion" | "ether" | "neutralizer";
 
-export type EnemyActionId = "attack" | "lecture" | "buff" | "special";
+export type EnemyActionId = "attack" | "lecture" | "buff" | "heal" | "special";
 
 export interface SkillDef {
   id: SkillId;
@@ -75,11 +79,21 @@ export interface HeroRuntime {
   def: number;
   spd: number;
   gold: number;
+  /** Conspiracy Deck resource — fuels Control / Specials / Summons. */
+  influence: number;
+  maxInfluence: number;
   items: Record<ItemId, number>;
 }
 
 export interface StatusEffect {
-  id: "reeducate" | "independent" | "mute_armed" | "buff_atk";
+  id:
+    | "reeducate"
+    | "independent"
+    | "mute_armed"
+    | "buff_atk"
+    | "honeypot"
+    | "soft_power"
+    | "smear";
   name: string;
   turns: number;
   alignment?: Alignment;
@@ -106,6 +120,14 @@ export interface GameFlags {
   ending: boolean;
   boughtHammer: boolean;
   boughtMateria: boolean;
+  /** Mid-game lean foreshadow already shown once. */
+  leanHintShown?: boolean;
+  /** First dungeon entry monologue shown. */
+  dungeonLeanShown?: boolean;
+  /** Unlocked Conspiracy Deck group card ids (group_<enemyId>). */
+  unlockedGroupCards?: string[];
+  /** First-time conspire howto shown in battle. */
+  conspireHowtoShown?: boolean;
 }
 
 export interface Warp {
@@ -130,7 +152,7 @@ export interface NpcSpot {
 export interface GameMap {
   id: MapId;
   name: string;
-  music: "overworld" | "dungeon" | "tavern";
+  music: "overworld" | "dungeon" | "tavern" | "red" | "blue" | "title" | "intro" | "battle" | "boss" | "final";
   ground: number[][];
   warps: Warp[];
   npcs: NpcSpot[];

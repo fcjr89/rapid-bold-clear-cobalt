@@ -18,7 +18,20 @@
     "check:auth": "node scripts/check-auth-invariant.mjs",
     "test": "node --test 'scripts/**/*.test.mjs' && node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "steam:dev": "node steam/run-dev.mjs",
+    "steam:dist:win": "node steam/run-dist.mjs --win",
+    "steam:dist:linux": "node steam/run-dist.mjs --linux",
+    "steam:dist:mac": "node steam/run-dist.mjs --mac",
+    "mobile:sync": "npx cap sync",
+    "mobile:ios": "npx cap open ios",
+    "mobile:android": "npx cap open android",
+    "steam:verify": "node scripts/steam-verify.mjs",
+    "steam:package": "node steam/package.mjs",
+    "mobile:verify": "node scripts/mobile-verify.mjs",
+    "mobile:prepare": "node scripts/mobile-prepare.mjs",
+    "mobile:ios:sync": "node scripts/mobile-prepare.mjs --skip-build --sync-ios",
+    "mobile:android:sync": "node scripts/mobile-prepare.mjs --skip-build --sync-android"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",
@@ -72,7 +85,13 @@
     "tw-animate-css": "^1.3.4",
     "vaul": "^1.1.2",
     "zod": "^4.4.0",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "@capacitor/core": "^7.4.2",
+    "@capacitor/ios": "^7.4.2",
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/app": "^7.0.2",
+    "@capacitor/status-bar": "^7.0.2",
+    "@capacitor/haptics": "^7.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
@@ -93,6 +112,9 @@
     "prettier": "^3.4.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.56.1",
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "@capacitor/cli": "^7.4.2",
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
   }
 }

@@ -22,6 +22,12 @@ export function windowBox(scene: Phaser.Scene, x: number, y: number, w: number, 
   g.strokeRect(x + 1, y + 1, w - 2, h - 2);
   g.lineStyle(1, 0x7b4ac8, 0.95);
   g.strokeRect(x + 3, y + 3, w - 6, h - 6);
+  // corner ticks
+  g.lineStyle(2, 0xe8b84a, 0.9);
+  g.lineBetween(x + 2, y + 8, x + 2, y + 2);
+  g.lineBetween(x + 2, y + 2, x + 8, y + 2);
+  g.lineBetween(x + w - 2, y + 8, x + w - 2, y + 2);
+  g.lineBetween(x + w - 2, y + 2, x + w - 8, y + 2);
   return g;
 }
 

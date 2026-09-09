@@ -1,0 +1,7 @@
+dist/
+steam_appid.txt
+build/
+*.exe
+*.dmg
+*.AppImage
+*.blockmap

@@ -1,0 +1,13 @@
+{
+  "name": "the-culture-war-steam-shell",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Desktop shell for THE CULTURE WAR",
+  "main": "main.cjs",
+  "scripts": {
+    "verify": "node ../scripts/steam-verify.mjs",
+    "dev": "node run-dev.mjs",
+    "dist": "node run-dist.mjs",
+    "package": "node package.mjs"
+  }
+}
